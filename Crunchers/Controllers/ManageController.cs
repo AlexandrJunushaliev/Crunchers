@@ -117,8 +117,19 @@ namespace Crunchers.Controllers
                 return View(model);
             }
             // Создание и отправка маркера
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
-            if (UserManager.SmsService != null)
+            //var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
+            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), model.Number);
+            if (result.Succeeded)
+            {
+                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                if (user != null)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                }
+                return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
+            }
+            
+            /*if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
                 {
@@ -127,7 +138,9 @@ namespace Crunchers.Controllers
                 };
                 await UserManager.SmsService.SendAsync(message);
             }
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
+            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });*/
+            ModelState.AddModelError("", "Не установить телефон");
+            return View(model);
         }
 
         //
@@ -196,8 +209,7 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/RemovePhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<ActionResult> RemovePhoneNumber()
         {
             var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
