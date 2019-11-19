@@ -37,6 +37,12 @@ background-color: rgb(255,193,32) !important;
                 <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
                 <li>@Html.ActionLink("Информация", "About", "Home")</li>
                 <li>@Html.ActionLink("Связаться", "Contact", "Home")</li>
+                <li>
+                    <form>
+                        Title: <input id="searchField" type="text"/>
+                        <a onclick="location.href=window.location.href+'search?text='+document.getElementById('searchField').value" class="Button">Text</a>
+                    </form>
+                </li>
             </ul>
             @Html.Partial("_LoginPartial")
         </div>
