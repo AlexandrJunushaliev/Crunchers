@@ -7,9 +7,11 @@
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
-    <h4>Изменение параметров учетной записи</h4>
+    @Html.ActionLink("Заказы", "Orders")
+    <h4>Личный кабинет:</h4>
     <hr/>
     <dl class="dl-horizontal">
+        <dt>Email:</dt><dd>@User.Identity.Name</dd>
         <dt>Пароль:</dt>
         <dd>
             [
@@ -23,23 +25,19 @@
             }
             ]
         </dd>
-        <dt>Внешние имена входа:</dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Управление", "ManageLogins") ]
-        </dd>
+
         <dt>Телефон:</dt>
         <dd>
             @if (Model.PhoneNumber != null)
             {
-                @Model.PhoneNumber 
-                @Html.ActionLink("Удалить телефон", "RemovePhoneNumber") 
+                @Model.PhoneNumber
+                @Html.ActionLink(" Удалить телефон", "RemovePhoneNumber")
             }
             else
             {
-                @Html.ActionLink("Добавить телефон", "AddPhoneNumber") 
+                @Html.ActionLink("Добавить телефон", "AddPhoneNumber")
             }
-            
+
         </dd>
 
         @*

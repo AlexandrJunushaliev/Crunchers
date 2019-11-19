@@ -288,6 +288,11 @@ namespace Crunchers.Controllers
             return View(model);
         }
 
+        public async Task<ActionResult> Orders()
+        {
+            return View();
+        }
+
         //
         // GET: /Manage/ManageLogins
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
