@@ -290,7 +290,23 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> Orders()
         {
-            return View();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                // создаем два объекта User
+                /*var user1 = new Order() { UserGuid = User.Identity.GetUserId(), Products = "{\"Products\":[\"1\",\"2\"]}",Active = false,Deliver = true,Delivered = true,Paid = true,Price = 100};
+                var user2 = new Order() { UserGuid = User.Identity.GetUserId(), Products = "{\"Products\":[\"2\",\"2\"]}",Active =true,Deliver = false,Delivered = true,Paid = true,Price = 200};
+                
+ 
+                // добавляем их в бд
+                db.Orders.Add(user1);
+                db.Orders.Add(user2);
+                db.SaveChanges();*/
+
+                // получаем объекты из бд и выводим на консоль
+                var users = db.Orders.Where(x => x.UserGuid == User.Identity.GetUserId()).ToList();
+                return View(users);
+            }
+            
         }
 
         //
