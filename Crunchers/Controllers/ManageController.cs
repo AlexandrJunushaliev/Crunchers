@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -7,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Crunchers.Models;
+using Npgsql;
 
 namespace Crunchers.Controllers
 {
@@ -290,7 +292,35 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> Orders()
         {
-            return View();
+            var products = new List<Order>();
+            string connectionString = @"Host=localhost;Port=5432;Database=ordersdb;Username=postgres;Password=password";
+            string sqlExpression = String.Format("SELECT * FROM \"Orders\" WHERE \"UserGuid\"='{0}'",User.Identity.GetUserId());
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                NpgsqlCommand command = new NpgsqlCommand(sqlExpression, connection);
+                var reader = command.ExecuteReader();
+
+                if (reader.HasRows) // если есть данные
+                {
+                    while (reader.Read()) // построчно считываем данные
+                    {
+                        var order = new Order();
+                        order.Id = reader.GetInt32(0);
+                        order.Products = reader.GetString(1);
+                        order.Active = reader.GetBoolean(2);
+                        order.Delivered = reader.GetBoolean(3);
+                        order.Paid = reader.GetBoolean(4);
+                        order.Deliver = reader.GetBoolean(5);
+                        order.UserGuid = reader.GetString(6);
+                        order.Price=reader.GetInt32(7);
+                        products.Add(order);
+                    }
+                }
+
+                reader.Close();
+            }
+            return View(products);
         }
 
         //
