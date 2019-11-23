@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using Crunchers.Models;
+using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(Crunchers.Startup))]
