@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Crunchers.Models;
 using Microsoft.AspNet.Identity.Owin;
 using Unity;
 
@@ -35,10 +37,21 @@ namespace Crunchers.Controllers
             get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             private set => _userManager = value;
         }
-        // GET
+
         public ActionResult ManageShop()
         {
             return View();
+        }
+        // GET
+        public async Task<ActionResult> ManageOrders()
+        {
+            var orders = await new OrderModel().GetAllOrders();
+            return View(orders);
+        }
+        [System.Web.Http.HttpPost]
+        public void UpdateOrder(bool value, string row,int orderId)
+        {
+            new OrderModel().UpdateOrder(!value, row, orderId);
         }
     }
 }
