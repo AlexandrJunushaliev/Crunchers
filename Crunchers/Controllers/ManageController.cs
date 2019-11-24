@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Crunchers.Models;
 using Npgsql;
+using Unity;
 
 namespace Crunchers.Controllers
 {
-    [Authorize]
+    [System.Web.Mvc.Authorize]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -30,26 +33,14 @@ namespace Crunchers.Controllers
 
         public ApplicationSignInManager SignInManager
         {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
+            get { return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>(); }
+            private set { _signInManager = value; }
         }
 
         public ApplicationUserManager UserManager
         {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
+            get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(); }
+            private set { _userManager = value; }
         }
 
         //
@@ -57,13 +48,19 @@ namespace Crunchers.Controllers
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Ваш пароль изменен."
-                : message == ManageMessageId.SetPasswordSuccess ? "Пароль задан."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Настроен поставщик двухфакторной проверки подлинности."
-                : message == ManageMessageId.Error ? "Произошла ошибка."
-                : message == ManageMessageId.AddPhoneSuccess ? "Ваш номер телефона добавлен."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Ваш номер телефона удален."
-                : "";
+                message == ManageMessageId.ChangePasswordSuccess
+                    ? "Ваш пароль изменен."
+                    : message == ManageMessageId.SetPasswordSuccess
+                        ? "Пароль задан."
+                        : message == ManageMessageId.SetTwoFactorSuccess
+                            ? "Настроен поставщик двухфакторной проверки подлинности."
+                            : message == ManageMessageId.Error
+                                ? "Произошла ошибка."
+                                : message == ManageMessageId.AddPhoneSuccess
+                                    ? "Ваш номер телефона добавлен."
+                                    : message == ManageMessageId.RemovePhoneSuccess
+                                        ? "Ваш номер телефона удален."
+                                        : "";
 
             var userId = User.Identity.GetUserId();
             var model = new IndexViewModel
@@ -79,12 +76,13 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/RemoveLogin
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             ManageMessageId? message;
-            var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
+            var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(),
+                new UserLoginInfo(loginProvider, providerKey));
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -92,13 +90,15 @@ namespace Crunchers.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
+
                 message = ManageMessageId.RemoveLoginSuccess;
             }
             else
             {
                 message = ManageMessageId.Error;
             }
-            return RedirectToAction("ManageLogins", new { Message = message });
+
+            return RedirectToAction("ManageLogins", new {Message = message});
         }
 
         //
@@ -110,7 +110,7 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/AddPhoneNumber
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
@@ -118,6 +118,7 @@ namespace Crunchers.Controllers
             {
                 return View(model);
             }
+
             // Создание и отправка маркера
             //var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
             var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), model.Number);
@@ -128,9 +129,10 @@ namespace Crunchers.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
+
+                return RedirectToAction("Index", new {Message = ManageMessageId.AddPhoneSuccess});
             }
-            
+
             /*if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
@@ -147,7 +149,7 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
         {
@@ -157,12 +159,13 @@ namespace Crunchers.Controllers
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
+
             return RedirectToAction("Index", "Manage");
         }
 
         //
         // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
         {
@@ -172,6 +175,7 @@ namespace Crunchers.Controllers
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
+
             return RedirectToAction("Index", "Manage");
         }
 
@@ -181,12 +185,14 @@ namespace Crunchers.Controllers
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
             // Отправка SMS через поставщик SMS для проверки номера телефона
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
+            return phoneNumber == null
+                ? View("Error")
+                : View(new VerifyPhoneNumberViewModel {PhoneNumber = phoneNumber});
         }
 
         //
         // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
@@ -194,7 +200,9 @@ namespace Crunchers.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
+
+            var result =
+                await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -202,8 +210,10 @@ namespace Crunchers.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
+
+                return RedirectToAction("Index", new {Message = ManageMessageId.AddPhoneSuccess});
             }
+
             // Это сообщение означает наличие ошибки; повторное отображение формы
             ModelState.AddModelError("", "Не удалось проверить телефон");
             return View(model);
@@ -211,20 +221,22 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/RemovePhoneNumber
-        
+
         public async Task<ActionResult> RemovePhoneNumber()
         {
             var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
             if (!result.Succeeded)
             {
-                return RedirectToAction("Index", new { Message = ManageMessageId.Error });
+                return RedirectToAction("Index", new {Message = ManageMessageId.Error});
             }
+
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             if (user != null)
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
-            return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+
+            return RedirectToAction("Index", new {Message = ManageMessageId.RemovePhoneSuccess});
         }
 
         //
@@ -236,7 +248,7 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/ChangePassword
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -244,7 +256,9 @@ namespace Crunchers.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+
+            var result =
+                await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -252,8 +266,10 @@ namespace Crunchers.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+
+                return RedirectToAction("Index", new {Message = ManageMessageId.ChangePasswordSuccess});
             }
+
             AddErrors(result);
             return View(model);
         }
@@ -267,7 +283,7 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/SetPassword
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
         {
@@ -281,8 +297,10 @@ namespace Crunchers.Controllers
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     }
-                    return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
+
+                    return RedirectToAction("Index", new {Message = ManageMessageId.SetPasswordSuccess});
                 }
+
                 AddErrors(result);
             }
 
@@ -292,35 +310,14 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> Orders()
         {
-            var products = new List<Order>();
-            string connectionString = @"Host=localhost;Port=5432;Database=ordersdb;Username=postgres;Password=password";
-            string sqlExpression = String.Format("SELECT * FROM \"Orders\" WHERE \"UserGuid\"='{0}'",User.Identity.GetUserId());
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-                NpgsqlCommand command = new NpgsqlCommand(sqlExpression, connection);
-                var reader = command.ExecuteReader();
+            var orders = await new OrderModel().GetOrdersByUserGuid(User.Identity.GetUserId());
+            return View(orders);
+        }
 
-                if (reader.HasRows) // если есть данные
-                {
-                    while (reader.Read()) // построчно считываем данные
-                    {
-                        var order = new Order();
-                        order.Id = reader.GetInt32(0);
-                        order.Products = reader.GetString(1);
-                        order.Active = reader.GetBoolean(2);
-                        order.Delivered = reader.GetBoolean(3);
-                        order.Paid = reader.GetBoolean(4);
-                        order.Deliver = reader.GetBoolean(5);
-                        order.UserGuid = reader.GetString(6);
-                        order.Price=reader.GetInt32(7);
-                        products.Add(order);
-                    }
-                }
-
-                reader.Close();
-            }
-            return View(products);
+        [System.Web.Http.HttpPost]
+        public void UpdateOrder(bool value, string row,int orderId)
+        {
+            new OrderModel().UpdateOrder(!value, row, orderId);
         }
 
         //
@@ -336,8 +333,10 @@ namespace Crunchers.Controllers
             {
                 return View("Error");
             }
+
             var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserId());
-            var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
+            var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes()
+                .Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
             {
@@ -348,12 +347,13 @@ namespace Crunchers.Controllers
 
         //
         // POST: /Manage/LinkLogin
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
         {
             // Запрос перенаправления к внешнему поставщику входа для связывания имени входа текущего пользователя
-            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
+            return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"),
+                User.Identity.GetUserId());
         }
 
         //
@@ -363,10 +363,13 @@ namespace Crunchers.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
             if (loginInfo == null)
             {
-                return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
+                return RedirectToAction("ManageLogins", new {Message = ManageMessageId.Error});
             }
+
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
-            return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
+            return result.Succeeded
+                ? RedirectToAction("ManageLogins")
+                : RedirectToAction("ManageLogins", new {Message = ManageMessageId.Error});
         }
 
         protected override void Dispose(bool disposing)
@@ -380,16 +383,14 @@ namespace Crunchers.Controllers
             base.Dispose(disposing);
         }
 
-#region Вспомогательные приложения
+        #region Вспомогательные приложения
+
         // Используется для защиты от XSRF-атак при добавлении внешних имен входа
         private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager
         {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
+            get { return HttpContext.GetOwinContext().Authentication; }
         }
 
         private void AddErrors(IdentityResult result)
@@ -407,6 +408,7 @@ namespace Crunchers.Controllers
             {
                 return user.PasswordHash != null;
             }
+
             return false;
         }
 
@@ -417,6 +419,7 @@ namespace Crunchers.Controllers
             {
                 return user.PhoneNumber != null;
             }
+
             return false;
         }
 
@@ -431,6 +434,6 @@ namespace Crunchers.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }
