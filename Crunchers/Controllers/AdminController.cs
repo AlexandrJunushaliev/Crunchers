@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.CodeDom;
+using System.ComponentModel;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.Security;
 using Crunchers.Models;
@@ -52,6 +55,28 @@ namespace Crunchers.Controllers
         public void UpdateOrder(bool value, string row,int orderId)
         {
             new OrderModel().UpdateOrder(!value, row, orderId);
+        }
+
+        public async Task<ActionResult> ManageCategories()
+        {
+            var categories = await new CategoryModel().GetCategories();
+            return View(categories);
+        }
+        [System.Web.Http.HttpPost]
+        public void AddCategory(string categoryName)
+        {
+            new CategoryModel().AddCategory(categoryName);
+        }
+        [System.Web.Http.HttpPost]
+        public void ChangeCategory(dynamic value,string row,int categoryId)
+        {
+            new CategoryModel().ChangeCategory(value[0],row,categoryId);
+        }
+
+        [System.Web.Http.HttpPost]
+        public void DeleteCategory(int categoryId)
+        {
+            new CategoryModel().DeleteCategory(categoryId);
         }
     }
 }

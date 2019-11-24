@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Crunchers.Models.CategoryModel>
+<script>
+function AddCategory() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCategory"})?categoryName='+document.getElementById('categoryNameInput').value,
+        data: { },
+        dataType: 'json',
+        success: function (correct) {
+            location.reload();  
+            
+        },
+        error: function(inc) {
+            location.reload(); 
+            
+        }
+    });
+}
+function UpdateCategory(categoryId) {
+  $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCategory"})?value='+document.getElementById(categoryId).value.toString()+'&row=CategoryName&categoryId='+categoryId,
+          data: { },
+          dataType: 'json',
+          success: function (correct) {
+              location.reload();  
+              
+          },
+          error: function(inc) {
+              location.reload(); 
+              
+          }
+      });
+}
+function DeleteCategory(categoryId) {
+   $.ajax({
+            type: "POST",
+            url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteCategory"})?categoryId='+categoryId,
+            data: { },
+            dataType: 'json',
+            success: function (correct) {
+                location.reload();  
+                
+            },
+            error: function(inc) {
+                location.reload(); 
+                
+            }
+        });
+}
+</script>
+<form>
+    <input id="categoryNameInput" placeholder="Введите название категории"/>
+    <a onclick=" AddCategory()">Add Category</a>
+</form>
+<hr/>
+@foreach (var category in Model)
+{
+    <form>
+        <input id="@category.CategoryId" placeholder="Введите новое название категории" value="@category.CategoryName"/>
+        <a onclick=" UpdateCategory(@category.CategoryId)">Change Category</a>
+        <a onclick=" DeleteCategory(@category.CategoryId)">Delete Category</a>
+    </form>
+}
