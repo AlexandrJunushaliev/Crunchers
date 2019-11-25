@@ -60,5 +60,6 @@ function DeleteCategory(categoryId) {
         <input id="@category.CategoryId" placeholder="Введите новое название категории" value="@category.CategoryName"/>
         <a onclick=" UpdateCategory(@category.CategoryId)">Change Category</a>
         <a onclick=" DeleteCategory(@category.CategoryId)">Delete Category</a>
+        <a href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId">Manage characteristics</a>
     </form>
 }

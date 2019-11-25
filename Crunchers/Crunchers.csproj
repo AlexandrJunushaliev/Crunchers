@@ -244,6 +244,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CategoryModel.cs" />
+    <Compile Include="Models\CharacteristicModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OrderModels.cs" />
@@ -274,6 +275,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
+    <Content Include="Views\Admin\ManageCharacteristics.cshtml" />
     <Content Include="Views\Admin\ManageOrders.cshtml" />
     <Content Include="Views\Admin\ManageShop.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />

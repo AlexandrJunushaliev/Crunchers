@@ -78,5 +78,26 @@ namespace Crunchers.Controllers
         {
             new CategoryModel().DeleteCategory(categoryId);
         }
+        public async Task<ActionResult> ManageCharacteristics(int categoryId)
+        {
+            var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
+            return View(characteristics);
+        }
+        [System.Web.Http.HttpPost]
+        public void AddCharacteristic(string characteristicType, int categoryId,string characteristicName)
+        {
+            new CharacteristicModel().AddCharacteristic(characteristicName,characteristicType,categoryId);
+        }
+        [System.Web.Http.HttpPost]
+        public void ChangeCharacteristic(string characteristicType,string characteristicName,int characteristicId)
+        {
+            new CharacteristicModel().ChangeCharacteristic(characteristicType,characteristicName,characteristicId);
+        }
+        [System.Web.Http.HttpPost]
+        public void DeleteCharacteristic(int characteristicId)
+        {
+            new CharacteristicModel().DeleteCharacteristic(characteristicId);
+        }
+        
     }
 }

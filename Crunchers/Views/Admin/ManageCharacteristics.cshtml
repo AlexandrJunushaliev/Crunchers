@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Crunchers.Models.CharacteristicModel>
+<script>
+let urlParams = new URLSearchParams(window.location.search);
+function AddCategory() {
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCharacteristic"})?characteristicName='+document.getElementById('characteristicNameInput').value+'&characteristicType='+document.getElementById('characteristicTypeInput').value+'&categoryId='+urlParams.get('categoryId'),
+        data: { },
+        dataType: 'json',
+        success: function (correct) {
+            location.reload();  
+            
+        },
+        error: function(inc) {
+            location.reload(); 
+            
+        }
+    });
+}
+function UpdateCharacteristic(characteristicId) {
+   $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCharacteristic"})?characteristicName='+document.getElementById('Name='+characteristicId).value+'&characteristicType='+document.getElementById('Type='+characteristicId).value+'&characteristicId='+characteristicId,
+          data: { },
+          dataType: 'json',
+          success: function (correct) {
+              location.reload();  
+              
+          },
+          error: function(inc) {
+              location.reload(); 
+              
+          }
+      });
+}
+function DeleteCharacteristic(characteristicId) {
+   $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteCharacteristic"})?characteristicId='+characteristicId,
+          data: { },
+          dataType: 'json',
+          success: function (correct) {
+              location.reload();  
+              
+          },
+          error: function(inc) {
+              location.reload(); 
+              
+          }
+      });
+}
+</script>
+<form>
+    <input id="characteristicNameInput" placeholder="Введите название характеристики"/>
+    <select id="characteristicTypeInput">
+        <option>Точное значение</option>
+        <option>Диапазон от/до</option>
+    </select>
+    <a onclick=" AddCategory()">Add Category</a>
+</form>
+<hr/>
+@foreach (var characteristic in Model)
+{
+    <form>
+        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/>
+        <select id="Type=@characteristic.CharacteristicId">
+            <option>Точное значение</option>
+            <option>Диапазон от/до</option>
+        </select>
+        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>
+        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Delete Characteristic</a>
+    </form>
+}
