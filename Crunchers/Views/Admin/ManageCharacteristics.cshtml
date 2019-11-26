@@ -2,34 +2,44 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function AddCategory() {
+    let characteristicName = document.getElementById('characteristicNameInput').value;
+    let characteristicType = document.getElementById('characteristicTypeInput').value;
+    let characteristicUnit = document.getElementById('characteristicUnitInput').value;
+    let categoryId= urlParams.get('categoryId');
     $.ajax({
         type: "POST",
-        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCharacteristic"})?characteristicName='+document.getElementById('characteristicNameInput').value+'&characteristicType='+document.getElementById('characteristicTypeInput').value+'&categoryId='+urlParams.get('categoryId'),
-        data: { },
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCharacteristic"})?characteristicName='+characteristicName+'&characteristicType='+characteristicType+'&categoryId='+categoryId+'&unit='+characteristicUnit,
+        data: {},
         dataType: 'json',
         success: function (correct) {
+            alert('Характеристика успешно добавлена');
             location.reload();  
             
         },
         error: function(inc) {
+            alert('Произошла ошибка');
             location.reload(); 
             
         }
     });
 }
 function UpdateCharacteristic(characteristicId) {
+    let characteristicName=document.getElementById('Name='+characteristicId).value;
+    let characteristicType=document.getElementById('Type='+characteristicId).value;
+    let unit=document.getElementById('Unit='+characteristicId).value;
    $.ajax({
           type: "POST",
-          url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCharacteristic"})?characteristicName='+document.getElementById('Name='+characteristicId).value+'&characteristicType='+document.getElementById('Type='+characteristicId).value+'&characteristicId='+characteristicId,
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCharacteristic"})?characteristicName='+characteristicName+'&characteristicType='+characteristicType+'&characteristicId='+characteristicId+'&unit='+unit,
           data: { },
           dataType: 'json',
           success: function (correct) {
+              alert('Характеристика успешно обновлена');
               location.reload();  
               
           },
           error: function(inc) {
+              alert('Произошла ошибка');
               location.reload(); 
-              
           }
       });
 }
@@ -40,10 +50,12 @@ function DeleteCharacteristic(characteristicId) {
           data: { },
           dataType: 'json',
           success: function (correct) {
+              alert('Характеристика успешно удалена');
               location.reload();  
               
           },
           error: function(inc) {
+              alert('Произошла ошибка');
               location.reload(); 
               
           }
@@ -53,9 +65,10 @@ function DeleteCharacteristic(characteristicId) {
 <form>
     <input id="characteristicNameInput" placeholder="Введите название характеристики"/>
     <select id="characteristicTypeInput">
-        <option>Точное значение</option>
-        <option>Диапазон от/до</option>
+        <option>Строковое значение</option>
+        <option>Числовое значение</option>
     </select>
+    <input id="characteristicUnitInput" placeholder="Введите единицу измерения"/>
     <a onclick=" AddCategory()">Add Category</a>
 </form>
 <hr/>
@@ -64,9 +77,10 @@ function DeleteCharacteristic(characteristicId) {
     <form>
         <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/>
         <select id="Type=@characteristic.CharacteristicId">
-            <option>Точное значение</option>
-            <option>Диапазон от/до</option>
+            <option>Строковое значение</option>
+            <option>Числовое <значение></значение></option>
         </select>
+        <input id="Unit=@characteristic.Unit" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
         <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>
         <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Delete Characteristic</a>
     </form>

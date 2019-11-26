@@ -13,6 +13,7 @@ namespace Crunchers.Models
         public readonly int CategoryId;
         public readonly int CharacteristicId;
         public readonly string CharacteristicType;
+        public readonly string Unit;
 
         private DbCommand _dbCommand;
         private DbConnection _dbConnection;
@@ -25,21 +26,22 @@ namespace Crunchers.Models
                 WebConfigurationManager.ConnectionStrings["ShopDbConnection"].ConnectionString;
         }
 
-        public CharacteristicModel(string characteristicName, int categoryId, int characteristicId,
-            string characteristicType)
+        private CharacteristicModel(string characteristicName, int categoryId, int characteristicId,
+            string characteristicType,string unit)
         {
             CharacteristicName = characteristicName;
             CategoryId = categoryId;
             CharacteristicId = characteristicId;
             CharacteristicType = characteristicType;
+            Unit = unit;
         }
 
-        public void AddCharacteristic(string characteristicName, string characteristicType, int categoryId)
+        public void AddCharacteristic(string characteristicName, string characteristicType, int categoryId,string unit)
         {
             var sqlExpression =
                 string.Format(
-                    "INSERT INTO \"Characteristics\" (\"CategoryId\",\"CharacteristicType\",\"CharacteristicName\") VALUES ('{0}','{1}','{2}')",
-                    categoryId, characteristicType, characteristicName);
+                    "INSERT INTO \"Characteristics\" (\"CategoryId\",\"CharacteristicType\",\"CharacteristicName\",\"Unit\") VALUES ('{0}','{1}','{2}','{3}')",
+                    categoryId, characteristicType, characteristicName,unit);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -68,8 +70,9 @@ namespace Crunchers.Models
                         var characteristicName = reader.GetString(3);
                         var characteristicId = reader.GetInt32(0);
                         var characteristicType = reader.GetString(2);
+                        var unit = reader.GetString(4);
                         var characteristic = new CharacteristicModel(characteristicName, categoryId, characteristicId,
-                            characteristicType);
+                            characteristicType,unit);
                         characteristics.Add(characteristic);
                     }
                 }
@@ -80,12 +83,12 @@ namespace Crunchers.Models
             return characteristics;
         }
 
-        public void ChangeCharacteristic(string characteristicType, string characteristicName, int characteristicId)
+        public void ChangeCharacteristic(string characteristicType, string characteristicName, int characteristicId,string unit)
         {
             var sqlExpression =
                 string.Format(
-                    "UPDATE \"Characteristics\" SET \"CharacteristicType\"='{2}', \"CharacteristicName\"='{1}' WHERE \"CharacteristicId\"='{0}'",
-                    characteristicId, characteristicName, characteristicType);
+                    "UPDATE \"Characteristics\" SET \"CharacteristicType\"='{2}', \"CharacteristicName\"='{1}',\"Unit\"='{3}' WHERE \"CharacteristicId\"='{0}'",
+                    characteristicId, characteristicName, characteristicType,unit);
             using (_dbConnection)
             {
                 _dbConnection.Open();

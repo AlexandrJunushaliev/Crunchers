@@ -1,18 +1,20 @@
-﻿using System.CodeDom;
-using System.ComponentModel;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Http.Results;
 using System.Web.Mvc;
-using System.Web.Security;
 using Crunchers.Models;
 using Microsoft.AspNet.Identity.Owin;
-using Unity;
+using Newtonsoft.Json;
 
 namespace Crunchers.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [System.Web.Mvc.Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -24,7 +26,6 @@ namespace Crunchers.Controllers
 
         public AdminController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
-            
             UserManager = userManager;
             SignInManager = signInManager;
         }
@@ -45,14 +46,16 @@ namespace Crunchers.Controllers
         {
             return View();
         }
+
         // GET
         public async Task<ActionResult> ManageOrders()
         {
             var orders = await new OrderModel().GetAllOrders();
             return View(orders);
         }
+
         [System.Web.Http.HttpPost]
-        public void UpdateOrder(bool value, string row,int orderId)
+        public void UpdateOrder(bool value, string row, int orderId)
         {
             new OrderModel().UpdateOrder(!value, row, orderId);
         }
@@ -62,42 +65,98 @@ namespace Crunchers.Controllers
             var categories = await new CategoryModel().GetCategories();
             return View(categories);
         }
+
         [System.Web.Http.HttpPost]
-        public void AddCategory(string categoryName)
+        public ActionResult AddCategory(string categoryName)
         {
             new CategoryModel().AddCategory(categoryName);
-        }
-        [System.Web.Http.HttpPost]
-        public void ChangeCategory(dynamic value,string row,int categoryId)
-        {
-            new CategoryModel().ChangeCategory(value[0],row,categoryId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         [System.Web.Http.HttpPost]
-        public void DeleteCategory(int categoryId)
+        public ActionResult ChangeCategory(dynamic value, string row, int categoryId)
+        {
+            new CategoryModel().ChangeCategory(value[0], row, categoryId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult DeleteCategory(int categoryId)
         {
             new CategoryModel().DeleteCategory(categoryId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         public async Task<ActionResult> ManageCharacteristics(int categoryId)
         {
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
             return View(characteristics);
         }
+
         [System.Web.Http.HttpPost]
-        public void AddCharacteristic(string characteristicType, int categoryId,string characteristicName)
+        public ActionResult AddCharacteristic(string characteristicType, int categoryId, string characteristicName, string unit)
         {
-            new CharacteristicModel().AddCharacteristic(characteristicName,characteristicType,categoryId);
+            new CharacteristicModel().AddCharacteristic(characteristicName, characteristicType, categoryId, unit);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         [System.Web.Http.HttpPost]
-        public void ChangeCharacteristic(string characteristicType,string characteristicName,int characteristicId)
+        public ActionResult ChangeCharacteristic(string characteristicType, string characteristicName, int characteristicId,
+            string unit)
         {
-            new CharacteristicModel().ChangeCharacteristic(characteristicType,characteristicName,characteristicId);
+            new CharacteristicModel().ChangeCharacteristic(characteristicType, characteristicName, characteristicId,
+                unit);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         [System.Web.Http.HttpPost]
-        public void DeleteCharacteristic(int characteristicId)
+        public ActionResult DeleteCharacteristic(int characteristicId)
         {
             new CharacteristicModel().DeleteCharacteristic(characteristicId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
-        
+
+        public class ProductResponse
+        {
+            public IEnumerable<CharacteristicModel> Characteristics;
+            public IEnumerable<ProductModel> Products;
+        }
+
+        public async Task<ActionResult> ManageCategoryProducts(int categoryId)
+        {
+            var productResponse = new ProductResponse
+            {
+                Characteristics = await new CharacteristicModel().GetCharacteristics(categoryId)
+            };
+            return View(productResponse);
+        }
+
+        public async Task<ActionResult> AddProduct(string imageLink, string productName, int productPrice,
+            int categoryId)
+        {
+            string documentContents;
+            using (Stream receiveStream = Request.InputStream)
+            {
+                using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
+                {
+                    documentContents = readStream.ReadToEnd();
+                }
+            }
+
+            var i = 0;
+            var values = JsonConvert.DeserializeObject<dynamic[]>(documentContents);
+            var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
+            var valuesToChars = characteristics
+                .Select(x =>
+                {
+                    i += 1;
+                    int res;
+                    return int.TryParse(values[i - 1], out res)
+                        ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
+                        : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
+                });
+            new ProductModel().AddProduct(imageLink, categoryId, productName, productPrice, valuesToChars);
+            return Json("Success", JsonRequestBehavior.AllowGet);  
+        }
     }
 }

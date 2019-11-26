@@ -21,7 +21,7 @@ namespace Crunchers.Models
             _dbConnection.ConnectionString =
                 WebConfigurationManager.ConnectionStrings["ShopDbConnection"].ConnectionString;
         }
-        public CategoryModel(string categoryName,int categoryId)
+        private CategoryModel(string categoryName,int categoryId)
         {
             CategoryName = categoryName;
             CategoryId = categoryId;

@@ -7,10 +7,12 @@ function AddCategory() {
         data: { },
         dataType: 'json',
         success: function (correct) {
+            alert('Категория успешно добавлена');
             location.reload();  
             
         },
         error: function(inc) {
+            alert('Произошла ошибка');
             location.reload(); 
             
         }
@@ -23,10 +25,12 @@ function UpdateCategory(categoryId) {
           data: { },
           dataType: 'json',
           success: function (correct) {
+              alert('Категория успешно обновлена');
               location.reload();  
               
           },
           error: function(inc) {
+              alert('Произошла ошибка');
               location.reload(); 
               
           }
@@ -39,10 +43,12 @@ function DeleteCategory(categoryId) {
             data: { },
             dataType: 'json',
             success: function (correct) {
+                alert('Категория успешно удалена');
                 location.reload();  
                 
             },
             error: function(inc) {
+                alert('Произошла ошибка');
                 location.reload(); 
                 
             }
@@ -61,5 +67,6 @@ function DeleteCategory(categoryId) {
         <a onclick=" UpdateCategory(@category.CategoryId)">Change Category</a>
         <a onclick=" DeleteCategory(@category.CategoryId)">Delete Category</a>
         <a href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId">Manage characteristics</a>
+        <a href="/Admin/ManageCategoryProducts?categoryId=@category.CategoryId">Manage products</a>
     </form>
 }

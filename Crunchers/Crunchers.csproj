@@ -248,6 +248,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OrderModels.cs" />
+    <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -277,6 +278,7 @@
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\ManageCharacteristics.cshtml" />
     <Content Include="Views\Admin\ManageOrders.cshtml" />
+    <Content Include="Views\Admin\ManageCategoryProducts.cshtml" />
     <Content Include="Views\Admin\ManageShop.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
