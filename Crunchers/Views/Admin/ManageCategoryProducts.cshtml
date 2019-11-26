@@ -30,7 +30,7 @@
                 },
                 error: function(inc) {
                     $("#LoadingImage").hide();
-                    alert('Произошла ошибка'+inc);
+                    alert('Произошла ошибка');
                     location.reload(); 
                 }
             });
@@ -56,7 +56,7 @@
                 <input id="Name=@characteristic.CharacteristicId" placeholder="Введите числовое значение для характеристики"/>
                 if (characteristic.Unit != null || characteristic.Unit != "")
                 {
-                    <text>(в @(characteristic.Unit))</text>
+                    <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
                 }
             }
             <br/>
@@ -65,3 +65,15 @@
     <a onclick=" AddProduct()">Add Product</a>
 </form>
 <hr/>
+@{    
+    var products = Model.Products.ToList();
+    var characteristics = Model.Characteristics.ToList();
+    for (var i = 0; i < products.Count; i++)
+    {
+        for (var j = 0; j < characteristics.Count; j++)
+        {
+            
+        }
+    }
+    
+}

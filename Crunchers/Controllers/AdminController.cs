@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -94,14 +95,16 @@ namespace Crunchers.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult AddCharacteristic(string characteristicType, int categoryId, string characteristicName, string unit)
+        public ActionResult AddCharacteristic(string characteristicType, int categoryId, string characteristicName,
+            string unit)
         {
             new CharacteristicModel().AddCharacteristic(characteristicName, characteristicType, categoryId, unit);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult ChangeCharacteristic(string characteristicType, string characteristicName, int characteristicId,
+        public ActionResult ChangeCharacteristic(string characteristicType, string characteristicName,
+            int characteristicId,
             string unit)
         {
             new CharacteristicModel().ChangeCharacteristic(characteristicType, characteristicName, characteristicId,
@@ -126,11 +129,11 @@ namespace Crunchers.Controllers
         {
             var productResponse = new ProductResponse
             {
+                Products = await new ProductModel().GetProductsByCategoryId(categoryId),
                 Characteristics = await new CharacteristicModel().GetCharacteristics(categoryId)
             };
             return View(productResponse);
         }
-
         public async Task<ActionResult> AddProduct(string imageLink, string productName, int productPrice,
             int categoryId)
         {
@@ -143,20 +146,31 @@ namespace Crunchers.Controllers
                 }
             }
 
-            var i = 0;
+
             var values = JsonConvert.DeserializeObject<dynamic[]>(documentContents);
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
-            var valuesToChars = characteristics
-                .Select(x =>
-                {
-                    i += 1;
-                    int res;
-                    return int.TryParse(values[i - 1], out res)
-                        ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
-                        : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
-                });
-            new ProductModel().AddProduct(imageLink, categoryId, productName, productPrice, valuesToChars);
-            return Json("Success", JsonRequestBehavior.AllowGet);  
+            var locker = new object();
+
+            lock (locker)
+            {
+                var i = 0;
+                var valuesToChars = characteristics
+                    .Select(x =>
+                    {
+                        i += 1;
+                        int res;
+                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
+                        {
+                            throw new ArgumentException("Введено нечисловое значение");
+                        }
+                        return int.TryParse(values[i - 1], out res)
+                            ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
+                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
+                    }).ToList();
+                i = 0;
+                new ProductModel().AddProduct(imageLink, categoryId, productName, productPrice, valuesToChars);
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
