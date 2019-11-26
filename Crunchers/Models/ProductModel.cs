@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using Unity;
@@ -46,7 +47,83 @@ namespace Crunchers.Models
             ValueToCharName = valueToCharName;
         }
 
-        
+        public List<Tuple<dynamic, int,string>> ConnectValuesWithChars(IEnumerable<CharacteristicModel> characteristics,
+            dynamic[] values)
+        {
+            var locker = new object();
+
+            lock (locker)
+            {
+                var i = 0;
+                var valuesToChars = characteristics
+                    .Select(x =>
+                    {
+                        i += 1;
+                        int res;
+                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
+                        {
+                            throw new ArgumentException("Введено нечисловое значение");
+                        }
+
+                        return int.TryParse(values[i - 1], out res)
+                            ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
+                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
+                    }).ToList();
+                i = 0;
+                return valuesToChars;
+            }
+            
+        }
+
+        public async Task<IEnumerable<ProductModel>> GetAllProducts()
+        {
+            var products = new List<ProductModel>();
+            var sqlExpression =
+                string.Format(
+                    "SELECT * FROM \"Products\" p JOIN \"Images\" i ON p.\"ProductId\"=i.\"ProductId\" AND i.\"ImageRole\"='Preview' JOIN \"CharacteristicValues\" CV ON p.\"ProductId\" = CV.\"ProductId\" JOIN \"Characteristics\" C on CV.\"CharacteristicId\"=C.\"CharacteristicId\" and p.\"ProductId\"=CV.\"ProductId\"");
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var categoryId = reader.GetInt32(1);
+                        var productName = reader.GetString(2);
+                        var productId = reader.GetInt32(0);
+                        var productPrice = reader.GetInt32(3);
+                        var ratingSum = reader.GetInt32(4);
+                        var ratingAmount = reader.GetInt32(5);
+                        var imageId = reader.GetInt32(6);
+                        var imageLink = reader.GetString(7);
+                        var unit = reader.GetString(18);
+                        var valueInt = reader.GetValue(12);
+                        var valueString = reader.GetValue(13);
+                        if (valueInt.ToString() == "")
+                        {
+                            var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
+                                productPrice,
+                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueString));
+                            products.Add(product);
+                        }
+                        else
+                        {
+                            var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
+                                productPrice,
+                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueInt));
+                            products.Add(product);
+                        }
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return products;
+        }
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
         {
             var sqlExpression = string.Format(
@@ -74,14 +151,13 @@ namespace Crunchers.Models
                         var charType = reader.GetString(12);
                         var valueInt = reader.GetValue(17);
                         var valueString = reader.GetValue(18);
-                        if (charType=="Числовое значение")
+                        if (charType == "Числовое значение")
                         {
                             var value = valueInt.ToString() == "" ? 0 : valueInt;
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
                                 ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, value));
                             products.Add(product);
-                            
                         }
                         else
                         {
@@ -152,7 +228,7 @@ namespace Crunchers.Models
         public void ChangeProduct(int productId, string productName, int productPrice, string imageLink,
             IEnumerable<Tuple<dynamic, int, string>> valuesToCharacteristics)
         {
-            var sqlCommands=new List<string>();
+            var sqlCommands = new List<string>();
             var sqlExpressionForProduct =
                 string.Format(
                     "UPDATE \"Products\" SET \"ProductName\"='{0}',\"ProductPrice\"='{1}' WHERE \"ProductId\"='{2}'",
@@ -169,7 +245,7 @@ namespace Crunchers.Models
                 {
                     var sqlExpression =
                         string.Format(
-                            "UPDATE \"CharacteristicValues\" SET \"CharacteristicId\"='{1}', \"ValueString\"='{2}' WHERE \"ProductId\"='{0}'",
+                            "UPDATE \"CharacteristicValues\" SET  \"ValueString\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
                             productId, valueToCharacteristic.Item2,
                             valueToCharacteristic.Item1);
                     sqlCommands.Add(sqlExpression);
@@ -184,6 +260,7 @@ namespace Crunchers.Models
                     sqlCommands.Add(sqlExpression);
                 }
             }
+
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -193,11 +270,11 @@ namespace Crunchers.Models
                     _dbCommand.CommandText = sqlCommand;
                     _dbCommand.ExecuteNonQuery();
                 }
-                
+
                 _dbConnection.Close();
             }
-            
         }
+
         public void AddProduct(string imageLink, int categoryId, string productName, int productPrice,
             IEnumerable<Tuple<dynamic, int, string>> valuesToCharacteristics)
         {
@@ -266,6 +343,19 @@ namespace Crunchers.Models
                 }
 
                 newdbConnection.Close();
+            }
+        }
+
+        public void DeleteProduct(int productId)
+        {
+            var sqlExpression = string.Format("Delete from \"Products\" where \"ProductId\"='{0}'", productId);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.ExecuteNonQuery();
+                _dbConnection.Close();
             }
         }
     }

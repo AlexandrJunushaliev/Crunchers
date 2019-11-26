@@ -93,6 +93,11 @@ namespace Crunchers.Controllers
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
             return View(characteristics);
         }
+        public async Task<ActionResult> ManageAllCharacteristics()
+        {
+            var characteristics = await new CharacteristicModel().GetAllCharacteristics();
+            return View(characteristics);
+        }
 
         [System.Web.Http.HttpPost]
         public ActionResult AddCharacteristic(string characteristicType, int categoryId, string characteristicName,
@@ -134,6 +139,15 @@ namespace Crunchers.Controllers
             };
             return View(productResponse);
         }
+        public async Task<ActionResult> ManageAllProducts()
+        {
+            var productResponse = new ProductResponse
+            {
+                Products = await new ProductModel().GetAllProducts()
+            };
+            return View(productResponse);
+        }
+
         public async Task<ActionResult> AddProduct(string imageLink, string productName, int productPrice,
             int categoryId)
         {
@@ -149,31 +163,13 @@ namespace Crunchers.Controllers
 
             var values = JsonConvert.DeserializeObject<dynamic[]>(documentContents);
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
-            var locker = new object();
-
-            lock (locker)
-            {
-                var i = 0;
-                var valuesToChars = characteristics
-                    .Select(x =>
-                    {
-                        i += 1;
-                        int res;
-                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
-                        {
-                            throw new ArgumentException("Введено нечисловое значение");
-                        }
-                        return int.TryParse(values[i - 1], out res)
-                            ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
-                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
-                    }).ToList();
-                i = 0;
-                new ProductModel().AddProduct(imageLink, categoryId, productName, productPrice, valuesToChars);
-                return Json("Success", JsonRequestBehavior.AllowGet);
-            }
+            var valuesToChars = new ProductModel().ConnectValuesWithChars(characteristics, values);
+            new ProductModel().AddProduct(imageLink, categoryId, productName, productPrice, valuesToChars);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> ManageProduct(int productId,int categoryId)
+        
+        public async Task<ActionResult> ManageProduct(int productId, int categoryId)
         {
             var product = await new ProductModel().GetProductById(productId);
             var characteristics =
@@ -184,7 +180,7 @@ namespace Crunchers.Controllers
 
         [System.Web.Http.HttpPost]
         public async Task<ActionResult> ChangeProduct(string imageLink, string productName, int productPrice,
-            int productId,int categoryId)
+            int productId, int categoryId)
         {
             string documentContents;
             using (Stream receiveStream = Request.InputStream)
@@ -194,30 +190,18 @@ namespace Crunchers.Controllers
                     documentContents = readStream.ReadToEnd();
                 }
             }
+
             var values = JsonConvert.DeserializeObject<dynamic[]>(documentContents);
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
-            var locker = new object();
-
-            lock (locker)
-            {
-                var i = 0;
-                var valuesToChars = characteristics
-                    .Select(x =>
-                    {
-                        i += 1;
-                        int res;
-                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
-                        {
-                            throw new ArgumentException("Введено нечисловое значение");
-                        }
-                        return int.TryParse(values[i - 1], out res)
-                            ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
-                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
-                    }).ToList();
-                i = 0;
-                new ProductModel().ChangeProduct(productId,productName,productPrice,imageLink,valuesToChars);
-                return Json("Success", JsonRequestBehavior.AllowGet);
-            }
+            var valuesToChars = new ProductModel().ConnectValuesWithChars(characteristics, values);
+            new ProductModel().ChangeProduct(productId, productName, productPrice, imageLink, valuesToChars);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        [System.Web.Http.HttpPost]
+        public ActionResult DeleteProduct(int productId)
+        {
+            new ProductModel().DeleteProduct(productId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
     }
 }

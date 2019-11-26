@@ -52,6 +52,37 @@ namespace Crunchers.Models
             }
         }
 
+        public async Task<IEnumerable<CharacteristicModel>> GetAllCharacteristics()
+        {
+            var characteristics = new List<CharacteristicModel>();
+            var sqlExpression =
+                string.Format("SELECT * FROM \"Characteristics\"");
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var characteristicName = reader.GetString(3);
+                        var characteristicId = reader.GetInt32(0);
+                        var characteristicType = reader.GetString(2);
+                        var categoryId = reader.GetInt32(1);
+                        var unit = reader.GetString(4);
+                        var characteristic = new CharacteristicModel(characteristicName, categoryId, characteristicId,
+                            characteristicType,unit);
+                        characteristics.Add(characteristic);
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return characteristics;
+        }
         public async Task<IEnumerable<CharacteristicModel>> GetCharacteristics(int categoryId)
         {
             var characteristics = new List<CharacteristicModel>();
