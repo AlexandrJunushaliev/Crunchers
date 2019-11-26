@@ -69,11 +69,6 @@ namespace Crunchers.Models
             }
 
             var sqlCommands = new List<string>();
-            /*var sqlExpressionForDeletePhoto =
-                string.Format(
-                    "DELETE FROM \"Images\" WHERE \"ImageRole\"='{0}' AND \"ProductId\"='{1}'",
-                    "Preview", productId);
-            sqlCommands.Add(sqlExpressionForDeletePhoto);*/
             var sqlExpressionForAddPhoto =
                 string.Format(
                     "INSERT INTO \"Images\" (\"ProductId\", \"ImageLink\", \"ImageRole\") VALUES ('{0}','{1}','{2}')",

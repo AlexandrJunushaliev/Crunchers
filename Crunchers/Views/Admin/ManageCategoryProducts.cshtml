@@ -1,4 +1,7 @@
 ﻿@model Crunchers.Controllers.AdminController.ProductResponse
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
 <script>
     let urlParams = new URLSearchParams(window.location.search);
     function AddProduct() {
@@ -13,16 +16,20 @@
         let productName = document.getElementById("productNameInput").value;
         let productPrice = document.getElementById("productPriceInput").value;
         let categoryId=urlParams.get('categoryId');
+        $("#LoadingImage").show();
        $.ajax({
                 type: "POST",
                 url: '@Url.RouteUrl(new {controller = "Admin", action = "AddProduct"})?imageLink='+imageLink+'&productName='+productName+'&productPrice='+productPrice+'&categoryId='+categoryId,
                 data: JSON.stringify(values),
                 dataType: 'json',
+                timeout: 15000,
                 success: function (data) {
-                    alert('Товар добавлен успешно');
-                    location.reload();        
+                    $("#LoadingImage").hide();
+                    alert('Товар успешно добавлен');
+                    location.reload();     
                 },
                 error: function(inc) {
+                    $("#LoadingImage").hide();
                     alert('Произошла ошибка'+inc);
                     location.reload(); 
                 }
@@ -35,10 +42,11 @@
         <input id="productNameInput" placeholder="Введите название товара"/>
         <input id="productPriceInput" placeholder="Введите цену товара"/>
     </form>
-    <form id="newCharacteristics">
+    <br/>
+    <div id="newCharacteristics">
         @foreach (var characteristic in Model.Characteristics)
         {
-            <label>@characteristic.CharacteristicName</label>
+            <label>@characteristic.CharacteristicName:</label>
             if (characteristic.CharacteristicType == "Строковое значение")
             {
                 <input id="Name=@characteristic.CharacteristicId" placeholder="Введите строковое значение для характеристики"/>
@@ -46,10 +54,14 @@
             else
             {
                 <input id="Name=@characteristic.CharacteristicId" placeholder="Введите числовое значение для характеристики"/>
-                <text>в @(characteristic.Unit)</text>
+                if (characteristic.Unit != null || characteristic.Unit != "")
+                {
+                    <text>(в @(characteristic.Unit))</text>
+                }
             }
+            <br/>
         }
-    </form>
+    </div>
     <a onclick=" AddProduct()">Add Product</a>
 </form>
 <hr/>
