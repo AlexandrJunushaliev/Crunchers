@@ -88,9 +88,7 @@ function DeleteCharacteristic(characteristicId) {
 {
     <form>
         <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/>
-        <text id="Type=@characteristic.CharacteristicId">
-            @characteristic.CharacteristicType
-        </text>
+        <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
         
         <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
         <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>

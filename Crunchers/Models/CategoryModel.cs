@@ -30,7 +30,6 @@ namespace Crunchers.Models
 
         public void AddCategory(string categoryName)
         {
-            Thread.Sleep(2000);
             var sqlExpression =
                 string.Format("INSERT INTO \"Categories\" (\"CategoryName\") VALUES ('{0}')",categoryName);
             using (_dbConnection)

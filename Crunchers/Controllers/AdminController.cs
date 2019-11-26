@@ -172,5 +172,52 @@ namespace Crunchers.Controllers
                 return Json("Success", JsonRequestBehavior.AllowGet);
             }
         }
+
+        public async Task<ActionResult> ManageProduct(int productId,int categoryId)
+        {
+            var product = await new ProductModel().GetProductById(productId);
+            var characteristics =
+                await new CharacteristicModel().GetCharacteristics(categoryId);
+            var productResponse = new ProductResponse() {Characteristics = characteristics, Products = product};
+            return View(productResponse);
+        }
+
+        [System.Web.Http.HttpPost]
+        public async Task<ActionResult> ChangeProduct(string imageLink, string productName, int productPrice,
+            int productId,int categoryId)
+        {
+            string documentContents;
+            using (Stream receiveStream = Request.InputStream)
+            {
+                using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
+                {
+                    documentContents = readStream.ReadToEnd();
+                }
+            }
+            var values = JsonConvert.DeserializeObject<dynamic[]>(documentContents);
+            var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
+            var locker = new object();
+
+            lock (locker)
+            {
+                var i = 0;
+                var valuesToChars = characteristics
+                    .Select(x =>
+                    {
+                        i += 1;
+                        int res;
+                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
+                        {
+                            throw new ArgumentException("Введено нечисловое значение");
+                        }
+                        return int.TryParse(values[i - 1], out res)
+                            ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
+                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
+                    }).ToList();
+                i = 0;
+                new ProductModel().ChangeProduct(productId,productName,productPrice,imageLink,valuesToChars);
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

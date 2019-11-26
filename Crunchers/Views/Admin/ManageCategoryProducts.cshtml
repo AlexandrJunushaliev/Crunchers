@@ -65,15 +65,12 @@
     <a onclick=" AddProduct()">Add Product</a>
 </form>
 <hr/>
-@{    
-    var products = Model.Products.ToList();
-    var characteristics = Model.Characteristics.ToList();
-    for (var i = 0; i < products.Count; i++)
+@{
+    var productGroup = Model.Products.GroupBy(x => x.ProductId);
+    foreach (var product in productGroup)
     {
-        for (var j = 0; j < characteristics.Count; j++)
-        {
-            
-        }
+        <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text>
+        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=" onclick="this.href=this.href+new URLSearchParams(window.location.search).get('categoryId')">Открыть информацию о продукте</a>
+        <br/>
     }
-    
 }
