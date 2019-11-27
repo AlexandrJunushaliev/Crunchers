@@ -245,9 +245,11 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\CharacteristicModel.cs" />
+    <Compile Include="Models\CityModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OrderModels.cs" />
+    <Compile Include="Models\PointsOfPickUpModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -280,6 +282,7 @@
     <Content Include="Views\Admin\ManageAllProducts.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\ManageCharacteristics.cshtml" />
+    <Content Include="Views\Admin\ManageCities.cshtml" />
     <Content Include="Views\Admin\ManageOrders.cshtml" />
     <Content Include="Views\Admin\ManageCategoryProducts.cshtml" />
     <Content Include="Views\Admin\ManageProduct.cshtml" />

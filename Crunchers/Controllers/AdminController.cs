@@ -203,5 +203,24 @@ namespace Crunchers.Controllers
             new ProductModel().DeleteProduct(productId);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
+        public async Task<ActionResult> ManageCities()
+        {
+            var cities = await new CityModel().GetAllCities();
+            return View(cities);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult ChangeCity(int cityId,string nameRu,string nameEng)
+        {
+            new CityModel().ChangeCity(cityId,nameRu,nameEng);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        [System.Web.Http.HttpPost]
+        public ActionResult AddCity(string nameRu,string nameEng)
+        {
+            new CityModel().AddCity(nameRu,nameEng);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
     }
 }

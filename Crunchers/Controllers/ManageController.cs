@@ -75,6 +75,13 @@ namespace Crunchers.Controllers
             return View(model);
         }
 
+        [System.Web.Mvc.HttpPost]
+        public ActionResult ChangeUserInfo(dynamic value, string row)
+        {
+            new UserModel().ChangeUserInfo(User.Identity.GetUserId(),value[0],row);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
         //
         // POST: /Manage/RemoveLogin
         [System.Web.Mvc.HttpPost]

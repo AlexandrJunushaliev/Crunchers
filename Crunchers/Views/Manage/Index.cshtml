@@ -1,5 +1,32 @@
 ﻿@using Crunchers.Models
 @using Microsoft.AspNet.Identity
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    function ChangeFullName() {
+        let value = document.getElementById("FullNameInput").value;
+        $("#LoadingImage").show();
+       $.ajax({
+                type: "POST",
+                url: '@Url.RouteUrl(new {controller = "Manage", action = "ChangeUserInfo"})?value='+value+'&row=FullName',
+                data: {},
+                dataType: 'json',
+                timeout: 15000,
+                success: function (data) {
+                    $("#LoadingImage").hide();
+                    alert('ФИО успешно изменено');
+                    location.reload();     
+                },
+                error: function(inc) {
+                    $("#LoadingImage").hide();
+                    alert('Произошла ошибка');
+                    location.reload(); 
+                }
+            });
+    }
+</script>
 @model Crunchers.Models.IndexViewModel
 @{
     ViewBag.Title = "Управление";
@@ -16,7 +43,7 @@
         <dt>ФИО:</dt>
         <dd>
             <input id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
-            <a onclick="ChangeFullName()"></a>
+            <a onclick="ChangeFullName()">Изменить ФИО</a>
         </dd>
         <dt>Пароль:</dt>
         <dd>

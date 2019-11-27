@@ -43,7 +43,7 @@ namespace Crunchers.Models
             return new IdentityResult();
         }
 
-        public void AddUserInfo(string userId, dynamic value, string row)
+        public void ChangeUserInfo(string userId, dynamic value, string row)
         {
             var sqlExpression = string.Format("Update \"Users\" set \"{0}\" = '{1}' where \"UserId\"='{2}'", row, value,
                 userId);
