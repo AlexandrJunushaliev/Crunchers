@@ -222,5 +222,31 @@ namespace Crunchers.Controllers
             new CityModel().AddCity(nameRu,nameEng);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
+        public async Task<ActionResult> ManagePointsOfPickUpByCityId(int cityId)
+        {
+            var points = await new PointsOfPickUpModel().GetPointsOfPickUpByCityId(cityId);
+            return View(points);
+        }
+        
+        [System.Web.Http.HttpPost]
+        public ActionResult AddPointOfPickUp(int cityId,string address)
+        {
+            new PointsOfPickUpModel().AddPointOfPickUpByCityId(cityId,address);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult DeletePointOfPickUp(int pointId)
+        {
+            new PointsOfPickUpModel().DeletePointOfPickUp(pointId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        [System.Web.Http.HttpPost]
+        public ActionResult ChangePointOfPickUp(int pointId,string address)
+        {
+            new PointsOfPickUpModel().ChangePointsOfPickUp(address,pointId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
     }
 }

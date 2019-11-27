@@ -59,7 +59,8 @@ function ChangeCity(cityId) {
     <form>
         <input id="Ru=@city.CityId" value="@city.NameRu"/>
         <input id="Eng=@city.CityId" value="@city.NameEng"/>
-        <a onclick="ChangeCity(@(city.CityId))">Изменить город</a>
+        <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
+        <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>
     </form>
     <br/>
     <br/>

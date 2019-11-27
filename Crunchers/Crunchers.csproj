@@ -285,6 +285,7 @@
     <Content Include="Views\Admin\ManageCities.cshtml" />
     <Content Include="Views\Admin\ManageOrders.cshtml" />
     <Content Include="Views\Admin\ManageCategoryProducts.cshtml" />
+    <Content Include="Views\Admin\ManagePointsOfPickUpByCityId.cshtml" />
     <Content Include="Views\Admin\ManageProduct.cshtml" />
     <Content Include="Views\Admin\ManageShop.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
