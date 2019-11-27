@@ -1,8 +1,9 @@
-﻿@model Crunchers.Models.IndexViewModel
+﻿@using Crunchers.Models
+@using Microsoft.AspNet.Identity
+@model Crunchers.Models.IndexViewModel
 @{
     ViewBag.Title = "Управление";
 }
-
 <h2>@ViewBag.Title.</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
@@ -12,6 +13,11 @@
     <hr/>
     <dl class="dl-horizontal">
         <dt>Email:</dt><dd>@User.Identity.Name</dd>
+        <dt>ФИО:</dt>
+        <dd>
+            <input id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
+            <a onclick="ChangeFullName()"></a>
+        </dd>
         <dt>Пароль:</dt>
         <dd>
             [

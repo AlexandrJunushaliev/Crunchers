@@ -12,6 +12,7 @@ namespace Crunchers.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
+        public UserModel UserModel;
     }
 
     public class ManageLoginsViewModel
