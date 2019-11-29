@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Arshinov.WebApp.Models
 {
-    public class ApplicationContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();

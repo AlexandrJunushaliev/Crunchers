@@ -6,14 +6,46 @@
 
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-rc1.19457.4" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.0-preview3.19555.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.0-preview3.19554.8" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.0-preview3.19555.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0-preview3.19554.8" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0-preview3.19554.8" />
-      <PackageReference Include="Microsoft.Owin.Security" Version="4.1.0" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="Npgsql" Version="4.1.2" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0-preview3" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Admin\ManageShop.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ConfirmEmail.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ExternalLoginFailure.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ForgotPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ForgotPasswordConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ResetPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\ResetPasswordConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\SendCode.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\VerifyCode.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageAllCharacteristics.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageAllProducts.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageCategories.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageCategoryProducts.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageCharacteristics.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageCities.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageOrders.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManagePointsOfPickUpByCityId.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageProduct.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Admin\ManageShop.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\AddPhoneNumber.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\ChangePassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\ManageLogins.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\Orders.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\SetPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Manage\VerifyPhoneNumber.cshtml" />
     </ItemGroup>
 
 </Project>

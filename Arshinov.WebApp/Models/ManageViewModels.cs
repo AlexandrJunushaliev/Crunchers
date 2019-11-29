@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
  using Microsoft.AspNetCore.Identity;
  using Microsoft.AspNetCore.Mvc.Rendering;
- using Microsoft.Owin.Security;
 
 namespace Arshinov.WebApp.Models
 {
@@ -19,7 +18,7 @@ namespace Arshinov.WebApp.Models
     public class ManageLoginsViewModel
     {
         public IList<UserLoginInfo> CurrentLogins { get; set; }
-        public IList<AuthenticationDescription> OtherLogins { get; set; }
+        /*public IList<AuthenticationDescription> OtherLogins { get; set; }*/
     }
 
     public class FactorViewModel

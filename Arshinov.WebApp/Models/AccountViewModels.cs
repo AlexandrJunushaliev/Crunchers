@@ -62,7 +62,7 @@ using System.ComponentModel.DataAnnotations;
         [Display(Name = "Запомнить меня")]
         public bool RememberMe { get; set; }
     }
-
+/*
     public class RegisterViewModel
     {
         [Required]
@@ -80,7 +80,7 @@ using System.ComponentModel.DataAnnotations;
         [Display(Name = "Подтверждение пароля")]
         [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
         public string ConfirmPassword { get; set; }
-    }
+    }*/
 
     public class ResetPasswordViewModel
     {
