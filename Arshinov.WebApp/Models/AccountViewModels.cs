@@ -46,7 +46,7 @@ using System.ComponentModel.DataAnnotations;
         [Display(Name = "Адрес электронной почты")]
         public string Email { get; set; }
     }
-
+/*
     public class LoginViewModel
     {
         [Required]
@@ -62,6 +62,7 @@ using System.ComponentModel.DataAnnotations;
         [Display(Name = "Запомнить меня")]
         public bool RememberMe { get; set; }
     }
+    */
 /*
     public class RegisterViewModel
     {
