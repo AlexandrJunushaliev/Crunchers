@@ -1,0 +1,99 @@
+﻿﻿@model Arshinov.WebApp.Controllers.AdminController.ProductResponse
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    function AddProduct() {
+       var values = [];
+       var characteristicNodes = document.getElementById('newCharacteristics').getElementsByTagName('input');
+       var i;
+       for (i = 0; i < characteristicNodes.length; i++) {
+         values.push(characteristicNodes[i].value);
+       }
+        
+        let imageLink = document.getElementById("productImageInput").value;
+        let productName = document.getElementById("productNameInput").value;
+        let productPrice = document.getElementById("productPriceInput").value;
+        let categoryId=urlParams.get('categoryId');
+        $("#LoadingImage").show();
+       $.ajax({
+                type: "POST",
+                url: '@Url.RouteUrl(new {controller = "Admin", action = "AddProduct"})?imageLink='+imageLink+'&productName='+productName+'&productPrice='+productPrice+'&categoryId='+categoryId,
+                data: JSON.stringify(values),
+                dataType: 'json',
+                timeout: 15000,
+                success: function (data) {
+                    $("#LoadingImage").hide();
+                    alert('Товар успешно добавлен');
+                    location.reload();     
+                },
+                error: function(inc) {
+                    $("#LoadingImage").hide();
+                    alert('Произошла ошибка');
+                    location.reload(); 
+                }
+            });
+    }
+    function DeleteProduct(productId) {
+        $("#LoadingImage").show();
+       $.ajax({
+              type: "POST",
+              url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteProduct"})?productId='+productId,
+              data: { },
+              dataType: 'json',
+              timeout:15000,
+              success: function (correct) {
+                  $("#LoadingImage").hide();
+                  alert('Товар успешно удален');
+                  location.reload();    
+              },
+              error: function(inc) {
+                  $("#LoadingImage").hide();
+                  alert('Произошла ошибка');
+                  location.reload();   
+              }
+          });
+    }
+</script>
+
+<form>
+    <form>
+        <input id="productImageInput" placeholder="Вставьте ссылку на изображение"/>
+        <input id="productNameInput" placeholder="Введите название товара"/>
+        <input id="productPriceInput" placeholder="Введите цену товара"/>
+    </form>
+    <br/>
+    <div id="newCharacteristics">
+        @foreach (var characteristic in Model.Characteristics)
+        {
+            <label>@characteristic.CharacteristicName:</label>
+            if (characteristic.CharacteristicType == "Строковое значение")
+            {
+                <input id="Name=@characteristic.CharacteristicId" placeholder="Введите строковое значение для характеристики"/>
+            }
+            else
+            {
+                <input id="Name=@characteristic.CharacteristicId" placeholder="Введите числовое значение для характеристики"/>
+                if (characteristic.Unit != null || characteristic.Unit != "")
+                {
+                    <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
+                }
+            }
+            <br/>
+        }
+    </div>
+    <a onclick=" AddProduct()">Add Product</a>
+</form>
+<hr/>
+@{
+    var productGroup = Model.Products.GroupBy(x => x.ProductId);
+    foreach (var product in productGroup)
+    {
+        <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text>
+        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=" onclick="this.href=this.href+new URLSearchParams(window.location.search).get('categoryId')">Открыть информацию о продукте</a>
+        <a onclick="DeleteProduct(@(product.Key))">Удалить товар</a>
+        <br/>
+        <br/>
+    }
+}

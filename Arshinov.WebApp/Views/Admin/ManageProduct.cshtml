@@ -1,0 +1,87 @@
+﻿﻿@model Arshinov.WebApp.Controllers.AdminController.ProductResponse
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    function ChangeProduct() {
+       var values = [];
+       var characteristicNodes = document.getElementById('newCharacteristics').getElementsByTagName('input');
+       var i;
+       for (i = 0; i < characteristicNodes.length; i++) {
+         values.push(characteristicNodes[i].value);
+       }
+        
+        let imageLink = document.getElementById("productImageInput").value;
+        let productName = document.getElementById("productNameInput").value;
+        let productPrice = document.getElementById("productPriceInput").value;
+        let categoryId=urlParams.get('categoryId');
+        let productId=urlParams.get('productId');
+        $("#LoadingImage").show();
+       $.ajax({
+                type: "POST",
+                url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeProduct"})?productId='+productId+'&imageLink='+imageLink+'&productName='+productName+'&productPrice='+productPrice+'&categoryId='+categoryId,
+                data: JSON.stringify(values),
+                dataType: 'json',
+                timeout: 15000,
+                success: function (data) {
+                    $("#LoadingImage").hide();
+                    alert('Товар успешно изменен');
+                    location.reload();     
+                },
+                error: function(inc) {
+                    $("#LoadingImage").hide();
+                    alert('Произошла ошибка');
+                    location.reload(); 
+                }
+            });
+    }
+</script>
+<h1>@Model.Products.FirstOrDefault().ProductName</h1>
+@{
+    <form>
+        <input id="productImageInput" placeholder="Вставьте ссылку на изображение" value="@Model.Products.FirstOrDefault().ImageLink"/>
+        <input id="productNameInput" placeholder="Введите название товара" value="@Model.Products.FirstOrDefault().ProductName"/>
+        <input id="productPriceInput" placeholder="Введите цену товара" value="@Model.Products.FirstOrDefault().ProductPrice"/>
+    </form>
+    <hr/>
+    var i = 0;
+    var characteristics = Model.Characteristics.ToList();
+    <div id='newCharacteristics'>
+        @foreach (var productChar in Model.Products)
+        {
+            <text>@characteristics[i].CharacteristicName</text>
+            if (characteristics[i].CharacteristicType == "Строковое значение")
+            {
+                <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите строковое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
+            }
+            else
+            {
+                <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите числовое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
+                if (characteristics[i].Unit != null || characteristics[i].Unit != "")
+                {
+                    <text>(в @(characteristics[i].Unit))(0 в случае отсутствия)</text>
+                }
+            }
+            i++;
+            <br/>
+        }
+        @for (var j = i + 1; j < characteristics.Count; j++)
+        {
+            <text>@characteristics[i].CharacteristicName</text>
+            if (characteristics[i].CharacteristicType == "Строковое значение")
+            {
+                <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите строковое значение для характеристики"/>
+            }
+            else
+            {
+                <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите числовое значение для характеристики"/>
+                if (characteristics[i].Unit != null || characteristics[i].Unit != "")
+                {
+                    <text>(в @(characteristics[i].Unit))(0 в случае отсутствия)</text>
+                }
+            }
+        }
+    </div>
+    <a onclick="ChangeProduct()">Change Product</a>
+}

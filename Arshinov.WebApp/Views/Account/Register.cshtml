@@ -1,0 +1,67 @@
+﻿﻿@model Arshinov.WebApp.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Регистрация";
+}
+@*<style>
+  input:invalid {
+    border-color: rgba(255, 3, 0, 0.27); /* Красный цвет фона */
+  }
+  .text-info{
+    color: orange !important;
+  }
+  .clean-block.clean-form form {
+    border-top: 2px solid orange !important;
+    background-color: #fff;
+    max-width: 500px;
+    margin: auto;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.075);
+  }
+  .btn-primary{
+    border-color: orange !important;
+    background-color: white !important;
+    color: orange !important;
+  }
+  .btn-primary:not(:disabled):not(.disabled):active:focus{
+    box-shadow: 0 0 0 .2rem orange !important;
+  }
+</style>*@
+
+<main class="page registration-page">
+    <section class="clean-block clean-form dark">
+        <div class="container">
+            <div class="block-heading">
+                <h2 class="text-info">Регистрация</h2>
+            </div>
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new {}))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new {@class = "text-danger"})
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email, new {@class = "control-label"})
+                    @Html.TextBoxFor(m => m.Email, new {@class = "form-control item"})
+                    @Html.ValidationMessageFor(m => m.Email, "", new {@class = "text-danger"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new {@class = "control-label"})
+                    @Html.PasswordFor(m => m.Password, new {@class = "form-control item"})
+                    @Html.ValidationMessageFor(m => m.Password, "", new {@class = "text-danger"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmPassword, new {@class = "control-label"})
+                    @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control item"})
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new {@class = "text-danger"})
+                </div>
+                <div class="form-group">
+                    <div>
+                        <input type="submit" class="btn btn-primary btn-block" value="Регистрация"/>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

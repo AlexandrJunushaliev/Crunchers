@@ -1,0 +1,97 @@
+﻿﻿@model IEnumerable<Arshinov.WebApp.Models.CharacteristicModel>
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+  <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif" />
+</div>
+<script>
+let urlParams = new URLSearchParams(window.location.search);
+function AddCharacteristic() {
+    let characteristicName = document.getElementById('characteristicNameInput').value;
+    let characteristicType = document.getElementById('characteristicTypeInput').value;
+    let characteristicUnit = document.getElementById('characteristicUnitInput').value;
+    let categoryId= urlParams.get('categoryId');
+    $("#LoadingImage").show();
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCharacteristic"})?characteristicName='+characteristicName+'&characteristicType='+characteristicType+'&categoryId='+categoryId+'&unit='+characteristicUnit,
+        data: {},
+        dataType: 'json',
+        timeout:15000,
+        success: function (correct) {
+            $("#LoadingImage").hide();
+            alert('Характеристика успешно добавлена');
+            location.reload();  
+        },
+        error: function(inc) {
+            $("#LoadingImage").hide();
+            alert('Произошла ошибка');
+            location.reload();  
+        }
+    });
+}
+function UpdateCharacteristic(characteristicId) {
+    console.log(characteristicId);
+    let characteristicName=document.getElementById('Name='+characteristicId).value;
+    let characteristicType=document.getElementById('Type='+characteristicId).value;
+    let unit=document.getElementById('Unit='+characteristicId).value;
+    $("#LoadingImage").show();
+   $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCharacteristic"})?characteristicName='+characteristicName+'&characteristicType='+characteristicType+'&characteristicId='+characteristicId+'&unit='+unit,
+          data: { },
+          dataType: 'json',
+          timeout:15000,
+          success: function (correct) {
+              $("#LoadingImage").hide();
+              alert('Характеристика успешно обновлена');
+              location.reload();      
+          },
+          error: function(inc) {
+              $("#LoadingImage").hide();
+              alert('Произошла ошибка');
+              location.reload(); 
+              
+          }
+      });
+}
+function DeleteCharacteristic(characteristicId) {
+    $("#LoadingImage").show();
+   $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteCharacteristic"})?characteristicId='+characteristicId,
+          data: { },
+          dataType: 'json',
+          timeout:15000,
+          success: function (correct) {
+              $("#LoadingImage").hide();
+              alert('Характеристика успешно удалена');
+              location.reload();    
+          },
+          error: function(inc) {
+              $("#LoadingImage").hide();
+              alert('Произошла ошибка');
+              location.reload();   
+          }
+      });
+}
+</script>
+<form>
+    <input id="characteristicNameInput" placeholder="Введите название характеристики"/>
+    <select id="characteristicTypeInput">
+        <option>Строковое значение</option>
+        <option>Числовое значение</option>
+    </select>
+    <input id="characteristicUnitInput" placeholder="Введите единицу измерения"/>
+    <a onclick=" AddCharacteristic()">Add Characteristic</a>
+</form>
+<hr/>
+@foreach (var characteristic in Model)
+{
+    <form>
+        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/>
+        <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
+        
+        <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
+        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>
+        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Delete Characteristic</a>
+    </form>
+}

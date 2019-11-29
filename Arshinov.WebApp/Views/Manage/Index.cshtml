@@ -1,0 +1,132 @@
+﻿﻿@using Arshinov.WebApp.Models
+@using Microsoft.AspNet.Identity
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+    let urlParams = new URLSearchParams(window.location.search);
+    function ChangeFullName() {
+        let value = document.getElementById("FullNameInput").value;
+        $("#LoadingImage").show();
+       $.ajax({
+                type: "POST",
+                url: '@Url.RouteUrl(new {controller = "Manage", action = "ChangeUserInfo"})?value='+value+'&row=FullName',
+                data: {},
+                dataType: 'json',
+                timeout: 15000,
+                success: function (data) {
+                    $("#LoadingImage").hide();
+                    alert('ФИО успешно изменено');
+                    location.reload();     
+                },
+                error: function(inc) {
+                    $("#LoadingImage").hide();
+                    alert('Произошла ошибка');
+                    location.reload(); 
+                }
+            });
+    }
+</script>
+@model Arshinov.WebApp.Models.IndexViewModel
+@{
+    ViewBag.Title = "Управление";
+}
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    @Html.ActionLink("Заказы", "Orders")
+    <h4>Личный кабинет:</h4>
+    <hr/>
+    <dl class="dl-horizontal">
+        <dt>Email:</dt><dd>@User.Identity.Name</dd>
+        <dt>ФИО:</dt>
+        <dd>
+            <input id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
+            <a onclick="ChangeFullName()">Изменить ФИО</a>
+        </dd>
+        <dt>Пароль:</dt>
+        <dd>
+            [
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Смена пароля", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Создать", "SetPassword")
+            }
+            ]
+        </dd>
+
+        <dt>Телефон:</dt>
+        <dd>
+            @if (Model.PhoneNumber != null)
+            {
+                @Model.PhoneNumber
+                @Html.ActionLink(" Удалить телефон", "RemovePhoneNumber")
+            }
+            else
+            {
+                @Html.ActionLink("Добавить телефон", "AddPhoneNumber")
+            }
+
+        </dd>
+
+        @*
+            Номера телефонов можно использовать в качестве второго проверочного фактора для системы двухфакторной проверки подлинности.
+             
+             В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
+                можно узнать, как для этого приложения ASP.NET настроить двухфакторную проверку подлинности с использованием SMS.
+             
+             Настроив двухфакторную проверку подлинности, раскомментируйте следующий блок
+        *@
+        @*  
+            <dt>Номер телефона:</dt>
+            <dd>
+                @(Model.PhoneNumber ?? "None")
+                @if (Model.PhoneNumber != null)
+                {
+                    <br />
+                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>[<input type="submit" value="Удалить" class="btn-link" />]</text>
+                    }
+                }
+                else
+                {
+                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+                }
+            </dd>
+        *@
+        @*<dt>Двухфакторная проверка подлинности:</dt>
+        <dd>
+            <p>
+                Поставщики двухфакторной проверки подлинности не настроены. В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
+                можно узнать, как настроить двухфакторную проверку подлинности для этого приложения ASP.NET.
+            </p>
+            @#1#if (Model.TwoFactor)
+                {
+                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>Включено
+                        <input type="submit" value="Отключить" class="btn btn-link" />
+                        </text>
+                    }
+                }
+                else
+                {
+                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <text>Отключено
+                        <input type="submit" value="Включить" class="btn btn-link" />
+                        </text>
+                    }
+                }#1#
+        </dd>*@
+    </dl>
+</div>

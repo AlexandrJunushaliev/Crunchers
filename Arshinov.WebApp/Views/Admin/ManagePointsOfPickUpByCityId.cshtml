@@ -1,0 +1,86 @@
+﻿﻿@model IEnumerable<Arshinov.WebApp.Models.PointsOfPickUpModel>
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+  <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif" />
+</div>
+<script>
+let urlParams = new URLSearchParams(window.location.search);
+function AddPoint() {
+    let address = document.getElementById('newAddress').value;
+    let cityId= urlParams.get('cityId');
+    $("#LoadingImage").show();
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddPointOfPickUp"})?&address='+address+'&cityId='+cityId,
+        data: {},
+        dataType: 'json',
+        timeout:15000,
+        success: function (correct) {
+            $("#LoadingImage").hide();
+            alert('Точка самовывоза успешно добавлена');
+            location.reload();  
+        },
+        error: function(inc) {
+            $("#LoadingImage").hide();
+            alert('Произошла ошибка');
+            location.reload();  
+        }
+    });
+}
+function ChangePoint(pointOfPickUpId) {
+    let address = document.getElementById('Address='+pointOfPickUpId).value;
+    let cityId= urlParams.get('cityId');
+    $("#LoadingImage").show();
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangePointOfPickUp"})?&address='+address+'&pointId='+pointOfPickUpId,
+        data: {},
+        dataType: 'json',
+        timeout:15000,
+        success: function (correct) {
+            $("#LoadingImage").hide();
+            alert('Точка самовывоза успешно обновлена');
+            location.reload();  
+        },
+        error: function(inc) {
+            $("#LoadingImage").hide();
+            alert('Произошла ошибка');
+            location.reload();  
+        }
+    });
+}
+function DeletePoint(pointOfPickUpId) {
+    $("#LoadingImage").show();
+    $.ajax({
+        type: "POST",
+        url: '@Url.RouteUrl(new {controller = "Admin", action = "DeletePointOfPickUp"})?pointId='+pointOfPickUpId,
+        data: {},
+        dataType: 'json',
+        timeout:15000,
+        success: function (correct) {
+            $("#LoadingImage").hide();
+            alert('Точка самовывоза успешно удалена');
+            location.reload();  
+        },
+        error: function(inc) {
+            $("#LoadingImage").hide();
+            alert('Произошла ошибка');
+            location.reload();  
+        }
+    });
+}
+</script>
+<h1>Точки вывоза:</h1>
+<hr/>
+<form>
+    <input id="newAddress" placeholder="Введите адрес"/>
+    <a onclick="AddPoint()">Добавить точку самовывоза</a>
+</form>
+<hr/>
+@foreach (var point in Model)
+{
+    <form>
+        <input id="Address=@point.PointId" placeholder="Новый адрес" value="@point.Address"/>
+        <a onclick="ChangePoint(@point.PointId)">Обновить адрес</a> /
+        <a onclick="DeletePoint(@point.PointId)">Удалить адрес</a>
+    </form>
+}

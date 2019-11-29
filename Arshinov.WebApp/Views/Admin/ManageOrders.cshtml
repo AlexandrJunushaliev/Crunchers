@@ -1,0 +1,34 @@
+﻿﻿@model IEnumerable<Arshinov.WebApp.Models.OrderModel>
+@foreach (var order in Model)
+{
+    <form>
+        <form>
+            <text>Id = @order.Id</text>
+        </form>
+        <form>
+            <text>Active = @order.Active</text>
+            <a type="button" onclick="
+                $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Active.ToString())&row=Active&orderId=@(order.Id)', JSON.stringify());">Update Active</a>
+        </form>
+        <form>
+            <text>IsPickUp = @order.Deliver</text>
+            <a type="button" onclick="
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Deliver.ToString())&row=Deliver&orderId=@(order.Id)', JSON.stringify());">Update Deliver</a>
+        </form>
+        <form>
+            <text>Delivered = @order.Delivered</text>
+            <a type="button" onclick="
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Delivered.ToString())&row=Delivered&orderId=@(order.Id)', JSON.stringify());">Update Delivered</a>
+        </form>
+        <form>
+            <text>Paid = @order.Paid</text>
+            <a type="button" onclick="
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Paid.ToString())&row=Paid&orderId=@(order.Id)', JSON.stringify());">Update Paid</a>
+        </form>
+        <form>
+            <text>IsPickUp = @order.Products</text>
+        </form>
+        <form>@order.UserGuid</form>
+        <hr/>
+    </form>
+}

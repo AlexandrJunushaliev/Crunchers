@@ -1,0 +1,71 @@
+﻿﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*@Styles.Render("~/Content/css")*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    
+    @*@Scripts.Render("~/Scripts/jquery-3.3.1.js")*@
+    @*<script src="~/lib/jquery/dist/jquery.js"></script>*@
+
+
+</head>
+@*найти способ заменить цвет текста*@
+@*<style>
+.navbar-fixed-top{
+background-color: rgb(255,193,32) !important;
+</style>*@
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Arshinov.WebApp", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
+                <li>@Html.ActionLink("Информация", "About", "Home")</li>
+                <li>@Html.ActionLink("Связаться", "Contact", "Home")</li>
+                <li>
+                    <form>
+                        Title: <input id="searchField" type="text"/>
+                        <a onclick="location.href=window.location.href+'search?text='+document.getElementById('searchField').value" class="Button">Text</a>
+                    </form>
+                </li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>
+<div class="container body-content">
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
+    </footer>
+</div>
+
+@*@Scripts.Render("~/bundles/jquery")*@
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+@*@Scripts.Render("~/bundles/bootstrap")*@
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+@RenderSection("scripts", required: false)
+</body>
+</html>

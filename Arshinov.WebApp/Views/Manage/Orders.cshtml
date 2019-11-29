@@ -1,0 +1,29 @@
+﻿﻿@model IEnumerable<Arshinov.WebApp.Models.OrderModel>
+@foreach (var order in Model)
+{
+    <form>
+        <form>
+            <text>Id = @order.Id</text>
+        </form>
+        <form>
+            <text>Active = @order.Active</text>
+            
+        </form>
+        <form>
+            <text>IsPickUp = @order.Deliver</text>
+           
+        </form>
+        <form>
+            <text>Delivered = @order.Delivered</text>
+            
+        </form>
+        <form>
+            <text>Paid = @order.Paid</text>
+        </form>
+        <form>
+            <text>IsPickUp = @order.Products</text>
+        </form>
+    </form>
+
+    <br/>
+}
