@@ -91,7 +91,7 @@
     foreach (var product in productGroup)
     {
         <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text>
-        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=" onclick="this.href=this.href+new URLSearchParams(window.location.search).get('categoryId')">Открыть информацию о продукте</a>
+        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=@product.Select(x=>x.CategoryId).FirstOrDefault()">Открыть информацию о продукте</a>
         <a onclick="DeleteProduct(@(product.Key))">Удалить товар</a>
         <br/>
         <br/>

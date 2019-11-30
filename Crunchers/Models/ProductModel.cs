@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Configuration;
@@ -59,13 +60,13 @@ namespace Crunchers.Models
                     .Select(x =>
                     {
                         i += 1;
-                        int res;
-                        if (x.CharacteristicType == "Числовое значение" && !int.TryParse(values[i - 1], out res))
+                        double res;
+                        if (x.CharacteristicType == "Числовое значение" && !double.TryParse(values[i - 1],NumberStyles.Any, CultureInfo.InvariantCulture, out res))
                         {
                             throw new ArgumentException("Введено нечисловое значение");
                         }
 
-                        return int.TryParse(values[i - 1], out res)
+                        return double.TryParse(values[i - 1], out res)
                             ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
                             : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
                     }).ToList();
@@ -100,9 +101,9 @@ namespace Crunchers.Models
                         var imageId = reader.GetInt32(6);
                         var imageLink = reader.GetString(7);
                         var unit = reader.GetString(18);
-                        var valueInt = reader.GetValue(12);
+                        var valueReal = reader.GetValue(12);
                         var valueString = reader.GetValue(13);
-                        if (valueInt.ToString() == "")
+                        if (valueReal.ToString() == "")
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
@@ -113,7 +114,7 @@ namespace Crunchers.Models
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueInt));
+                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                     }
@@ -126,7 +127,7 @@ namespace Crunchers.Models
         }
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
         {
-            var sqlExpression = string.Format(
+                var sqlExpression = string.Format(
                 "select * from \"Products\" p  join \"Images\" i on p.\"ProductId\" = i.\"ProductId\" and i.\"ImageRole\"='Preview' join  \"Characteristics\" cv on p.\"CategoryId\"=cv.\"CategoryId\" and p.\"ProductId\"={0}  left join  \"CharacteristicValues\" C on p.\"ProductId\" = C.\"ProductId\" AND c.\"CharacteristicId\"=cv.\"CharacteristicId\"",
                 productId);
             var products = new List<ProductModel>();
@@ -149,14 +150,13 @@ namespace Crunchers.Models
                         var imageLink = reader.GetString(7);
                         var unit = reader.GetString(14);
                         var charType = reader.GetString(12);
-                        var valueInt = reader.GetValue(17);
+                        var valueReal = reader.GetValue(17);
                         var valueString = reader.GetValue(18);
-                        if (charType == "Числовое значение")
+                        if (valueReal.ToString() != "")
                         {
-                            var value = valueInt.ToString() == "" ? 0 : valueInt;
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, value));
+                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                         else
@@ -200,9 +200,9 @@ namespace Crunchers.Models
                         var imageId = reader.GetInt32(6);
                         var imageLink = reader.GetString(7);
                         var unit = reader.GetString(18);
-                        var valueInt = reader.GetValue(12);
+                        var valueReal = reader.GetValue(12);
                         var valueString = reader.GetValue(13);
-                        if (valueInt.ToString() == "")
+                        if (valueReal.ToString() == "")
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
@@ -213,7 +213,7 @@ namespace Crunchers.Models
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueInt));
+                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                     }
@@ -254,7 +254,7 @@ namespace Crunchers.Models
                 {
                     var sqlExpression =
                         string.Format(
-                            "UPDATE \"CharacteristicValues\" SET \"ValueInt\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
+                            "UPDATE \"CharacteristicValues\" SET \"ValueReal\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
                             productId, valueToCharacteristic.Item2,
                             valueToCharacteristic.Item1);
                     sqlCommands.Add(sqlExpression);
@@ -322,7 +322,7 @@ namespace Crunchers.Models
                 {
                     var sqlExpression =
                         string.Format(
-                            "INSERT INTO \"CharacteristicValues\" (\"ProductId\", \"CharacteristicId\", \"ValueInt\") VALUES ('{0}','{1}','{2}')",
+                            "INSERT INTO \"CharacteristicValues\" (\"ProductId\", \"CharacteristicId\", \"ValueReal\") VALUES ('{0}','{1}','{2}')",
                             productId, valueToCharacteristic.Item2, valueToCharacteristic.Item1);
                     sqlCommands.Add(sqlExpression);
                 }

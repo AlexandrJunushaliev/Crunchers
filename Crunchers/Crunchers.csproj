@@ -246,7 +246,9 @@
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\CharacteristicModel.cs" />
     <Compile Include="Models\CityModel.cs" />
+    <Compile Include="Models\FilterModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\AdminViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OrderModels.cs" />
     <Compile Include="Models\PointsOfPickUpModel.cs" />
