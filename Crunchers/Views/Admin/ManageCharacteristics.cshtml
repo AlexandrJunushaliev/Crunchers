@@ -81,17 +81,17 @@ function DeleteCharacteristic(characteristicId) {
         <option>Числовое значение</option>
     </select>
     <input id="characteristicUnitInput" placeholder="Введите единицу измерения"/>
-    <a onclick=" AddCharacteristic()">Add Characteristic</a>
+    <a onclick=" AddCharacteristic()">Добавить характеристику</a>
 </form>
 <hr/>
 @foreach (var characteristic in Model)
 {
     <form>
-        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/>
+        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/> 
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
-        
         <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
-        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>
-        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Delete Characteristic</a>
+        <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /
+        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Изменить характеристику</a> /
+        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Удалить характеристику</a>
     </form>
 }

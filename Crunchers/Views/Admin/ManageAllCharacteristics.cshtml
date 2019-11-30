@@ -49,16 +49,6 @@ function DeleteCharacteristic(characteristicId) {
       });
 }
 </script>
-<form>
-    <input id="characteristicNameInput" placeholder="Введите название характеристики"/>
-    <select id="characteristicTypeInput">
-        <option>Строковое значение</option>
-        <option>Числовое значение</option>
-    </select>
-    <input id="characteristicUnitInput" placeholder="Введите единицу измерения"/>
-    <a onclick=" AddCharacteristic()">Add Characteristic</a>
-</form>
-<hr/>
 @foreach (var characteristic in Model)
 {
     <form>
@@ -66,7 +56,8 @@ function DeleteCharacteristic(characteristicId) {
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
 
         <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
-        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Change Characteristic</a>
-        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Delete Characteristic</a>
+        <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /
+        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Изменить характеристику</a> /
+        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Удалить характеристику</a>
     </form>
 }

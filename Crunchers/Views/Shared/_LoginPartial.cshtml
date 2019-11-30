@@ -10,18 +10,21 @@
 
         <ul class="nav navbar-nav navbar-right">
 
-            <li>
-                @Html.ActionLink("Личный кабинет", "Index", "Manage", routeValues: null, htmlAttributes: new {title = "Manage"})
-            </li>
-            <li>
-                <a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a>
-            </li>
             @if (User.IsInRole("admin"))
             {
                 <li>
                     @Html.ActionLink("Управление магазином", "ManageShop", "Admin", null, new {id = "loginLink"})
                 </li>
             }
+            else
+            {
+                <li>
+                    @Html.ActionLink("Личный кабинет", "Index", "Manage", routeValues: null, htmlAttributes: new {title = "Manage"})
+                </li>
+            }
+            <li>
+                <a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a>
+            </li>
         </ul>
     }
 }

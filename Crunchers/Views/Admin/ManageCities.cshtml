@@ -25,6 +25,26 @@ function AddCity() {
                   }
               });
 }
+function DeleteCity(cityId) {
+   $("#LoadingImage").show();
+         $.ajax({
+                  type: "POST",
+                  url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteCity"})?cityId='+cityId,
+                  data: {},
+                  dataType: 'json',
+                  timeout: 15000,
+                  success: function (data) {
+                      $("#LoadingImage").hide();
+                      alert('Город успешно добавлен');
+                      location.reload();     
+                  },
+                  error: function(inc) {
+                      $("#LoadingImage").hide();
+                      alert('Произошла ошибка');
+                      location.reload(); 
+                  }
+              });
+}
 function ChangeCity(cityId) {
    $("#LoadingImage").show();
          $.ajax({
@@ -59,6 +79,7 @@ function ChangeCity(cityId) {
     <form>
         <input id="Ru=@city.CityId" value="@city.NameRu"/>
         <input id="Eng=@city.CityId" value="@city.NameEng"/>
+        <a onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
         <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
         <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>
     </form>

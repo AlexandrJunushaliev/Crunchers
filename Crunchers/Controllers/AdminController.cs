@@ -93,6 +93,7 @@ namespace Crunchers.Controllers
             var characteristics = await new CharacteristicModel().GetCharacteristics(categoryId);
             return View(characteristics);
         }
+
         public async Task<ActionResult> ManageAllCharacteristics()
         {
             var characteristics = await new CharacteristicModel().GetAllCharacteristics();
@@ -139,6 +140,7 @@ namespace Crunchers.Controllers
             };
             return View(productResponse);
         }
+
         public async Task<ActionResult> ManageAllProducts()
         {
             var productResponse = new ProductResponse
@@ -168,7 +170,7 @@ namespace Crunchers.Controllers
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
-        
+
         public async Task<ActionResult> ManageProduct(int productId, int categoryId)
         {
             var product = await new ProductModel().GetProductById(productId);
@@ -197,6 +199,7 @@ namespace Crunchers.Controllers
             new ProductModel().ChangeProduct(productId, productName, productPrice, imageLink, valuesToChars);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         [System.Web.Http.HttpPost]
         public ActionResult DeleteProduct(int productId)
         {
@@ -211,15 +214,23 @@ namespace Crunchers.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult ChangeCity(int cityId,string nameRu,string nameEng)
+        public ActionResult ChangeCity(int cityId, string nameRu, string nameEng)
         {
-            new CityModel().ChangeCity(cityId,nameRu,nameEng);
+            new CityModel().ChangeCity(cityId, nameRu, nameEng);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         [System.Web.Http.HttpPost]
-        public ActionResult AddCity(string nameRu,string nameEng)
+        public ActionResult AddCity(string nameRu, string nameEng)
         {
-            new CityModel().AddCity(nameRu,nameEng);
+            new CityModel().AddCity(nameRu, nameEng);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult DeleteCity(int cityId)
+        {
+            new CityModel().DeleteCity(cityId);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
@@ -228,11 +239,11 @@ namespace Crunchers.Controllers
             var points = await new PointsOfPickUpModel().GetPointsOfPickUpByCityId(cityId);
             return View(points);
         }
-        
+
         [System.Web.Http.HttpPost]
-        public ActionResult AddPointOfPickUp(int cityId,string address)
+        public ActionResult AddPointOfPickUp(int cityId, string address)
         {
-            new PointsOfPickUpModel().AddPointOfPickUpByCityId(cityId,address);
+            new PointsOfPickUpModel().AddPointOfPickUpByCityId(cityId, address);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
@@ -242,10 +253,39 @@ namespace Crunchers.Controllers
             new PointsOfPickUpModel().DeletePointOfPickUp(pointId);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
+
         [System.Web.Http.HttpPost]
-        public ActionResult ChangePointOfPickUp(int pointId,string address)
+        public ActionResult ChangePointOfPickUp(int pointId, string address)
         {
-            new PointsOfPickUpModel().ChangePointsOfPickUp(address,pointId);
+            new PointsOfPickUpModel().ChangePointsOfPickUp(address, pointId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        public class FiltersResponse
+        {
+            public CharacteristicModel Characteristic;
+            public IEnumerable<FilterModel> Filters;
+        }
+
+        public async Task<ActionResult> ManageFiltersByCharacteristicId(int characteristicId)
+        {
+            var characteristic = await new CharacteristicModel().GetCharacteristic(characteristicId);
+            var filters = await new FilterModel().GetFiltersByCharacteristicId(characteristicId);
+            var response = new FiltersResponse() {Characteristic = characteristic, Filters = filters};
+            return View(response);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult AddFilterByCharacteristicId(int characteristicId, double from = -1, double to = -1)
+        {
+            new FilterModel().AddFilter(characteristicId, from, to);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult DeleteFilter(int filterId)
+        {
+            new FilterModel().DeleteFilter(filterId);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
     }

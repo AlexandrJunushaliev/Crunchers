@@ -1,4 +1,7 @@
-﻿using System.Data.Common;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using Unity;
 
@@ -6,12 +9,12 @@ namespace Crunchers.Models
 {
     public class FilterModel
     {
-        public readonly int From;
-        public readonly int To;
-        public readonly int CharacteristicId;
+        public readonly double? From;
+        public readonly double? To;
+        public readonly int CharacteristicId;    
         public readonly int FilterId;
-        public DbCommand _dbCommand;
-        public DbConnection _dbConnection;
+        private DbCommand _dbCommand;
+        private DbConnection _dbConnection;
 
         public FilterModel()
         {
@@ -21,7 +24,7 @@ namespace Crunchers.Models
                 WebConfigurationManager.ConnectionStrings["ShopDbConnection"].ConnectionString;
         }
 
-        public FilterModel(int from, int to, int characteristicId, int filterId)
+        public FilterModel(double? from, double? to, int characteristicId, int filterId)
         {
             From = from;
             To = to;
@@ -29,14 +32,67 @@ namespace Crunchers.Models
             FilterId = filterId;
         }
 
-        public void AddFilter(int characteristicId, int? from, int? to)
+        public void AddFilter(int characteristicId, double from, double to)
         {
-            var sqlConnection =
+            var sqlExpression =
                 string.Format(
                     "Insert into \"Filters\"(\"CharacteristicId\",\"From\",\"To\") values ('{0}','{1}','{2}')",
                     characteristicId, from, to);
-            
-            
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.ExecuteNonQuery();
+                _dbConnection.Close();
+            }      
+        }
+
+        public void DeleteFilter(int filterId)
+        {
+            var sqlExpression =
+                string.Format(
+                    "Delete from \"Filters\" WHERE \"FilterId\"='{0}'",
+                    filterId); 
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.ExecuteNonQuery();
+                _dbConnection.Close();
+            }      
+        }
+
+        public async Task<IEnumerable<FilterModel>> GetFiltersByCharacteristicId(int characteristicId)
+        {
+            var sqlExpression =
+                string.Format(
+                    "Select * from \"Filters\" WHERE \"CharacteristicId\"='{0}'",
+                    characteristicId);
+            List<FilterModel> filters = new List<FilterModel>();
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var from = reader.GetDouble(2);
+                        var filterId = reader.GetInt32(0);
+                        var to = reader.GetDouble(3);
+                        filters.Add( new FilterModel(from,to,characteristicId,filterId));
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return filters;
         }
     }
 }

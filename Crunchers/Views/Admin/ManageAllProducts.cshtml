@@ -60,8 +60,8 @@
     var productGroup = Model.Products.GroupBy(x => x.ProductId);
     foreach (var product in productGroup)
     {
-        <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text>
-        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=" onclick="this.href=this.href+@product.Select(x=>x.CategoryId).FirstOrDefault()">Открыть информацию о продукте</a>
+        <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text> <text> / </text>
+        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=" onclick="this.href=this.href+@product.Select(x=>x.CategoryId).FirstOrDefault()">Открыть информацию о продукте</a> <text> / </text>
         <a onclick="DeleteProduct(@(product.Key))">Удалить товар</a>
         <br/>
         <br/>

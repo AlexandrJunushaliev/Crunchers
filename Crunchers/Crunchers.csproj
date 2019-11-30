@@ -290,6 +290,7 @@
     <Content Include="Views\Admin\ManagePointsOfPickUpByCityId.cshtml" />
     <Content Include="Views\Admin\ManageProduct.cshtml" />
     <Content Include="Views\Admin\ManageShop.cshtml" />
+    <Content Include="Views\Admin\ManageFiltersByCharacteristicId.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Web.config" />

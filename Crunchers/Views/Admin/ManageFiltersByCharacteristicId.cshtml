@@ -1,0 +1,100 @@
+﻿@model Crunchers.Controllers.AdminController.FiltersResponse
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+let urlParams = new URLSearchParams(window.location.search);
+function AddFilter() {
+    let characteristicId= urlParams.get('characteristicId');
+    if (document.getElementById("newFilterFrom")==null){
+        $("#LoadingImage").show();
+                 $.ajax({
+                          type: "POST",
+                          url: '@Url.RouteUrl(new {controller = "Admin", action = "AddFilterByCharacteristicId"})?characteristicId='+characteristicId,
+                          data: {},
+                          dataType: 'json',
+                          timeout: 15000,
+                          success: function (data) {
+                              $("#LoadingImage").hide();
+                              alert('Фильтр успешно добавлен');
+                              location.reload();     
+                          },
+                          error: function(inc) {
+                              $("#LoadingImage").hide();
+                              alert('Произошла ошибка');
+                              location.reload(); 
+                          }
+                      });
+    }
+    else {
+        let from = document.getElementById("newFilterFrom").value;
+          let to = document.getElementById("newFilterTo").value;
+           $("#LoadingImage").show();
+                 $.ajax({
+                          type: "POST",
+                          url: '@Url.RouteUrl(new {controller = "Admin", action = "AddFilterByCharacteristicId"})?characteristicId='+characteristicId +'&from='+from+'&to='+to,
+                          data: {},
+                          dataType: 'json',
+                          timeout: 15000,
+                          success: function (data) {
+                              $("#LoadingImage").hide();
+                              alert('Фильтр добавлен');
+                              location.reload();     
+                          },
+                          error: function(inc) {
+                              $("#LoadingImage").hide();
+                              alert('Произошла ошибка');
+                              location.reload(); 
+                          }
+                      });
+    }
+  
+}
+function DeleteFilter(filterId) {
+    $("#LoadingImage").show();
+                     $.ajax({
+                              type: "POST",
+                              url: '@Url.RouteUrl(new {controller = "Admin", action = "DeleteFilter"})?filterId='+filterId,
+                              data: {},
+                              dataType: 'json',
+                              timeout: 15000,
+                              success: function (data) {
+                                  $("#LoadingImage").hide();
+                                  alert('Фильтр успешно удален');
+                                  location.reload();     
+                              },
+                              error: function(inc) {
+                                  $("#LoadingImage").hide();
+                                  alert('Произошла ошибка');
+                                  location.reload(); 
+                              }
+                          });
+    
+  
+}
+</script>
+<form>
+    @if (Model.Characteristic.CharacteristicType == "Строковое значение")
+    {
+        if (!Model.Filters.Any())
+        {
+            <a onclick="AddFilter()">Добавить фильтр</a>
+        }
+        else
+        {
+            <h1>Строковый фильтр уже добавлен</h1> <a onclick="DeleteFilter(@(Model.Filters.FirstOrDefault().FilterId))">Удалить фильтр</a>
+        }
+    }
+    else
+    {
+        <input id="newFilterFrom" placeholder="От.."/> <input id="newFilterTo" placeholder="До.."/>  <a onclick="AddFilter()">Добавить фильтр</a> 
+    }
+</form>
+@if (Model.Characteristic.CharacteristicType != "Строковое значение")
+{
+    foreach (var filter in Model.Filters)
+    {
+        <h1>Фильтр от: @filter.From до: @filter.To</h1> <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
+    }
+}
+
