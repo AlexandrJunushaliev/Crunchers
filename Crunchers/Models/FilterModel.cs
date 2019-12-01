@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using Unity;
@@ -34,6 +35,76 @@ namespace Crunchers.Models
             CharacteristicId = characteristicId;
             FilterId = filterId;
             CharacteristicName = characteristicName;
+        }
+
+        public async Task<IEnumerable<FilterModel>> GetFiltersByCategoryId(int categoryId)
+        {
+            var sqlExpression =
+                string.Format(
+                    "select f.*, c.\"CharacteristicName\" from \"Filters\" f join \"Characteristics\" c on f.\"CharacteristicId\" = c.\"CharacteristicId\" where c.\"CategoryId\"={0}",
+                    categoryId);
+            List<FilterModel> filters = new List<FilterModel>();
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var from = reader.GetDouble(2);
+                        var filterId = reader.GetInt32(0);
+                        var to = reader.GetDouble(3);
+                        var characteristicName = reader.GetString(4);
+                        var characteristicId = reader.GetInt32(1);
+                        filters.Add(new FilterModel(from, to, characteristicId, filterId,characteristicName));
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return filters;
+        }
+
+        public async Task<IEnumerable<FilterModel>> GetFiltersByIds(IEnumerable<int> filterIds)
+        {
+            var stringBuilder = new StringBuilder("select f.*, c.\"CharacteristicName\" from \"Filters\" f join \"Characteristics\" c on f.\"CharacteristicId\" = c.\"CharacteristicId\" where ");
+            foreach (var filterId in filterIds)
+            {
+                stringBuilder.Append($"f.\"FilterId\"={filterId} or ");
+            }
+
+            stringBuilder.Remove(stringBuilder.Length - 4, 3);
+            var sqlExpression = stringBuilder.ToString();
+            List<FilterModel> filters = new List<FilterModel>();
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var from = reader.GetDouble(2);
+                        var filterId = reader.GetInt32(0);
+                        var to = reader.GetDouble(3);
+                        var characteristicName = reader.GetString(4);
+                        var characteristicId = reader.GetInt32(1);
+                        filters.Add(new FilterModel(from, to, characteristicId, filterId,characteristicName));
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return filters;
         }
 
         public void AddFilter(int characteristicId, double from, double to)

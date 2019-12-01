@@ -1,0 +1,6 @@
+﻿@model IEnumerable<Crunchers.Models.CategoryModel>
+
+@foreach (var category in Model)
+{
+    <a href="@Url.RouteUrl(new {controller = "Catalog", action = "CategoryProducts"})?categoryId=@category.CategoryId" class="btn btn-primary btn-lg">@category.CategoryName</a>
+}

@@ -130,6 +130,19 @@ namespace Crunchers.Models
             return products;
         }
 
+        public async Task<IEnumerable<ProductModel>> FilterProducts(IEnumerable<Tuple<int,string>> filterValuesPairs,int categoryId)
+        {
+            var filters = new FilterModel().G;
+            var products = await new ProductModel().GetProductsByCategoryId(categoryId);
+            foreach (var filter in filterValuesPairs)
+            {
+                if (filter.Item2 == "")
+                {
+                    products=products.Where(x=>x.ValueToCharName.Item2==filter.)
+                }
+            }
+        }
+
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
         {
             var sqlExpression = string.Format(
