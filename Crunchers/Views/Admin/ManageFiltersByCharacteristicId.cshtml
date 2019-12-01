@@ -82,7 +82,8 @@ function DeleteFilter(filterId) {
         }
         else
         {
-            <h1>Строковый фильтр уже добавлен</h1> <a onclick="DeleteFilter(@(Model.Filters.FirstOrDefault().FilterId))">Удалить фильтр</a>
+            var filter = Model.Filters.FirstOrDefault();
+            <h1>Строковый фильтр для характеристики @filter.CharacteristicName уже добавлен</h1> <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
         }
     }
     else

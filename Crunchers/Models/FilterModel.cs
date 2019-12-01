@@ -11,7 +11,10 @@ namespace Crunchers.Models
     {
         public readonly double? From;
         public readonly double? To;
-        public readonly int CharacteristicId;    
+        public readonly int CharacteristicId;
+
+        public readonly string CharacteristicName;
+
         public readonly int FilterId;
         private DbCommand _dbCommand;
         private DbConnection _dbConnection;
@@ -24,12 +27,13 @@ namespace Crunchers.Models
                 WebConfigurationManager.ConnectionStrings["ShopDbConnection"].ConnectionString;
         }
 
-        public FilterModel(double? from, double? to, int characteristicId, int filterId)
+        public FilterModel(double? from, double? to, int characteristicId, int filterId, string characteristicName)
         {
             From = from;
             To = to;
             CharacteristicId = characteristicId;
             FilterId = filterId;
+            CharacteristicName = characteristicName;
         }
 
         public void AddFilter(int characteristicId, double from, double to)
@@ -45,7 +49,7 @@ namespace Crunchers.Models
                 _dbCommand.CommandText = sqlExpression;
                 _dbCommand.ExecuteNonQuery();
                 _dbConnection.Close();
-            }      
+            }
         }
 
         public void DeleteFilter(int filterId)
@@ -53,7 +57,7 @@ namespace Crunchers.Models
             var sqlExpression =
                 string.Format(
                     "Delete from \"Filters\" WHERE \"FilterId\"='{0}'",
-                    filterId); 
+                    filterId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -61,14 +65,14 @@ namespace Crunchers.Models
                 _dbCommand.CommandText = sqlExpression;
                 _dbCommand.ExecuteNonQuery();
                 _dbConnection.Close();
-            }      
+            }
         }
 
         public async Task<IEnumerable<FilterModel>> GetFiltersByCharacteristicId(int characteristicId)
         {
             var sqlExpression =
                 string.Format(
-                    "Select * from \"Filters\" WHERE \"CharacteristicId\"='{0}'",
+                    "select f.*, c.\"CharacteristicName\" from \"Filters\" f join \"Characteristics\" c on f.\"CharacteristicId\" = c.\"CharacteristicId\" and c.\"CharacteristicId\"='{0}'",
                     characteristicId);
             List<FilterModel> filters = new List<FilterModel>();
             using (_dbConnection)
@@ -84,7 +88,8 @@ namespace Crunchers.Models
                         var from = reader.GetDouble(2);
                         var filterId = reader.GetInt32(0);
                         var to = reader.GetDouble(3);
-                        filters.Add( new FilterModel(from,to,characteristicId,filterId));
+                        var characteristicName = reader.GetString(4);
+                        filters.Add(new FilterModel(from, to, characteristicId, filterId,characteristicName));
                     }
                 }
 

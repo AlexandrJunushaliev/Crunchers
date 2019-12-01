@@ -20,6 +20,7 @@ namespace Crunchers.Models
         public readonly int ProductPrice;
         public readonly int RatingSum;
         public readonly int RatingsAmount;
+        public readonly int CharacteristicId;
         public readonly Tuple<string, dynamic> ValueToCharName;
         private readonly DbCommand _dbCommand;
         private readonly DbConnection _dbConnection;
@@ -34,7 +35,7 @@ namespace Crunchers.Models
 
         private ProductModel(int productId, int imageId, string imageLink, int categoryId, string productName,
             int productPrice,
-            int ratingSum, int ratingsAmount,
+            int ratingSum, int ratingsAmount, int characteristicId,
             Tuple<string, dynamic> valueToCharName)
         {
             ProductId = productId;
@@ -46,9 +47,11 @@ namespace Crunchers.Models
             RatingSum = ratingSum;
             RatingsAmount = ratingsAmount;
             ValueToCharName = valueToCharName;
+            CharacteristicId = characteristicId;
         }
 
-        public List<Tuple<dynamic, int,string>> ConnectValuesWithChars(IEnumerable<CharacteristicModel> characteristics,
+        public List<Tuple<dynamic, int, string>> ConnectValuesWithChars(
+            IEnumerable<CharacteristicModel> characteristics,
             dynamic[] values)
         {
             var locker = new object();
@@ -61,7 +64,8 @@ namespace Crunchers.Models
                     {
                         i += 1;
                         double res;
-                        if (x.CharacteristicType == "Числовое значение" && !double.TryParse(values[i - 1],NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                        if (x.CharacteristicType == "Числовое значение" && !double.TryParse(values[i - 1],
+                                NumberStyles.Any, CultureInfo.InvariantCulture, out res))
                         {
                             throw new ArgumentException("Введено нечисловое значение");
                         }
@@ -73,7 +77,6 @@ namespace Crunchers.Models
                 i = 0;
                 return valuesToChars;
             }
-            
         }
 
         public async Task<IEnumerable<ProductModel>> GetAllProducts()
@@ -103,18 +106,19 @@ namespace Crunchers.Models
                         var unit = reader.GetString(18);
                         var valueReal = reader.GetValue(12);
                         var valueString = reader.GetValue(13);
+                        var charId = reader.GetInt32(14);
                         if (valueReal.ToString() == "")
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueString));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueString));
                             products.Add(product);
                         }
                         else
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                     }
@@ -125,9 +129,10 @@ namespace Crunchers.Models
 
             return products;
         }
+
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
         {
-                var sqlExpression = string.Format(
+            var sqlExpression = string.Format(
                 "select * from \"Products\" p  join \"Images\" i on p.\"ProductId\" = i.\"ProductId\" and i.\"ImageRole\"='Preview' join  \"Characteristics\" cv on p.\"CategoryId\"=cv.\"CategoryId\" and p.\"ProductId\"={0}  left join  \"CharacteristicValues\" C on p.\"ProductId\" = C.\"ProductId\" AND c.\"CharacteristicId\"=cv.\"CharacteristicId\"",
                 productId);
             var products = new List<ProductModel>();
@@ -149,21 +154,21 @@ namespace Crunchers.Models
                         var imageId = reader.GetInt32(6);
                         var imageLink = reader.GetString(7);
                         var unit = reader.GetString(14);
-                        var charType = reader.GetString(12);
+                        var charId = reader.GetInt32(10);
                         var valueReal = reader.GetValue(17);
                         var valueString = reader.GetValue(18);
                         if (valueReal.ToString() != "")
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                         else
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueString));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueString));
                             products.Add(product);
                         }
                     }
@@ -202,18 +207,19 @@ namespace Crunchers.Models
                         var unit = reader.GetString(18);
                         var valueReal = reader.GetValue(12);
                         var valueString = reader.GetValue(13);
+                        var charId = reader.GetInt32(14);
                         if (valueReal.ToString() == "")
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueString));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueString));
                             products.Add(product);
                         }
                         else
                         {
                             var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
                                 productPrice,
-                                ratingSum, ratingAmount, new Tuple<string, dynamic>(unit, valueReal));
+                                ratingSum, ratingAmount, charId, new Tuple<string, dynamic>(unit, valueReal));
                             products.Add(product);
                         }
                     }
