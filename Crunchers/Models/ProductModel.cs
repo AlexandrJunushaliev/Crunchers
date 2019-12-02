@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using Unity;
@@ -130,17 +131,30 @@ namespace Crunchers.Models
             return products;
         }
 
-        public async Task<IEnumerable<ProductModel>> FilterProducts(IEnumerable<Tuple<int,string>> filterValuesPairs,int categoryId)
+        public async Task<IEnumerable<ProductModel>> FilterProducts(IEnumerable<Tuple<int, string>> filterValuesPairs,
+            IEnumerable<FilterModel> filterModels, int categoryId)
         {
-            var filters = new FilterModel().G;
-            var products = await new ProductModel().GetProductsByCategoryId(categoryId);
-            foreach (var filter in filterValuesPairs)
+            var filters = filterModels.Join(filterValuesPairs, x => x.FilterId, y => y.Item1, (x, y) => new
             {
-                if (filter.Item2 == "")
+                x.From,
+                x.To,
+                x.CharacteristicId,
+                Exactly = y.Item2
+            });
+            var products = await new ProductModel().GetProductsByCategoryId(categoryId);
+            var result = products.Join(filters, x => x.CharacteristicId, y => y.CharacteristicId, (x, y) => new
                 {
-                    products=products.Where(x=>x.ValueToCharName.Item2==filter.)
-                }
-            }
+                    productCharacteristic = x,
+                    y.Exactly,
+                    y.From,
+                    y.To
+                }).GroupBy(x => x.productCharacteristic.ProductId).Where(x => x.All(y => (bool)
+                    (y.Exactly != ""
+                        ? y.productCharacteristic.ValueToCharName.Item2 == y.Exactly
+                        : y.productCharacteristic.ValueToCharName.Item2 >= y.From &&
+                          y.productCharacteristic.ValueToCharName.Item2 <= y.To)))
+                .Select(x=>x.Key);
+            return products.Where(x=>result.Contains(x.ProductId));
         }
 
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
