@@ -67,16 +67,15 @@ namespace Crunchers.Controllers
                 y.CharacteristicName,
                 x.ValueToCharName,
                 y.FilterId
-            }).Where(x=>x.From<0||x.From>=0&&x.ValueToCharName.Item2<x.To&&x.ValueToCharName.Item2>x.From).Select(x => new CatalogFiltersResponse()
+            }).Where(x=>x.From<0||x.From>=0&&x.ValueToCharName.Item2<=x.To&&x.ValueToCharName.Item2>=x.From).Select(x => new CatalogFiltersResponse()
             {
                 IsEnabled = filterValues != null && filterValuesTuples.Select(y => y.Item1).Contains(x.FilterId),
                 FilterShowValue = x.From >= 0 ? $"от {x.From} до {x.To}" : $"{x.ValueToCharName.Item2}",
                 CharacteristicName = x.CharacteristicName,
                 CharacteristicId = x.CharacteristicId,
                 FilterId = x.FilterId
-            }).Distinct().GroupBy(x => x.CharacteristicName);
-            var response = new CatalogProductsResponse() {Filters = filters};
-            return View(response);
+            })/*.Distinct()*/.GroupBy(x => x.CharacteristicName);
+            return View();
         }
     }
 }
