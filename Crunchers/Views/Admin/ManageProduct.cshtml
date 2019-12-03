@@ -58,10 +58,11 @@
             else
             {
                 <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите числовое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
-                if (characteristics[i].Unit != null || characteristics[i].Unit != "")
+                if (characteristics[i].Unit != null && characteristics[i].Unit != "")
                 {
-                    <text>(в @(characteristics[i].Unit))(0 в случае отсутствия)</text>
+                    <text>(в @(characteristics[i].Unit))</text>
                 }
+                <text>(0 в случае отсутствия)</text>
             }
             i++;
             <br/>
@@ -76,10 +77,11 @@
             else
             {
                 <input id="Name=@characteristics[i].CharacteristicId" placeholder="Введите числовое значение для характеристики"/>
-                if (characteristics[i].Unit != null || characteristics[i].Unit != "")
+                if (characteristics[i].Unit != null && characteristics[i].Unit != "")
                 {
-                    <text>(в @(characteristics[i].Unit))(0 в случае отсутствия)</text>
+                    <text>(в @(characteristics[i].Unit))</text>
                 }
+                <text>(0 в случае отсутствия)</text>
             }
         }
     </div>

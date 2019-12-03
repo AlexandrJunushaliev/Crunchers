@@ -32,7 +32,7 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function UnselectFilter(filterId) {
-  location.href=location.href.replace('&filterValues='+urlParams.getAll('filterValues').filter(word=>word.split('_')[0]==filterId)[0],"") ;
+  location.href=location.href.replace('&filterValues='+encodeURIComponent(urlParams.getAll('filterValues').filter(word=>word.split('_')[0]==14)[0]),"") ;
 }
 function SelectMoneyFilter(filterName,newValue) {
     if (urlParams.get(filterName)==null){

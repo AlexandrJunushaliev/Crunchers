@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
@@ -112,7 +113,7 @@ namespace Crunchers.Models
             var sqlExpression =
                 string.Format(
                     "Insert into \"Filters\"(\"CharacteristicId\",\"From\",\"To\") values ('{0}','{1}','{2}')",
-                    characteristicId, from, to);
+                    characteristicId, from.ToString(CultureInfo.GetCultureInfo("en-GB")), to.ToString(CultureInfo.GetCultureInfo("en-GB")));
             using (_dbConnection)
             {
                 _dbConnection.Open();

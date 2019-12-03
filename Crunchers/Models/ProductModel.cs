@@ -65,15 +65,17 @@ namespace Crunchers.Models
                     {
                         i += 1;
                         double res;
-                        if (x.CharacteristicType == "Числовое значение" && !double.TryParse(values[i - 1],
-                                NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                        if (x.CharacteristicType == "Числовое значение" &&
+                            !double.TryParse(values[i - 1].ToString(CultureInfo.GetCultureInfo("en-GB")), out res))
                         {
                             throw new ArgumentException("Введено нечисловое значение");
                         }
 
-                        return double.TryParse(values[i - 1], out res)
+                        return double.TryParse(values[i - 1].ToString(CultureInfo.GetCultureInfo("en-GB")), out res)
                             ? new Tuple<dynamic, int, string>(res, x.CharacteristicId, x.Unit)
-                            : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
+                            : values[i - 1] == ""
+                                ? new Tuple<dynamic, int, string>("Нет", x.CharacteristicId, x.Unit)
+                                : new Tuple<dynamic, int, string>(values[i - 1], x.CharacteristicId, x.Unit);
                     }).ToList();
                 i = 0;
                 return valuesToChars;
@@ -153,8 +155,8 @@ namespace Crunchers.Models
                         ? y.productCharacteristic.ValueToCharName.Item2 == y.Exactly
                         : y.productCharacteristic.ValueToCharName.Item2 >= y.From &&
                           y.productCharacteristic.ValueToCharName.Item2 <= y.To)))
-                .Select(x=>x.Key);
-            return products.Where(x=>result.Contains(x.ProductId));
+                .Select(x => x.Key);
+            return products.Where(x => result.Contains(x.ProductId));
         }
 
         public async Task<IEnumerable<ProductModel>> GetProductById(int productId)
@@ -272,27 +274,6 @@ namespace Crunchers.Models
                     "UPDATE \"Images\" SET \"ImageLink\"='{0}' WHERE \"ImageRole\"='preview' AND \"ProductId\"='{1}'",
                     imageLink, productId);
             sqlCommands.Add(sqlExpressionForImage);
-            foreach (var valueToCharacteristic in valuesToCharacteristics)
-            {
-                if (valueToCharacteristic.Item1 is string)
-                {
-                    var sqlExpression =
-                        string.Format(
-                            "UPDATE \"CharacteristicValues\" SET  \"ValueString\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
-                            productId, valueToCharacteristic.Item2,
-                            valueToCharacteristic.Item1);
-                    sqlCommands.Add(sqlExpression);
-                }
-                else
-                {
-                    var sqlExpression =
-                        string.Format(
-                            "UPDATE \"CharacteristicValues\" SET \"ValueReal\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
-                            productId, valueToCharacteristic.Item2,
-                            valueToCharacteristic.Item1);
-                    sqlCommands.Add(sqlExpression);
-                }
-            }
 
             using (_dbConnection)
             {
@@ -301,6 +282,52 @@ namespace Crunchers.Models
                 foreach (var sqlCommand in sqlCommands)
                 {
                     _dbCommand.CommandText = sqlCommand;
+                    _dbCommand.ExecuteNonQuery();
+                }
+
+                foreach (var valueToCharacteristic in valuesToCharacteristics)
+                {
+                    string sqlExpression;
+                    if (valueToCharacteristic.Item1 is string)
+                    {
+                        sqlExpression =
+                            string.Format(
+                                "UPDATE \"CharacteristicValues\" SET  \"ValueString\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
+                                productId, valueToCharacteristic.Item2,
+                                valueToCharacteristic.Item1);
+                    }
+                    else
+                    {
+                        sqlExpression =
+                            string.Format(
+                                "UPDATE \"CharacteristicValues\" SET \"ValueReal\"='{2}' WHERE \"ProductId\"='{0}' AND \"CharacteristicId\"='{1}'",
+                                productId, valueToCharacteristic.Item2,
+                                valueToCharacteristic.Item1.ToString(CultureInfo.GetCultureInfo("en-GB")));
+                        sqlCommands.Add(sqlExpression);
+                    }
+
+                    _dbCommand.CommandText = sqlExpression;
+                    var number =_dbCommand.ExecuteNonQuery();
+                    if (number != 0) continue;
+                    if (valueToCharacteristic.Item1 is string)
+                    {
+                        sqlExpression =
+                            string.Format(
+                                "INSERT INTO \"CharacteristicValues\" (\"ProductId\", \"CharacteristicId\", \"ValueString\") VALUES ('{0}','{1}','{2}')",
+                                productId, valueToCharacteristic.Item2,
+                                valueToCharacteristic.Item1);
+                        sqlCommands.Add(sqlExpression);
+                    }
+                    else
+                    {
+                        sqlExpression =
+                            string.Format(
+                                "INSERT INTO \"CharacteristicValues\" (\"ProductId\", \"CharacteristicId\", \"ValueReal\") VALUES ('{0}','{1}','{2}')",
+                                productId, valueToCharacteristic.Item2,
+                                valueToCharacteristic.Item1.ToString(CultureInfo.GetCultureInfo("en-GB")));
+                        sqlCommands.Add(sqlExpression);
+                    }
+                    _dbCommand.CommandText = sqlExpression;
                     _dbCommand.ExecuteNonQuery();
                 }
 
@@ -356,7 +383,8 @@ namespace Crunchers.Models
                     var sqlExpression =
                         string.Format(
                             "INSERT INTO \"CharacteristicValues\" (\"ProductId\", \"CharacteristicId\", \"ValueReal\") VALUES ('{0}','{1}','{2}')",
-                            productId, valueToCharacteristic.Item2, valueToCharacteristic.Item1);
+                            productId, valueToCharacteristic.Item2,
+                            valueToCharacteristic.Item1.ToString(CultureInfo.GetCultureInfo("en-GB")));
                     sqlCommands.Add(sqlExpression);
                 }
             }
