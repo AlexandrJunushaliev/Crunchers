@@ -40,16 +40,19 @@ namespace Crunchers.Controllers
         public class CatalogProductsResponse
         {
             public IEnumerable<IGrouping<string, CatalogFiltersResponse>> Filters;
-            public IEnumerable<ProductModel> Products;
+            public IEnumerable<IGrouping<int, ProductModel>> Products;
+            public int MaxPrice;
+            public int MinPrice;
         }
 
         public async Task<ActionResult> CategoryProducts(int categoryId, [FromUri] string[] filterValues = null,
-            string moneyFilter = null)
+            string moneyFilter = null, bool orderBy = false, bool orderByDescending = false,
+            bool ratings = false, bool money = false)
         {
             var filterValuesTuples = new List<Tuple<int, string>>();
             if (filterValues != null)
             {
-                filterValuesTuples.AddRange(filterValues.Select(filterValue => filterValue.Split(':'))
+                filterValuesTuples.AddRange(filterValues.Select(filterValue => filterValue.Split('_'))
                     .Select(pair => pair.Length == 1
                         ? Tuple.Create(int.Parse(pair[0]), "")
                         : Tuple.Create(int.Parse(pair[0]), pair[1])));
@@ -59,15 +62,36 @@ namespace Crunchers.Controllers
             var products = filterValues != null
                 ? await new ProductModel().FilterProducts(filterValuesTuples, filterModels, categoryId)
                 : await new ProductModel().GetProductsByCategoryId(categoryId);
+            var maxPriceForResponse = -1;
+            var minPriceForResponse = int.MaxValue;
+            foreach (var product in products)
+            {
+                maxPriceForResponse = maxPriceForResponse < product.ProductPrice
+                    ? product.ProductPrice
+                    : maxPriceForResponse;
+                minPriceForResponse = minPriceForResponse > product.ProductPrice
+                    ? product.ProductPrice
+                    : minPriceForResponse;
+            }
 
-            var filters = products.Join(filterModels, x => x.CharacteristicId, y => y.CharacteristicId, (x, y) => new
+            var moneyPair = moneyFilter?.Split(':');
+            var moneyMin = moneyPair?[0];
+            var moneyMax = moneyPair?[1];
+            products = moneyPair != null
+                ? products.Where(x => x.ProductPrice <= int.Parse(moneyMax) && x.ProductPrice >= int.Parse(moneyMin))
+                : products;
+
+            var filters = products.Join(filterModels, x => x.CharacteristicId, y => y.CharacteristicId, (x, y) =>
                 {
-                    y.From,
-                    y.To,
-                    y.CharacteristicId,
-                    y.CharacteristicName,
-                    x.ValueToCharName,
-                    y.FilterId
+                    return new
+                    {
+                        y.From,
+                        y.To,
+                        y.CharacteristicId,
+                        y.CharacteristicName,
+                        x.ValueToCharName,
+                        y.FilterId
+                    };
                 })
                 .Where(x => x.From < 0 ||
                             x.From >= 0 && x.ValueToCharName.Item2 <= x.To && x.ValueToCharName.Item2 >= x.From).Select(
@@ -79,10 +103,23 @@ namespace Crunchers.Controllers
                         CharacteristicName = x.CharacteristicName,
                         CharacteristicId = x.CharacteristicId,
                         FilterId = x.FilterId,
-                        isRanged = !(x.From<0)
+                        isRanged = !(x.From < 0)
                     })
                 .Distinct().GroupBy(x => x.CharacteristicName);
-            var response = new CatalogProductsResponse(){Products =products,Filters = filters};
+            var productsGroups = products.GroupBy(x => x.ProductId);
+
+            productsGroups = orderBy && money ? productsGroups.OrderBy(x => x.First().ProductPrice) :
+                orderByDescending && money ? productsGroups.OrderByDescending(x => x.First().ProductPrice) :
+                orderBy && ratings ? productsGroups.OrderBy(x => x.First().RatingSum) :
+                orderByDescending && ratings ? productsGroups.OrderByDescending(x => x.First().RatingSum) : productsGroups;
+
+            var response = new CatalogProductsResponse()
+            {
+                Products = productsGroups, Filters = filters, MaxPrice = maxPriceForResponse,
+                MinPrice = minPriceForResponse
+            };
+
+
             return View(response);
         }
     }

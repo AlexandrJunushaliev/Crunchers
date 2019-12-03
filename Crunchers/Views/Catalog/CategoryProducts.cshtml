@@ -1,12 +1,113 @@
 ﻿@model Crunchers.Controllers.CatalogController.CatalogProductsResponse
+<head>
+    @{
+        <script>
+         	$( function() {
+         	    let value0;
+         	    let value1;
+         	    if(new URLSearchParams(window.location.search).get('moneyFilter')==null) {
+         	            value0=@Model.MinPrice;
+         	            value1=@Model.MaxPrice;
+         	        }
+         	    else {
+         	        let values=new URLSearchParams(window.location.search).get('moneyFilter').split(':')
+         	        value0=values[0];
+         	        value1=values[1];
+         	    }
+         		$(document).ready($( "#slider-range" ).slider({
+         			range: true,
+         			min: @(Model.MinPrice),
+         			max: @(Model.MaxPrice),
+         			values: [ value0, value1 ],
+         			slide: function( event, ui ) {
+         				$( "#amount" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+         			}
+         		}));
+         		$( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) +
+         			" - " + $( "#slider-range" ).slider( "values", 1 ) );
+         	} );
+         	</script>
+    }
+</head>
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function UnselectFilter(filterId) {
-  location.href=location.href.replace('&filterValues='+urlParams.getAll('filterValues').filter(word=>word.split(':')[0]==filterId)[0],"") ;
+  location.href=location.href.replace('&filterValues='+urlParams.getAll('filterValues').filter(word=>word.split('_')[0]==filterId)[0],"") ;
 }
-</script>>
+function SelectMoneyFilter(filterName,newValue) {
+    if (urlParams.get(filterName)==null){
+        location.href=location.href+'&'+filterName+'='+newValue;
+    }
+    else {
+        location.href=location.href.replace('&'+filterName+'='+urlParams.get(filterName),'&'+filterName+'='+newValue);
+    } 
+}
+function SelectNonProductFilters(valuesToUnselect,filter,value) {
+    let prev=location.href;
+        valuesToUnselect.forEach(x=>prev =prev.replace('&'+x+'='+urlParams.get(x),''));
+        prev=prev+'&'+filter+'='+true;
+        prev=prev+'&'+value+'='+true;
+        location.href=prev;
+                        
+}
+function UnSelectNonProductFilters(filters) {
+    let prev=location.href;
+    filters.forEach(x=>prev =prev.replace('&'+x+'='+urlParams.get(x),''));
+    location.href=prev;
+}
+function SubmitSorting() {
+    let type = Array.from(document.getElementById('sortingType').childNodes).filter(x=>x.checked);
+    let value = Array.from(document.getElementById('sortingValue').childNodes).filter(x=>x.checked);
+    if (type[0].id=='noOrder'||value[0].id=='no'){
+        let filtersType = Array.from(document.getElementById('sortingType').childNodes).filter(x=>x.nodeName=="INPUT" );
+        let filtersValues = Array.from(document.getElementById('sortingValue').childNodes).filter(x=>x.nodeName=="INPUT" );
+        let all = filtersType.concat(filtersValues).map(x=>x.id);
+                UnSelectNonProductFilters(all)
+    }
+    else {
+        let filtersType = Array.from(document.getElementById('sortingType').childNodes).filter(x=>x.nodeName=="INPUT" );
+                let filtersValues = Array.from(document.getElementById('sortingValue').childNodes).filter(x=>x.nodeName=="INPUT" );
+                let all = filtersType.concat(filtersValues).map(x=>x.id);
+        SelectNonProductFilters(all,type[0].id,value[0].id);
+    } 
+}
+</script>
 <h1>Каталог</h1>
 <form>
+    <p>
+        <label for="amount">Цена:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+    <div id="slider-range"></div>
+    <br/>
+    <div>
+        <a class="btn btn-default" onclick="SelectMoneyFilter('moneyFilter',$( '#slider-range' ).slider( 'values', 0 )+':'+$( '#slider-range' ).slider( 'values', 1 ))">Подтвердить цену</a>
+    </div>
+    <hr/>
+    <p>Сортировка:</p>
+    <form>
+        <div id="sortingType">
+            <input name="orderType" type="radio" id="noOrder">
+            <label for="noOrder">Нет</label>
+            <input name="orderType" type="radio" id="orderBy">
+            <label for="orderBy">По возрастанию</label>
+            <input name="orderType" type="radio" id="orderByDescending">
+            <label for="orderByDescending">По убыванию</label>
+        </div>
+        <div id="sortingValue">
+            <input type="radio" name="orderValue" id="no" checked>
+            <label for="no">Нет</label>
+            <input type="radio" name="orderValue" id="money">
+            <label for="money">По стоимости</label>
+            <input type="radio" name="orderValue" id="ratings">
+            <label for="ratings">По рейтингу</label>
+        </div>
+    </form>
+
+    <div>
+        <a class="btn btn-default" onclick="SubmitSorting()">Подтвердить сортировку</a>
+    </div>
+    <hr/>
     @foreach (var filterGroup in Model.Filters)
     {
         @filterGroup.Key
@@ -25,7 +126,7 @@ function UnselectFilter(filterId) {
                 }
                 else
                 {
-                    <a class="btn btn-default" onclick="window.location.href=window.location.href+'&filterValues=@(filter.FilterId):@(filter.FilterShowValue)'">@filter.FilterShowValue</a>
+                    <a class="btn btn-default" onclick="window.location.href=window.location.href+'&filterValues=@(filter.FilterId)_@(filter.FilterShowValue)'">@filter.FilterShowValue</a>
                 }
             }
         }
@@ -35,9 +136,8 @@ function UnselectFilter(filterId) {
 
 <form>
     @{
-        var productGroup = Model.Products.GroupBy(x => x.ProductId);
 
-        foreach (var product in productGroup)
+        foreach (var product in Model.Products)
         {
             var first = product.Select(x => x).First();
             <img src="@first.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
@@ -50,7 +150,7 @@ function UnselectFilter(filterId) {
                 }
                 else
                 {
-                    <text>Рейтинг: @((double)first.RatingSum/first.RatingsAmount) (@first.RatingsAmount оценок)</text>
+                    <text>Рейтинг: @((double) first.RatingSum / first.RatingsAmount) (@first.RatingsAmount оценок)</text>
                 }
             }
             <br/>
