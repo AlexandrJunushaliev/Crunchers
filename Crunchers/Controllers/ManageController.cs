@@ -70,7 +70,7 @@ namespace Crunchers.Controllers
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
-                UserModel = await new UserModel().GetUser(userId)
+                UserModel = await new UserModel().GetUserAsunc(userId)
             };
             return View(model);
         }

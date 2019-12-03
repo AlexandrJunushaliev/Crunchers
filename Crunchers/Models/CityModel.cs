@@ -98,12 +98,12 @@ namespace Crunchers.Models
 
             return cities;
         }
-       
-        
+
+
         public async Task<IEnumerable<CityModel>> GetCityByNameRu(string nameRu)
         {
             var cities = new List<CityModel>();
-            var sqlExpression = string.Format("Select * from \"Cities\" where \"NameRu\"='{0}'",nameRu);
+            var sqlExpression = string.Format("Select * from \"Cities\" where \"NameRu\"='{0}'", nameRu);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -126,10 +126,11 @@ namespace Crunchers.Models
 
             return cities;
         }
-        public async Task<CityModel> GetCityById(int cityId)
+
+        public async Task<CityModel> GetCityByIdAsync(int cityId)
         {
             var cities = new List<CityModel>();
-            var sqlExpression = string.Format("Select * from \"Cities\" where \"CityId\"='{0}'",cityId);
+            var sqlExpression = string.Format("Select * from \"Cities\" where \"CityId\"='{0}'", cityId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -140,8 +141,39 @@ namespace Crunchers.Models
                 {
                     while (reader.Read())
                     {
-                        var nameRu = reader.GetString(1);    
+                        var nameRu = reader.GetString(1);
                         var city = new CityModel(nameRu, cityId);
+                        cities.Add(city);
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return cities.FirstOrDefault();
+        }
+
+        public CityModel GetCityById(int? cityId)
+        {
+            if (cityId == null)
+            {
+                return null;
+            }
+            var cities = new List<CityModel>();
+            var sqlExpression = string.Format("Select * from \"Cities\" where \"CityId\"='{0}'", cityId);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = _dbCommand.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var nameRu = reader.GetString(1);
+                        var city = new CityModel(nameRu, cityId.Value);
                         cities.Add(city);
                     }
                 }

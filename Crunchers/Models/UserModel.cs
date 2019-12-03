@@ -57,7 +57,7 @@ namespace Crunchers.Models
             }
         }
 
-        public async Task<UserModel> GetUser(string userId)
+        public async Task<UserModel> GetUserAsunc(string userId)
         {
             var sqlExpression = string.Format("Select * from \"Users\" where \"UserId\"='{0}'", userId);
             UserModel user = null;
@@ -67,6 +67,32 @@ namespace Crunchers.Models
                 _dbCommand.Connection = _dbConnection;
                 _dbCommand.CommandText = sqlExpression;
                 var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var fullName = reader.GetValue(1);
+                        fullName = fullName.ToString();
+                        var cityId = reader.GetValue(2);
+                        cityId = cityId.ToString() == "" ? 0 : int.Parse(cityId.ToString());        
+                        user=new UserModel(userId,(string)fullName, (int)cityId);
+                    }
+                }
+                reader.Close();
+                _dbConnection.Close();
+            }
+            return user;
+        }
+        public UserModel GetUser(string userId)
+        {
+            var sqlExpression = string.Format("Select * from \"Users\" where \"UserId\"='{0}'", userId);
+            UserModel user = null;
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader =  _dbCommand.ExecuteReader();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
