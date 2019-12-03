@@ -71,16 +71,11 @@ namespace Crunchers.Models
                 {
                     while (reader.Read())
                     {
-                        var fullName = reader.GetString(1);
+                        var fullName = reader.GetValue(1);
+                        fullName = fullName.ToString();
                         var cityId = reader.GetValue(2);
-                        if (cityId.ToString() == "")
-                        {
-                            user = new UserModel(userId, fullName, 0);
-                        }
-                        else
-                        {
-                            user = new UserModel(userId, fullName, int.Parse(cityId.ToString()));
-                        }          
+                        cityId = cityId.ToString() == "" ? 0 : int.Parse(cityId.ToString());        
+                        user=new UserModel(userId,(string)fullName, (int)cityId);
                     }
                 }
                 reader.Close();

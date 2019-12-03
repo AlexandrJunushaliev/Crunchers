@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Crunchers.Models
+@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -24,24 +26,6 @@ background-color: rgb(255,193,32) !important;
 
 <body>
 
-@*<script src="//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js" type="text/javascript"></script>
-<script>
-let onSuccess = function(location){
-  alert(
-      location.city.names.ru
-  );
-};
-
-let onError = function(error){
-  alert(
-      "Error:\n\n"
-      + JSON.stringify(error, undefined, 4)
-  );
-};
-
-geoip2.city(onSuccess, onError);
-
-</script>*@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -53,14 +37,12 @@ geoip2.city(onSuccess, onError);
             @Html.ActionLink("Crunchers", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav">\
                 <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
-                <li>@Html.ActionLink("Информация", "About", "Home")</li>
-                <li>@Html.ActionLink("Связаться", "Contact", "Home")</li>
                 <li>
                     <form>
                         Title: <input id="searchField" type="text"/>
-                        <a onclick="location.href=window.location.href+'search?text='+document.getElementById('searchField').value" class="Button">Text</a>
+                        <a onclick="location.href='/search?text='+document.getElementById('searchField').value" class="Button">Text</a>
                     </form>
                 </li>
             </ul>

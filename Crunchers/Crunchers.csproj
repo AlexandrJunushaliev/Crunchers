@@ -295,6 +295,7 @@
     <Content Include="Views\Admin\ManageFiltersByCharacteristicId.cshtml" />
     <Content Include="Views\Catalog\CategoryProducts.cshtml" />
     <Content Include="Views\Catalog\Index.cshtml" />
+    <Content Include="Views\Manage\ChangeCity.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Web.config" />

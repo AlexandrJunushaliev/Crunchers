@@ -5,11 +5,10 @@
 <script>
 function AddCity() {
   let nameRu = document.getElementById("newCityRu").value;
-  let nameEng = document.getElementById("newCityEng").value;
    $("#LoadingImage").show();
          $.ajax({
                   type: "POST",
-                  url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCity"})?nameRu='+nameRu+'&nameEng='+nameEng,
+                  url: '@Url.RouteUrl(new {controller = "Admin", action = "AddCity"})?nameRu='+nameRu,
                   data: {},
                   dataType: 'json',
                   timeout: 15000,
@@ -49,7 +48,7 @@ function ChangeCity(cityId) {
    $("#LoadingImage").show();
          $.ajax({
                   type: "POST",
-                  url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCity"})?nameRu='+document.getElementById("Ru="+cityId).value+'&nameEng='+document.getElementById("Eng="+cityId).value+'&cityId='+cityId,
+                  url: '@Url.RouteUrl(new {controller = "Admin", action = "ChangeCity"})?nameRu='+document.getElementById("Ru="+cityId).value+'&cityId='+cityId,
                   data: {},
                   dataType: 'json',
                   timeout: 15000,
@@ -69,7 +68,6 @@ function ChangeCity(cityId) {
 <h1>Города</h1>
 <form>
     <input id="newCityRu" placeholder="Введите название города на русском">
-    <input id="newCityEng" placeholder="Введите название города на английском">
     <a onclick="AddCity()">Добавить город</a>
 </form>
 
@@ -78,7 +76,6 @@ function ChangeCity(cityId) {
 {
     <form>
         <input id="Ru=@city.CityId" value="@city.NameRu"/>
-        <input id="Eng=@city.CityId" value="@city.NameEng"/>
         <a onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
         <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
         <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>

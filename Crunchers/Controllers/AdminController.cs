@@ -214,16 +214,16 @@ namespace Crunchers.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult ChangeCity(int cityId, string nameRu, string nameEng)
+        public ActionResult ChangeCity(int cityId, string nameRu)
         {
-            new CityModel().ChangeCity(cityId, nameRu, nameEng);
+            new CityModel().ChangeCity(cityId, nameRu);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         [System.Web.Http.HttpPost]
-        public ActionResult AddCity(string nameRu, string nameEng)
+        public ActionResult AddCity(string nameRu)
         {
-            new CityModel().AddCity(nameRu, nameEng);
+            new CityModel().AddCity(nameRu);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 

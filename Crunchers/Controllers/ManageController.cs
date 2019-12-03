@@ -78,7 +78,7 @@ namespace Crunchers.Controllers
         [System.Web.Mvc.HttpPost]
         public ActionResult ChangeUserInfo(dynamic value, string row)
         {
-            new UserModel().ChangeUserInfo(User.Identity.GetUserId(),value[0],row);
+            new UserModel().ChangeUserInfo(User.Identity.GetUserId(), value[0], row);
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
@@ -323,7 +323,7 @@ namespace Crunchers.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        public void UpdateOrder(bool value, string row,int orderId)
+        public void UpdateOrder(bool value, string row, int orderId)
         {
             new OrderModel().UpdateOrder(!value, row, orderId);
         }
@@ -351,6 +351,40 @@ namespace Crunchers.Controllers
                 CurrentLogins = userLogins,
                 OtherLogins = otherLogins
             });
+        }
+
+        public class CityResponse
+        {
+            public IEnumerable<CityModel> Cities;
+            public IEnumerable<PointsOfPickUpModel> PointsOfPickUp;
+            public bool IsHavePickUpPoints;
+        }
+
+        public async Task<ActionResult> ChangeCity(string currentCity="")
+        {
+            var cities = await new CityModel().GetAllCities();
+
+            if (!cities.Any(x => x.NameRu == currentCity))
+            {
+                return View(new CityResponse() {Cities = cities, IsHavePickUpPoints = false});
+            }
+
+            var city = cities.Where(x => x.NameRu == currentCity).FirstOrDefault();
+            var pointsOfPickUp = await new PointsOfPickUpModel().GetPointsOfPickUpByCityId(city.CityId);
+            if (!pointsOfPickUp.Any())
+            {
+                return View(new CityResponse() {Cities = cities, IsHavePickUpPoints = false});
+            }
+
+            return View(new CityResponse()
+                {Cities = cities, IsHavePickUpPoints = true, PointsOfPickUp = pointsOfPickUp});
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult ChangeUsersCity(int cityId)
+        {
+            new UserModel().ChangeUserInfo(User.Identity.GetUserId(),cityId,"CityId");
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         //
