@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
@@ -73,6 +74,10 @@ namespace Crunchers.Models
 
         public async Task<IEnumerable<FilterModel>> GetFiltersByIds(IEnumerable<int> filterIds)
         {
+            if (!filterIds.Any())
+            {
+                return new List<FilterModel>();
+            }
             var stringBuilder = new StringBuilder("select f.*, c.\"CharacteristicName\" from \"Filters\" f join \"Characteristics\" c on f.\"CharacteristicId\" = c.\"CharacteristicId\" where ");
             foreach (var filterId in filterIds)
             {

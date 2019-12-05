@@ -4,7 +4,7 @@
 <script src="//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js" type="text/javascript"></script>
 <script>
 function getCity(city){
-    if(city!=null)
+    if(city!=null && city!="")
         {
             localStorage.setItem('city',city);
         }
@@ -15,8 +15,6 @@ function getCity(city){
     else {
          let onSuccess = function(location){
                   document.getElementById('cityItem').innerText=location.city.names.ru;
-              
-              
             };
             
             let onError = function(error){
@@ -60,7 +58,7 @@ function getCity(city){
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a id ="cityItem" href="javascript:'/Manage/ChangeCity?currentCity='+document.getElementById('cityItem').innerText"><script>getCity()</script></a></li>
+        <li><a id ="cityItem" href="javascript:location.href='/Manage/ChangeCity?currentCity='+document.getElementById('cityItem').innerText"><script>getCity()</script></a></li>
         <li>@Html.ActionLink("Регистрация", "Register", "Account", routeValues: null, htmlAttributes: new {id = "registerLink"})</li>
         <li>@Html.ActionLink("Выполнить вход", "Login", "Account", routeValues: null, htmlAttributes: new {id = "loginLink"})</li>
     </ul>

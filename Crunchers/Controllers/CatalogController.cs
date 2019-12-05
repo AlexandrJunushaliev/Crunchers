@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Mvc;
 using Crunchers.Models;
+using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace Crunchers.Controllers
 {
@@ -28,7 +32,8 @@ namespace Crunchers.Controllers
 
             public override bool Equals(object obj)
             {
-                return obj is CatalogFiltersResponse item && this.FilterShowValue.Equals(item.FilterShowValue);
+                return obj is CatalogFiltersResponse item && FilterId.Equals(item.FilterId) &&
+                       this.FilterShowValue.Equals(item.FilterShowValue);
             }
 
             public override int GetHashCode()
@@ -111,7 +116,8 @@ namespace Crunchers.Controllers
             productsGroups = orderBy && money ? productsGroups.OrderBy(x => x.First().ProductPrice) :
                 orderByDescending && money ? productsGroups.OrderByDescending(x => x.First().ProductPrice) :
                 orderBy && ratings ? productsGroups.OrderBy(x => x.First().RatingSum) :
-                orderByDescending && ratings ? productsGroups.OrderByDescending(x => x.First().RatingSum) : productsGroups;
+                orderByDescending && ratings ? productsGroups.OrderByDescending(x => x.First().RatingSum) :
+                productsGroups;
 
             var response = new CatalogProductsResponse()
             {
@@ -122,5 +128,72 @@ namespace Crunchers.Controllers
 
             return View(response);
         }
+
+        public class ProductCatalogResponse
+        {
+            public IEnumerable<ProductModel> Product;
+            public IEnumerable<ReviewModel> Reviews;
+            public IEnumerable<MarkModel> Marks;
+            public IEnumerable<CharacteristicModel> Characteristics;
+        }
+
+        public async Task<ActionResult> Product(int productId)
+        {
+            var productChars = await new ProductModel().GetProductById(productId);
+            var reviews = await new ReviewModel().GetAllReviewsByProductId(productId);
+            
+            var marks = await new MarkModel().GetMarksByProductId(productId);
+            var characteristics =
+                await new CharacteristicModel().GetCharacteristics(productChars.FirstOrDefault().CategoryId);
+            var resp = new ProductCatalogResponse() {Product = productChars, Reviews = reviews, Marks = marks, Characteristics = characteristics};
+            return View(resp);
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public ActionResult DeleteReview(int reviewId)
+        {
+            new ReviewModel().DeleteReview(reviewId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        [System.Web.Mvc.HttpPost]
+        public ActionResult DeleteMark(int markId)
+        {
+            new MarkModel().DeleteMark(markId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public ActionResult AddMark(int productId)
+        {
+            string documentContents;
+            using (Stream receiveStream = Request.InputStream)
+            {
+                using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
+                {
+                    documentContents = readStream.ReadToEnd();
+                }
+            }
+
+            var mark = JsonConvert.DeserializeObject<int>(documentContents);
+            new MarkModel().AddMark(productId,User.Identity.Name,mark);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        [System.Web.Mvc.HttpPost]
+        public ActionResult AddReview(int productId)
+        {
+            string documentContents;
+            using (Stream receiveStream = Request.InputStream)
+            {
+                using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8))
+                {
+                    documentContents = readStream.ReadToEnd();
+                }
+            }
+
+            var reviewText = JsonConvert.DeserializeObject<string>(documentContents);
+            new ReviewModel().AddReview(reviewText,User.Identity.Name,DateTime.Now, productId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+        
     }
 }

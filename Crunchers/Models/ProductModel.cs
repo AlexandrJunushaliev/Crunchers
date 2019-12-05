@@ -307,7 +307,7 @@ namespace Crunchers.Models
                     }
 
                     _dbCommand.CommandText = sqlExpression;
-                    var number =_dbCommand.ExecuteNonQuery();
+                    var number = _dbCommand.ExecuteNonQuery();
                     if (number != 0) continue;
                     if (valueToCharacteristic.Item1 is string)
                     {
@@ -327,6 +327,7 @@ namespace Crunchers.Models
                                 valueToCharacteristic.Item1.ToString(CultureInfo.GetCultureInfo("en-GB")));
                         sqlCommands.Add(sqlExpression);
                     }
+
                     _dbCommand.CommandText = sqlExpression;
                     _dbCommand.ExecuteNonQuery();
                 }

@@ -32,7 +32,7 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function UnselectFilter(filterId) {
-  location.href=location.href.replace('&filterValues='+encodeURIComponent(urlParams.getAll('filterValues').filter(word=>word.split('_')[0]==14)[0]),"") ;
+  location.href=location.href.replace('&filterValues='+encodeURIComponent(urlParams.getAll('filterValues').filter(word=>word.split('_')[0]==filterId)[0]),"") ;
 }
 function SelectMoneyFilter(filterName,newValue) {
     if (urlParams.get(filterName)==null){
@@ -72,7 +72,9 @@ function SubmitSorting() {
     } 
 }
 </script>
-<h1><a href="/Catalog" style="text-decoration: none !important; color: black !important;" >←Каталог</a></h1>
+<h1>
+    <a href="/Catalog" style="text-decoration: none !important; color: black !important;">←Каталог</a>
+</h1>
 <form>
     <p>
         <label for="amount">Цена:</label>
@@ -140,8 +142,10 @@ function SubmitSorting() {
         foreach (var product in Model.Products)
         {
             var first = product.Select(x => x).First();
-            <img src="@first.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
-            <text>@first.ProductName</text>
+            <a href="/Catalog/Product?productId=@product.Key">
+                <img src="@first.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
+            </a>
+            <a href="/Catalog/Product?productId=@product.Key">@first.ProductName</a>
             <text>@first.ProductPrice руб.</text>
             {
                 if (first.RatingsAmount == 0)
@@ -150,7 +154,7 @@ function SubmitSorting() {
                 }
                 else
                 {
-                    <text>Рейтинг: @((double) first.RatingSum / first.RatingsAmount) (@first.RatingsAmount оценок)</text>
+                    <text>Рейтинг: @(Math.Round((double) first.RatingSum / first.RatingsAmount)) (@first.RatingsAmount)</text>
                 }
             }
             <br/>

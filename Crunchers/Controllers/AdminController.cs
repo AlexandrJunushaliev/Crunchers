@@ -105,7 +105,7 @@ namespace Crunchers.Controllers
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
-        public class ProductResponse
+        public class ProductAdminResponse
         {
             public IEnumerable<CharacteristicModel> Characteristics;
             public IEnumerable<ProductModel> Products;
@@ -113,7 +113,7 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> ManageCategoryProducts(int categoryId)
         {
-            var productResponse = new ProductResponse
+            var productResponse = new ProductAdminResponse
             {
                 Products = await new ProductModel().GetProductsByCategoryId(categoryId),
                 Characteristics = await new CharacteristicModel().GetCharacteristics(categoryId)
@@ -123,7 +123,7 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> ManageAllProducts()
         {
-            var productResponse = new ProductResponse
+            var productResponse = new ProductAdminResponse
             {
                 Products = await new ProductModel().GetAllProducts()
             };
@@ -156,7 +156,7 @@ namespace Crunchers.Controllers
             var product = await new ProductModel().GetProductById(productId);
             var characteristics =
                 await new CharacteristicModel().GetCharacteristics(categoryId);
-            var productResponse = new ProductResponse() {Characteristics = characteristics, Products = product};
+            var productResponse = new ProductAdminResponse() {Characteristics = characteristics, Products = product};
             return View(productResponse);
         }
 
