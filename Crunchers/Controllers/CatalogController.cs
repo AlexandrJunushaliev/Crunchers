@@ -48,7 +48,7 @@ namespace Crunchers.Controllers
             public IEnumerable<IGrouping<int, ProductModel>> Products;
             public int MaxPrice;
             public int MinPrice;
-            public Dictionary<string, int> Cart;
+            public Dictionary<int, int> Cart;
         }
 
         public async Task<ActionResult> CategoryProducts(int categoryId, [FromUri] string[] filterValues = null,
@@ -121,7 +121,7 @@ namespace Crunchers.Controllers
             var response = new CatalogProductsResponse()
             {
                 Products = productsGroups, Filters = filters, MaxPrice = maxPriceForResponse,
-                MinPrice = minPriceForResponse, Cart = JsonConvert.DeserializeObject<Dictionary<string,int>>(shoppingCart.CartJson)
+                MinPrice = minPriceForResponse, Cart = JsonConvert.DeserializeObject<Dictionary<int,int>>(shoppingCart.CartJson)
             };
 
 

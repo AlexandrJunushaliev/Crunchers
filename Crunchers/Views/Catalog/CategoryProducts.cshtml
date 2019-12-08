@@ -83,7 +83,12 @@ window.onload= function() {
   else {
       for (x in JSON.parse(cart))
           {
-              document.getElementById(x).outerHTML='<a id="-1" class="btn btn-default" onclick="">Удалить из корзины</a>';
+              let node = document.getElementById(x);
+              if(node==null)
+                  {
+                      continue;
+                  }
+              node.outerHTML='<a id="-1" class="btn btn-default" onclick="">Удалить из корзины</a>';
               let mock = document.getElementById("-1");
               mock.id=x; 
               mock.setAttribute("onclick","deleteFromCart(true,"+x+");")
@@ -93,28 +98,101 @@ window.onload= function() {
 function addToCart(isLocal,productId) {
     $("#LoadingImage").show();
   if(isLocal){
-      let cart = JSON.parse(localStorage.getItem('localCart'));
+      let ls = localStorage.getItem('localCart');
+      if (ls==null || ls=="")
+          {
+              localStorage.setItem("localCart","{}");
+              ls = localStorage.getItem('localCart')
+              
+          }
+      let cart = JSON.parse(ls);
       cart[productId]=1;
       localStorage.setItem('localCart',JSON.stringify(cart));
+      $("#LoadingImage").hide();
+      alert('Товар успешно добавлен в корзину');
+      location.reload();
   }
   else {
-      
+      let ls = localStorage.getItem('localCart');
+            if (ls==null || ls=="")
+                {
+                    localStorage.setItem("localCart","{}");
+                    ls = localStorage.getItem('localCart')
+                    
+                }
+            let cart = JSON.parse(ls);
+            cart[productId]=1;
+            localStorage.setItem('localCart',JSON.stringify(cart));
+      $.ajax({
+                      type: "POST",
+                      url: '@Url.RouteUrl(new {controller = "ShoppingCart", action = "ChangeCart"})?productId='+productId+'&value=1',
+                      data: { },
+                      dataType: 'json',
+                      timeout: 15000,
+                      success: function (correct) {
+                          $("#LoadingImage").hide();
+                          alert('Товар успешно добавлен в корзину');
+                          location.reload();      
+                      },
+                      error: function(inc) {
+                          $("#LoadingImage").hide();
+                          alert('Произошла ошибка');
+                          location.reload(); 
+                          
+                          
+                      }
+                  });
   }
-  $("#LoadingImage").hide();
-  location.reload();
 }
 function deleteFromCart(isLocal,productId) {
     $("#LoadingImage").show();
   if (isLocal){
-      let cart = JSON.parse(localStorage.getItem('localCart'));
+      let ls = localStorage.getItem('localCart');
+            if (ls==null || ls=="")
+                {
+                    localStorage.setItem("localCart","{}");
+                    ls = localStorage.getItem('localCart')
+                    
+                }
+            let cart = JSON.parse(ls);
       delete cart[productId];
       localStorage.setItem('localCart',JSON.stringify(cart));
+      $("#LoadingImage").hide();
+      alert('Товар успешно удален из корзины');
+        location.reload();
   }
   else {
-      
+      let ls = localStorage.getItem('localCart');
+            if (ls==null || ls=="")
+                {
+                    localStorage.setItem("localCart","{}");
+                    ls = localStorage.getItem('localCart')
+                    
+                }
+            let cart = JSON.parse(ls);
+            delete cart[productId];
+            localStorage.setItem('localCart',JSON.stringify(cart));
+       $.ajax({
+                            type: "POST",
+                            url: '@Url.RouteUrl(new {controller = "ShoppingCart", action = "ChangeCart"})?productId='+productId+'&value=0',
+                            data: { },
+                            dataType: 'json',
+                            timeout: 15000,
+                            success: function (correct) {
+                                $("#LoadingImage").hide();
+                                alert('Товар успешно удален из корзины');
+                                location.reload();      
+                            },
+                            error: function(inc) {
+                                $("#LoadingImage").hide();
+                                alert('Произошла ошибка');
+                                location.reload(); 
+                                
+                                
+                            }
+                        });
   }
-  $("#LoadingImage").hide();
-  location.reload();
+  
 }
 </script>
 <h1>
@@ -204,9 +282,9 @@ function deleteFromCart(isLocal,productId) {
                     <text>Рейтинг: @(Math.Round((double) first.RatingSum / first.RatingsAmount)) (@first.RatingsAmount)</text>
                 }
             }
-            if (Model.Cart.ContainsKey(product.Key.ToString()))
+            if (Model.Cart.ContainsKey(product.Key))
             {
-                <a id="@product.Key" class="btn btn-default" onclick="deleteFromCart(false,@product.Key)">Удалить из корзины</a>
+                <a class="btn btn-default" onclick="deleteFromCart(false,@product.Key)">Удалить из корзины</a>
             }
             else
             {

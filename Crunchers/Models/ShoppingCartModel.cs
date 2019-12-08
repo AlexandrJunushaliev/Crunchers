@@ -44,9 +44,9 @@ namespace Crunchers.Models
 
         public void ChangeCart(string userId, int newValue, int productId)
         {
-            var sqlExpression = newValue == 0
-                ? $"update \"ShoppingCarts\" set \"CartJson\"= \"CartJson\"::jsonb-'{productId}' where \"UserId\"={userId}"
-                : $"update \"ShoppingCarts\" set \"CartJson\"= jsonb_set(\"CartJson\"::jsonb,\'{productId}\',\'{newValue}\'::jsonb) where \"UserId\"={userId}";
+            var sqlExpression = newValue <= 0
+                ? $"update \"ShoppingCarts\" set \"CartJson\"= \"CartJson\"::jsonb-'{productId}' where \"UserId\"='{userId}'"
+                : $"update \"ShoppingCarts\" set \"CartJson\"= jsonb_set(\"CartJson\"::jsonb,\'{{{productId}}}\',\'{newValue}\'::jsonb) where \"UserId\"='{userId}'";
 
             using (_dbConnection)
             {

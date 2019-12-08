@@ -1,1 +1,151 @@
-﻿
+﻿@model Crunchers.Controllers.ShoppingCartController.ShoppingCartResponse
+<script>
+function minusFromCart(isLocal,productId,value) {
+   $("#LoadingImage").show();
+    if (isLocal){
+        let ls = localStorage.getItem('localCart');
+              if (ls==null || ls=="")
+                  {
+                      localStorage.setItem("localCart","{}");
+                      ls = localStorage.getItem('localCart')
+                      
+                  }
+              let cart = JSON.parse(ls);
+              if (cart[productId]==null){
+                  cart[productId]=0;
+              }
+              cart[productId]=cart[productId]-1;
+              if (cart[productId]<=0)
+                  {
+                      delete cart[productId];
+                  }
+        
+        localStorage.setItem('localCart',JSON.stringify(cart));
+        $("#LoadingImage").hide();
+        alert('Количество товара успешно изменено');
+          location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');
+    }
+    else {
+        let ls = localStorage.getItem('localCart');
+                      if (ls==null || ls=="")
+                          {
+                              localStorage.setItem("localCart","{}");
+                              ls = localStorage.getItem('localCart')
+                              
+                          }
+                      let cart = JSON.parse(ls);
+                      if (cart[productId]==null){
+                          cart[productId]=-1;
+                      }
+                      cart[productId]=value;
+                      if (cart[productId]<=0)
+                      {
+                          delete cart[productId];
+                      } 
+                      localStorage.setItem('localCart',JSON.stringify(cart));
+                
+         $.ajax({
+                              type: "POST",
+                              url: '@Url.RouteUrl(new {controller = "ShoppingCart", action = "ChangeCart"})?productId='+productId+'&value='+value,
+                              data: { },
+                              dataType: 'json',
+                              timeout: 15000,
+                              success: function (correct) {
+                                  $("#LoadingImage").hide();
+                                  alert('Количество товара успешно изменено');
+                                  location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');   
+                              },
+                              error: function(inc) {
+                                  $("#LoadingImage").hide();
+                                  alert('Произошла ошибка');
+                                  location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');        
+                              }
+                          });
+         
+    }
+}
+
+function plusToCart(isLocal,productId,value) {
+   $("#LoadingImage").show();
+    if (isLocal){
+        let ls = localStorage.getItem('localCart');
+              if (ls==null || ls=="")
+                  {
+                      localStorage.setItem("localCart","{}");
+                      ls = localStorage.getItem('localCart')
+                      
+                  }
+              let cart = JSON.parse(ls);
+              if (cart[productId]==null){
+                  cart[productId]=0;
+              }
+              cart[productId]=cart[productId]+1;
+        
+        localStorage.setItem('localCart',JSON.stringify(cart));
+        $("#LoadingImage").hide();
+        alert('Количество товара успешно изменено');
+          location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');
+    }
+    else {
+        let ls = localStorage.getItem('localCart');
+                      if (ls==null || ls=="")
+                          {
+                              localStorage.setItem("localCart","{}");
+                              ls = localStorage.getItem('localCart')
+                              
+                          }
+                      let cart = JSON.parse(ls);
+                      if (cart[productId]==null){
+                          cart[productId]=0;
+                      }
+                      cart[productId]=value;
+                      localStorage.setItem('localCart',JSON.stringify(cart));
+                
+         $.ajax({
+                              type: "POST",
+                              url: '@Url.RouteUrl(new {controller = "ShoppingCart", action = "ChangeCart"})?productId='+productId+'&value='+value,
+                              data: { },
+                              dataType: 'json',
+                              timeout: 15000,
+                              success: function (correct) {
+                                  $("#LoadingImage").hide();
+                                  alert('Количество товара успешно изменено');
+                                  location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');   
+                              },
+                              error: function(inc) {
+                                  $("#LoadingImage").hide();
+                                  alert('Произошла ошибка');
+                                  location.href="/ShoppingCart?localCartJson="+localStorage.getItem('localCart');        
+                              }
+                          });
+         
+    }
+}
+</script>
+@{
+    <form>
+        @{
+            foreach (var product in Model.CartProducts)
+            {
+                <a href="/Catalog/Product?productId=@product.ProductId">
+                    <img src="@product.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
+                </a>
+                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
+
+                if (Model.Cart.ContainsKey(product.ProductId))
+                {
+                    <a class="btn btn-default" onclick="minusFromCart(false,@product.ProductId,@Model.Cart[product.ProductId]-1)">-</a>
+                    <strong>@Model.Cart[product.ProductId]</strong>
+                    <a class="btn btn-default" onclick="plusToCart(false,@product.ProductId,@Model.Cart[product.ProductId]+1)">+</a>
+                }
+                else
+                {
+                    <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId)">-</a>
+                    <strong>@Model.LocalCart[product.ProductId]</strong>
+                    <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId)">+</a>
+                }
+                <br/>
+            }
+        }
+    </form>
+}
