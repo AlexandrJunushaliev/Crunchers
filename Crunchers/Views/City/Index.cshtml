@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNet.Identity
+@model Crunchers.Controllers.CityController.CityResponse
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+function ChangeUsersCity(cityId,nameRu) {
+    let isAuth = '@(User?.Identity?.GetUserId()!=null)'.toString().toLowerCase();
+    let urlParams = new URLSearchParams(window.location.search);
+   $("#LoadingImage").show();
+   if(!isAuth)
+   {
+       localStorage.setItem('city',nameRu);
+       alert('Город успешно изменен');
+                             location.href=location.href.replace(window.location.search,'?currentCity='+nameRu) ;    
+                             $("#LoadingImage").hide();
+       
+   }
+   else {
+        $.ajax({
+                         type: "POST",
+                         url: '@Url.RouteUrl(new {controller = "City", action = "ChangeUsersCity"})?cityId='+cityId,
+                         data: {},
+                         dataType: 'json',
+                         timeout: 15000,
+                         success: function (data) {
+                             $("#LoadingImage").hide();
+                             localStorage.setItem("city",nameRu);
+                             alert('Город успешно изменен');
+                             location.href=location.href.replace(window.location.search,'?currentCity='+nameRu) ;    
+                         },
+                         error: function(inc) {
+                             $("#LoadingImage").hide();
+                             alert('Произошла ошибка');
+                             location.reload(); 
+                         }
+                     });
+   }
+        
+}
+</script>
+@{
+    if (Model.IsHavePickUpPoints)
+    {
+        <text>Ваш город содержит следующие точки самовывоза:</text>
+        <br/>
+        <br/>
+        foreach (var pointsOfPickUpModel in Model.PointsOfPickUp)
+        {
+            <text>@pointsOfPickUpModel.Address</text>
+            <br/>
+        }
+    }
+    else
+    {
+        <text>Ваш город не содержит точек самовывоза</text>
+    }
+    <hr/>
+    <text>Также можно выбрать следующие города</text>
+    foreach (var city in Model.Cities.Where(x=>x.NameRu!=Model.City))
+    {
+        <form>
+           <text>@city.NameRu</text><a onclick="ChangeUsersCity(@city.CityId,'@city.NameRu')"> Выбрать город</a> 
+        </form>
+        
+    }
+}

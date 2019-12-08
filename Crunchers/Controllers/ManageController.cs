@@ -353,40 +353,7 @@ namespace Crunchers.Controllers
             });
         }
 
-        public class CityResponse
-        {
-            public IEnumerable<CityModel> Cities;
-            public IEnumerable<PointsOfPickUpModel> PointsOfPickUp;
-            public bool IsHavePickUpPoints;
-        }
-
-        public async Task<ActionResult> ChangeCity(string currentCity="")
-        {
-            var cities = await new CityModel().GetAllCities();
-
-            if (!cities.Any(x => x.NameRu == currentCity))
-            {
-                return View(new CityResponse() {Cities = cities, IsHavePickUpPoints = false});
-            }
-
-            var city = cities.Where(x => x.NameRu == currentCity).FirstOrDefault();
-            var pointsOfPickUp = await new PointsOfPickUpModel().GetPointsOfPickUpByCityId(city.CityId);
-            if (!pointsOfPickUp.Any())
-            {
-                return View(new CityResponse() {Cities = cities, IsHavePickUpPoints = false});
-            }
-
-            return View(new CityResponse()
-                {Cities = cities, IsHavePickUpPoints = true, PointsOfPickUp = pointsOfPickUp});
-        }
-
-        [System.Web.Http.HttpPost]
-        public ActionResult ChangeUsersCity(int cityId)
-        {
-            new UserModel().ChangeUserInfo(User.Identity.GetUserId(),cityId,"CityId");
-            return Json("Success", JsonRequestBehavior.AllowGet);
-        }
-
+        
         //
         // POST: /Manage/LinkLogin
         [System.Web.Mvc.HttpPost]

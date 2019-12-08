@@ -48,6 +48,7 @@ namespace Crunchers.Controllers
             public IEnumerable<IGrouping<int, ProductModel>> Products;
             public int MaxPrice;
             public int MinPrice;
+            public Dictionary<string, int> Cart;
         }
 
         public async Task<ActionResult> CategoryProducts(int categoryId, [FromUri] string[] filterValues = null,
@@ -64,6 +65,7 @@ namespace Crunchers.Controllers
             }
 
             var filterModels = await new FilterModel().GetFiltersByCategoryId(categoryId);
+            var shoppingCart = await new ShoppingCartModel().GetCartJson(User?.Identity?.GetUserId());
             var products = filterValues != null
                 ? await new ProductModel().FilterProducts(filterValuesTuples, filterModels, categoryId)
                 : await new ProductModel().GetProductsByCategoryId(categoryId);
@@ -86,17 +88,14 @@ namespace Crunchers.Controllers
                 ? products.Where(x => x.ProductPrice <= int.Parse(moneyMax) && x.ProductPrice >= int.Parse(moneyMin))
                 : products;
 
-            var filters = products.Join(filterModels, x => x.CharacteristicId, y => y.CharacteristicId, (x, y) =>
+            var filters = products.Join(filterModels, x => x.CharacteristicId, y => y.CharacteristicId, (x, y) => new
                 {
-                    return new
-                    {
-                        y.From,
-                        y.To,
-                        y.CharacteristicId,
-                        y.CharacteristicName,
-                        x.ValueToCharName,
-                        y.FilterId
-                    };
+                    y.From,
+                    y.To,
+                    y.CharacteristicId,
+                    y.CharacteristicName,
+                    x.ValueToCharName,
+                    y.FilterId
                 })
                 .Where(x => x.From < 0 ||
                             x.From >= 0 && x.ValueToCharName.Item2 <= x.To && x.ValueToCharName.Item2 >= x.From).Select(
@@ -122,7 +121,7 @@ namespace Crunchers.Controllers
             var response = new CatalogProductsResponse()
             {
                 Products = productsGroups, Filters = filters, MaxPrice = maxPriceForResponse,
-                MinPrice = minPriceForResponse
+                MinPrice = minPriceForResponse, Cart = JsonConvert.DeserializeObject<Dictionary<string,int>>(shoppingCart.CartJson)
             };
 
 
