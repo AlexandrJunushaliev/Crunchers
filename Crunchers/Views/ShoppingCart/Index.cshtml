@@ -11,7 +11,7 @@ function minusFromCart(isLocal,productId,value) {
                       
                   }
               let cart = JSON.parse(ls);
-              if (cart[productId]==null){
+              if (cart[productId]==null ||cart[productId]<0 ){
                   cart[productId]=0;
               }
               cart[productId]=cart[productId]-1;
@@ -34,8 +34,8 @@ function minusFromCart(isLocal,productId,value) {
                               
                           }
                       let cart = JSON.parse(ls);
-                      if (cart[productId]==null){
-                          cart[productId]=-1;
+                      if (cart[productId]==null ||cart[productId]<0){
+                          cart[productId]=0;
                       }
                       cart[productId]=value;
                       if (cart[productId]<=0)
@@ -76,7 +76,7 @@ function plusToCart(isLocal,productId,value) {
                       
                   }
               let cart = JSON.parse(ls);
-              if (cart[productId]==null){
+              if (cart[productId]==null ||cart[productId]<0){
                   cart[productId]=0;
               }
               cart[productId]=cart[productId]+1;
@@ -95,7 +95,7 @@ function plusToCart(isLocal,productId,value) {
                               
                           }
                       let cart = JSON.parse(ls);
-                      if (cart[productId]==null){
+                      if (cart[productId]==null ||cart[productId]<0){
                           cart[productId]=0;
                       }
                       cart[productId]=value;
@@ -137,12 +137,14 @@ function plusToCart(isLocal,productId,value) {
                     <a class="btn btn-default" onclick="minusFromCart(false,@product.ProductId,@Model.Cart[product.ProductId]-1)">-</a>
                     <strong>@Model.Cart[product.ProductId]</strong>
                     <a class="btn btn-default" onclick="plusToCart(false,@product.ProductId,@Model.Cart[product.ProductId]+1)">+</a>
+                    <text>x@(product.ProductPrice)руб. = @(Model.Cart[product.ProductId]*product.ProductPrice) руб.</text>
                 }
                 else
                 {
                     <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId)">-</a>
                     <strong>@Model.LocalCart[product.ProductId]</strong>
                     <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId)">+</a>
+                    <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId]*product.ProductPrice) руб.</text>
                 }
                 <br/>
             }

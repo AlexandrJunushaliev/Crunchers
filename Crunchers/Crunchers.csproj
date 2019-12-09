@@ -240,6 +240,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\ShoppingCartController.cs" />
     <Compile Include="Global.asax.cs">
@@ -255,6 +256,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MarkModel.cs" />
     <Compile Include="Models\OrderModels.cs" />
+    <Compile Include="Models\OrderViewModels.cs" />
     <Compile Include="Models\PointsOfPickUpModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\ReviewModel.cs" />
@@ -303,6 +305,7 @@
     <Content Include="Views\Catalog\Product.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\ShoppingCart\Index.cshtml" />
     <Content Include="Web.config" />

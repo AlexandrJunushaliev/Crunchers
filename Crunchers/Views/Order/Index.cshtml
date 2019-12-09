@@ -1,0 +1,140 @@
+﻿@model Crunchers.Models.MakeOrderViewModel
+<script>
+function showPickUp() {
+  document.getElementById("deliver").hidden = document.getElementById("showPickUp").checked;
+      document.getElementById("pickUp").hidden = !document.getElementById("showPickUp").checked;
+}
+</script>
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+<label class="switch">
+    <input type="checkbox" id="showPickUp" onclick="showPickUp()">
+    <span class="slider round"></span>
+</label>
+@using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "deliver"}))
+{
+    <h4>Доставка</h4>
+    <hr/>
+    @Html.AntiForgeryToken()
+
+    
+    
+    @Html.ValidationSummary("", new {@class = "text-danger"})
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakeDeliverOrder.Name, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.Name, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.MakeDeliverOrder.Name, "", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakeDeliverOrder.PhoneNumber, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.PhoneNumber, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.MakeDeliverOrder.PhoneNumber, "", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakeDeliverOrder.Address, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.Address, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.MakeDeliverOrder.Address, "", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakeDeliverOrder.ComfortTime, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.EditorFor(m => m.MakeDeliverOrder.ComfortTime)
+            @Html.ValidationMessageFor(m => m.MakeDeliverOrder.ComfortTime, "", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Задать пароль" class="btn btn-default"/>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "pickUp", hidden=""}))
+{
+    @Html.AntiForgeryToken()
+
+    <h4>Самовывоз</h4>
+    <hr/>
+    @Html.ValidationSummary("", new {@class = "text-danger"})
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakePickUpOrder.NewNewPassword, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.MakePickUpOrder.NewNewPassword, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.MakePickUpOrder.NewField, new {@class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.MakePickUpOrder.NewField, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Задать пароль" class="btn btn-default"/>
+        </div>
+    </div>
+}
