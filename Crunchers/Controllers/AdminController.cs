@@ -24,6 +24,20 @@ namespace Crunchers.Controllers
         {
         }
 
+        public void SendEmail(string recipient, string subject, string body)
+        {
+            SmtpClient client = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                EnableSsl = true,
+                Credentials = new NetworkCredential("nicon.goniashvili@gmail.com", "KirzovieSapogi")
+            };
+            client.Send("nicon.goniashvili@gmail.com", recipient, subject, body);
+        }
+
         public async Task<ActionResult> ManageShop()
         {
             return View();

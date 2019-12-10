@@ -318,8 +318,8 @@ namespace Crunchers.Controllers
 
         public async Task<ActionResult> Orders()
         {
-            //var orders = await new OrderModel().GetOrdersByUserGuid(User.Identity.GetUserId());
-            return View(/*orders*/);
+            var orders = await new OrderModel().GetOrdersByUserName(User.Identity.Name);
+            return View(orders);
         }
 
         [System.Web.Http.HttpPost]

@@ -210,7 +210,7 @@ namespace Crunchers.Models
         public async Task<IEnumerable<OrderModel>> GetOrdersByUserName(string userName)
         {
             var orders = new List<OrderModel>();
-            var sqlExpression = string.Format("SELECT * FROM \"Orders\" WHERE \"Name\"='{0}'", userName);
+            var sqlExpression = string.Format("SELECT * FROM \"Orders\" WHERE \"Email\"='{0}'", userName);
             using (_dbConnection)
             {
                 _dbConnection.Open();

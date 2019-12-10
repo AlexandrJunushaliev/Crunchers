@@ -1,4 +1,5 @@
-﻿@using Newtonsoft.Json
+﻿@using Microsoft.AspNet.Identity
+@using Newtonsoft.Json
 @model Crunchers.Controllers.ShoppingCartController.ShoppingCartResponse
 <script>
 function minusFromCart(isLocal,productId,value) {
@@ -15,7 +16,7 @@ function minusFromCart(isLocal,productId,value) {
               if (cart[productId]==null ||cart[productId]<0 ){
                   cart[productId]=0;
               }
-              cart[productId]=cart[productId]-1;
+              cart[productId]=value;
               if (cart[productId]<=0)
                   {
                       delete cart[productId];
@@ -80,7 +81,7 @@ function plusToCart(isLocal,productId,value) {
               if (cart[productId]==null ||cart[productId]<0){
                   cart[productId]=0;
               }
-              cart[productId]=cart[productId]+1;
+              cart[productId]=value;
         
         localStorage.setItem('localCart',JSON.stringify(cart));
         $("#LoadingImage").hide();
@@ -123,17 +124,15 @@ function plusToCart(isLocal,productId,value) {
     }
 }
 function toOrder(cart,localCart,price) {
-    if(cart!=null){
-        localStorage.setItem("orderCart",JSON.stringify(cart))
-    }
-    else {
-        localStorage.setItem("orderCart",JSON.stringify(localCart))
-    }
+    let order = Object.assign(localCart, cart);
+    localStorage.setItem("orderCart",JSON.stringify(order));
   localStorage.setItem('price',price);
-    location.href="/order?nameRu="+localStorage.getItem("city");
+  location.href="/order?nameRu="+localStorage.getItem('city');
+   
 }
 </script>
 @{
+    var isLocal = User?.Identity?.GetUserId()==null;
     var price = 0;
     <form>
         @{
@@ -154,9 +153,9 @@ function toOrder(cart,localCart,price) {
                 }
                 else
                 {
-                    <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId)">-</a>
+                    <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]-1)">-</a>
                     <strong>@Model.LocalCart[product.ProductId]</strong>
-                    <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId)">+</a>
+                    <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]+1)">+</a>
                     <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId] * product.ProductPrice) руб.</text>
                     price += Model.LocalCart[product.ProductId] * product.ProductPrice;
                 }
@@ -164,9 +163,16 @@ function toOrder(cart,localCart,price) {
             }
         }
     </form>
-    <hr/>
-    <strong>Итого: @price руб.</strong>
-    var cart = JsonConvert.SerializeObject(Model.Cart);
-    var local = JsonConvert.SerializeObject(Model.LocalCart);
-    <a class="btn btn-default" onclick="toOrder(@cart,@local,@price)">Оформить заказ</a>
+    if (price == 0)
+    {
+        <h1>В вашей корзине пока нет товаров.</h1>
+    }
+    else
+    {
+        <hr/>
+        <strong>Итого: @price руб.</strong>
+        var cart = JsonConvert.SerializeObject(Model.Cart);
+        var local = JsonConvert.SerializeObject(Model.LocalCart);
+        <a class="btn btn-default" onclick="toOrder(@cart,@local,@price)">Оформить заказ</a>
+    }
 }

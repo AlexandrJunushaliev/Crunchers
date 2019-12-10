@@ -3,32 +3,27 @@
 {
     <form>
         <form>
-            <text>Id = @order.OrderId</text>
+            <text>Номер заказа = @order.OrderId</text>
         </form>
         <form>
-            <text>Active = @order.Active</text>
+            <text>Активен = @order.Active</text>
             <a type="button" onclick="
-                $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Active.ToString())&row=Active&orderId=@(order.OrderId)', JSON.stringify());">Update Active</a>
+                $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Active.ToString())&row=Active&orderId=@(order.OrderId)');">Update Active</a>
         </form>
         <form>
-            <text>IsPickUp = @order.IsForPickUp</text>
+            <text>Самовывоз? = @order.IsForPickUp</text>
             <a type="button" onclick="
-                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.IsForPickUp.ToString())&row=Deliver&orderId=@(order.OrderId)', JSON.stringify());">Update Deliver</a>
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.IsForPickUp.ToString())&row=Deliver&orderId=@(order.OrderId)');">Update Deliver</a>
         </form>
         <form>
-            <text>Delivered = @order.Delivered</text>
+            <text>Доставлен = @order.Delivered</text>
             <a type="button" onclick="
-                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Delivered.ToString())&row=Delivered&orderId=@(order.OrderId)', JSON.stringify());">Update Delivered</a>
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Delivered.ToString())&row=Delivered&orderId=@(order.OrderId)');">Update Delivered</a>
         </form>
         <form>
-            <text>Paid = @order.Paid</text>
+            <text>Оплачен = @order.Paid</text>
             <a type="button" onclick="
-                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Paid.ToString())&row=Paid&orderId=@(order.OrderId)', JSON.stringify());">Update Paid</a>
+                  $.post('@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value=@(order.Paid.ToString())&row=Paid&orderId=@(order.OrderId)')">Update Paid</a>
         </form>
-        @*<form>
-            <text>IsPickUp = @order.Products</text>
-        </form>
-        <form>@order.UserGuid</form>
-        <hr/>*@
     </form>
 }

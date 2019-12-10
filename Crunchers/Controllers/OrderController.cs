@@ -104,6 +104,7 @@ namespace Crunchers.Controllers
                 EnableSsl = true
             };
             client.Send("nicon.goniashvili@gmail.com", "dzhunall@mail.ru", "test", "testbody");
+            new ShoppingCartModel().ClearCart(User.Identity.GetUserId());
             return Json("Success", JsonRequestBehavior.AllowGet);
         }
     }

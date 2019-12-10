@@ -13,6 +13,9 @@ window.onload=function() {
           success: function (correct) {
               $("#LoadingImage").hide();
               alert('Заказ зарегистрирован');
+              localStorage.removeItem("orderCart");
+              localStorage.removeItem("price");
+              localStorage.removeItem("localCart");
               location.href='@Url.RouteUrl(new {controller = "Home", action = "Index"})'
           },
           error: function(inc) {
