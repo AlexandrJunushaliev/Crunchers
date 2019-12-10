@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using Unity;
 using System.Configuration;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Configuration;
@@ -14,15 +15,18 @@ namespace Crunchers.Models
 
     public class OrderModel
     {
-        public readonly int Id;
-        public readonly string Products;
+        public readonly int OrderId;
         public readonly bool Active;
         public readonly bool Delivered;
         public readonly bool Paid;
-        public readonly bool Deliver;
-        public readonly string UserGuid;
+        public readonly bool IsForPickUp;
         public readonly int Price;
-
+        public readonly DateTime ComfortTimeFrom;
+        public readonly string Address;
+        public readonly string Name;
+        public readonly string Phone;
+        public readonly string Email;
+        public readonly DateTime ComfortTimeTo;
         private readonly DbConnection _dbConnection;
         private readonly DbCommand _dbCommand;
 
@@ -34,23 +38,39 @@ namespace Crunchers.Models
                 WebConfigurationManager.ConnectionStrings["ShopDbConnection"].ConnectionString;
         }
 
-        private OrderModel(int id, string products, bool active, bool delivered, bool paid, bool deliver,
-            string userGuid, int price)
+        private OrderModel(int orderId, bool active, bool delivered, bool paid, bool isForPickUp, int price,
+            DateTime comfortTimeFrom, string address, string name, string phone, string email, DateTime comfortTimeTo)
         {
-            Id = id;
-            Products = products;
+            OrderId = orderId;
             Active = active;
             Delivered = delivered;
-            Deliver = deliver;
             Paid = paid;
-            UserGuid = userGuid;
+            IsForPickUp = isForPickUp;
             Price = price;
+            ComfortTimeFrom = comfortTimeFrom;
+            Address = address;
+            Name = name;
+            Phone = phone;
+            Email = email;
+            ComfortTimeTo = comfortTimeTo;
         }
 
-        public void UpdateOrder(bool value, string row,int orderId)
+        public void UpdateOrder(bool value, string row, int orderId)
         {
             var sqlExpression =
-                string.Format("UPDATE \"Orders\" SET \"{1}\"='{2}' WHERE \"Id\"='{0}'",orderId,row,value);
+                string.Format("UPDATE \"Orders\" SET \"{1}\"='{2}' WHERE \"orderId\"='{0}'", orderId, row, value);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.ExecuteNonQueryAsync();
+            }
+        }
+        public void UpdatePrice(int value, int orderId)
+        {
+            var sqlExpression =
+                string.Format("UPDATE \"Orders\" SET \"Price\"='{0}' WHERE \"OrderId\"='{1}'", value, orderId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -60,10 +80,62 @@ namespace Crunchers.Models
             }
         }
 
-        public async Task<IEnumerable<OrderModel>> GetAllOrders()
+        public async Task AddProductsFromOrder(IEnumerable<int> productsIds, int orderId)
+        {
+            var sqlList = productsIds.Select(productsId =>
+                string.Format("insert into \"ProductsFromOrders\" (\"ProductId\",\"OrderId\") values ('{0}','{1}')",
+                    productsId, orderId)).ToList();
+
+
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                foreach (var sql in sqlList)
+                {
+                    _dbCommand.CommandText = sql;
+                    _dbCommand.Connection = _dbConnection;
+                    await _dbCommand.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task<int> AddOrder(bool paid, bool isForPickUp, DateTime comfortTimeFrom, string address,
+            string name,
+            string phone, string email, DateTime comfortTimeTo)
+        {
+            var orderId = 0;
+            var sqlExpression =
+                string.Format(
+                    "insert into \"Orders\" (\"Active\", \"Delivered\", \"Paid\", \"IsForPickUp\", \"Price\", \"ComfortTimeFrom\", \"Address\", \"Name\",\"Phone\", \"Email\", \"ComfortTimeTo\") values(true, false,'{0}', '{1}',0,'{2}','{3}','{4}','{5}','{6}','{7}') returning \"OrderId\"",
+                    paid, isForPickUp, comfortTimeFrom, address, name, phone, email, comfortTimeTo);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        orderId = reader.GetInt32(0);
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return orderId;
+        }
+
+        public async Task<IEnumerable<OrderModel>> GetOrderById(int orderId)
         {
             var orders = new List<OrderModel>();
-            var sqlExpression = string.Format("SELECT * FROM \"Orders\" ");
+            var sqlExpression =
+                string.Format(
+                    "select * from \"Orders\" join \"ProductsFromOrders\" on \"Orders\".\"OrderId\" = \"ProductsFromOrders\".\"OrderId\" where  \"Orders\".\"OrderId\"='{0}'",
+                    orderId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -74,15 +146,19 @@ namespace Crunchers.Models
                 {
                     while (reader.Read())
                     {
-                        var id = reader.GetInt32(0);
-                        var products = reader.GetString(1);
-                        var active = reader.GetBoolean(2);
-                        var delivered = reader.GetBoolean(3);
-                        var paid = reader.GetBoolean(4);
-                        var deliver = reader.GetBoolean(5);
-                        var guid = reader.GetString(6);
-                        var price = reader.GetInt32(7);
-                        var order = new OrderModel(id, products, active, delivered, paid, deliver, guid, price);
+                        var active = reader.GetBoolean(1);
+                        var delivered = reader.GetBoolean(2);
+                        var paid = reader.GetBoolean(3);
+                        var isForPickUp = reader.GetBoolean(4);
+                        var price = reader.GetInt32(5);
+                        var comfortTimeFrom = reader.GetDateTime(6);
+                        var address = reader.GetString(7);
+                        var name = reader.GetString(8);
+                        var phone = reader.GetString(9);
+                        var email = reader.GetString(10);
+                        var comfortTimeTo = reader.GetDateTime(11);
+                        var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
+                            comfortTimeFrom, address, name, phone, email, comfortTimeTo);
                         orders.Add(order);
                     }
                 }
@@ -93,10 +169,10 @@ namespace Crunchers.Models
             return orders;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetOrdersByUserGuid(string userGuid)
+        public async Task<IEnumerable<OrderModel>> GetAllOrders()
         {
             var orders = new List<OrderModel>();
-            var sqlExpression = string.Format("SELECT * FROM \"Orders\" WHERE \"UserGuid\"='{0}'", userGuid);
+            var sqlExpression = string.Format("select * from \"Orders\"");
             using (_dbConnection)
             {
                 _dbConnection.Open();
@@ -107,15 +183,58 @@ namespace Crunchers.Models
                 {
                     while (reader.Read())
                     {
-                        var id = reader.GetInt32(0);
-                        var products = reader.GetString(1);
-                        var active = reader.GetBoolean(2);
-                        var delivered = reader.GetBoolean(3);
-                        var paid = reader.GetBoolean(4);
-                        var deliver = reader.GetBoolean(5);
-                        var guid = reader.GetString(6);
-                        var price = reader.GetInt32(7);
-                        var order = new OrderModel(id, products, active, delivered, paid, deliver, guid, price);
+                        var orderId = reader.GetInt32(0);
+                        var active = reader.GetBoolean(1);
+                        var delivered = reader.GetBoolean(2);
+                        var paid = reader.GetBoolean(3);
+                        var isForPickUp = reader.GetBoolean(4);
+                        var price = reader.GetInt32(5);
+                        var comfortTimeFrom = reader.GetDateTime(6);
+                        var address = reader.GetString(7);
+                        var name = reader.GetString(8);
+                        var phone = reader.GetString(9);
+                        var email = reader.GetString(10);
+                        var comfortTimeTo = reader.GetDateTime(11);
+                        var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
+                            comfortTimeFrom, address, name, phone, email, comfortTimeTo);
+                        orders.Add(order);
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return orders;
+        }
+
+        public async Task<IEnumerable<OrderModel>> GetOrdersByUserName(string userName)
+        {
+            var orders = new List<OrderModel>();
+            var sqlExpression = string.Format("SELECT * FROM \"Orders\" WHERE \"Name\"='{0}'", userName);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var orderId = reader.GetInt32(0);
+                        var active = reader.GetBoolean(1);
+                        var delivered = reader.GetBoolean(2);
+                        var paid = reader.GetBoolean(3);
+                        var isForPickUp = reader.GetBoolean(4);
+                        var price = reader.GetInt32(5);
+                        var comfortTimeFrom = reader.GetDateTime(6);
+                        var address = reader.GetString(7);
+                        var name = reader.GetString(8);
+                        var phone = reader.GetString(9);
+                        var email = reader.GetString(10);
+                        var comfortTimeTo = reader.GetDateTime(11);
+                        var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
+                            comfortTimeFrom, address, name, phone, email, comfortTimeTo);
                         orders.Add(order);
                     }
                 }

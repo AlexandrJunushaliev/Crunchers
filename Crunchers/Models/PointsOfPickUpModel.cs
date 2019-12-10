@@ -97,5 +97,33 @@ namespace Crunchers.Models
 
             return points;
         }
+        public async Task<IEnumerable<PointsOfPickUpModel>> GetPointsOfPickUpByNameRu(string nameRu)
+        {
+            var points = new List<PointsOfPickUpModel>();
+            var sqlExpression = string.Format("select * from \"PointsOfPickUp\"p join \"Cities\"c on c.\"CityId\"=p.\"CityId\" where \"NameRu\"='{0}'", nameRu);
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var pointId = reader.GetInt32(0);
+                        var cityId = reader.GetInt32(1);
+                        var address = reader.GetString(2);
+                        var point = new PointsOfPickUpModel(pointId,cityId,address);
+                        points.Add(point);
+                    }
+                }
+
+                reader.Close();
+                _dbConnection.Close();
+            }
+
+            return points;
+        }
     }
 }

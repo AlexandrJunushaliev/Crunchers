@@ -1,0 +1,25 @@
+﻿@model int
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+window.onload=function() {
+  $("#LoadingImage").show();
+    $.ajax({
+          type: "POST",
+          url: '@Url.RouteUrl(new {controller = "Order", action = "AddProductsToOrder"})?orderId=@(Model)&price='+localStorage.getItem("price"),
+          data: localStorage.getItem("orderCart"),
+          dataType: 'json',
+          success: function (correct) {
+              $("#LoadingImage").hide();
+              alert('Заказ зарегистрирован');
+              location.href='@Url.RouteUrl(new {controller = "Home", action = "Index"})'
+          },
+          error: function(inc) {
+              $("#LoadingImage").hide();
+              alert('Произошла ошибка');
+              location.reload();  
+          }
+      });
+}
+</script>

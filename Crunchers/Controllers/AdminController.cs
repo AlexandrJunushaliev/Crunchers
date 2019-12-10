@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -23,7 +24,7 @@ namespace Crunchers.Controllers
         {
         }
 
-        public ActionResult ManageShop()
+        public async Task<ActionResult> ManageShop()
         {
             return View();
         }

@@ -41,6 +41,20 @@ namespace Crunchers.Models
 
             return new IdentityResult();
         }
+        
+        public void ClearCart(string userId)
+        {
+            var sqlExpression = $"update \"ShoppingCarts\" set \"CartJson\"= '{{}}' where \"UserId\"='{userId}'";
+
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.ExecuteNonQuery();
+                _dbConnection.Close();
+            }
+        }
 
         public void ChangeCart(string userId, int newValue, int productId)
         {

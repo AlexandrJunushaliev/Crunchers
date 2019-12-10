@@ -1,4 +1,5 @@
-﻿@model Crunchers.Controllers.ShoppingCartController.ShoppingCartResponse
+﻿@using Newtonsoft.Json
+@model Crunchers.Controllers.ShoppingCartController.ShoppingCartResponse
 <script>
 function minusFromCart(isLocal,productId,value) {
    $("#LoadingImage").show();
@@ -121,8 +122,19 @@ function plusToCart(isLocal,productId,value) {
          
     }
 }
+function toOrder(cart,localCart,price) {
+    if(cart!=null){
+        localStorage.setItem("orderCart",JSON.stringify(cart))
+    }
+    else {
+        localStorage.setItem("orderCart",JSON.stringify(localCart))
+    }
+  localStorage.setItem('price',price);
+    location.href="/order?nameRu="+localStorage.getItem("city");
+}
 </script>
 @{
+    var price = 0;
     <form>
         @{
             foreach (var product in Model.CartProducts)
@@ -137,17 +149,24 @@ function plusToCart(isLocal,productId,value) {
                     <a class="btn btn-default" onclick="minusFromCart(false,@product.ProductId,@Model.Cart[product.ProductId]-1)">-</a>
                     <strong>@Model.Cart[product.ProductId]</strong>
                     <a class="btn btn-default" onclick="plusToCart(false,@product.ProductId,@Model.Cart[product.ProductId]+1)">+</a>
-                    <text>x@(product.ProductPrice)руб. = @(Model.Cart[product.ProductId]*product.ProductPrice) руб.</text>
+                    <text>x@(product.ProductPrice)руб. = @(Model.Cart[product.ProductId] * product.ProductPrice) руб.</text>
+                    price += Model.Cart[product.ProductId] * product.ProductPrice;
                 }
                 else
                 {
                     <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId)">-</a>
                     <strong>@Model.LocalCart[product.ProductId]</strong>
                     <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId)">+</a>
-                    <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId]*product.ProductPrice) руб.</text>
+                    <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId] * product.ProductPrice) руб.</text>
+                    price += Model.LocalCart[product.ProductId] * product.ProductPrice;
                 }
                 <br/>
             }
         }
     </form>
+    <hr/>
+    <strong>Итого: @price руб.</strong>
+    var cart = JsonConvert.SerializeObject(Model.Cart);
+    var local = JsonConvert.SerializeObject(Model.LocalCart);
+    <a class="btn btn-default" onclick="toOrder(@cart,@local,@price)">Оформить заказ</a>
 }
