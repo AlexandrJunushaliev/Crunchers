@@ -323,9 +323,10 @@ namespace Crunchers.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        public void UpdateOrder(bool value, string row, int orderId)
+        public async Task<ActionResult> UpdateOrder(bool value, string row, int orderId)
         {
-            new OrderModel().UpdateOrder(!value, row, orderId);
+            await new OrderModel().UpdateOrder(!value, row, orderId);
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         //

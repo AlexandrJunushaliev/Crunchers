@@ -98,14 +98,29 @@ namespace Crunchers.Controllers
             
             await new OrderModel().AddProductsFromOrder(values.Keys,orderId);
             new OrderModel().UpdatePrice(price,orderId);
-            var client = new SmtpClient("smtp.gmail.com", 587)
+            var order = (await new OrderModel().GetOrderById(orderId)).Item1.Distinct().First();
+            var body=new StringBuilder($"Ваш заказ номер {order.OrderId} будет доставлен по адресу {order.Address}");
+            if (!order.IsForPickUp)
             {
-                Credentials = new NetworkCredential("nicon.goniashvili@gmail.com", "KirzovieSapogi"),
-                EnableSsl = true
-            };
-            client.Send("nicon.goniashvili@gmail.com", "dzhunall@mail.ru", "test", "testbody");
+                body.Append(
+                    $", {order.ComfortTimeFrom.Date.ToShortDateString()}, c {order.ComfortTimeFrom.Hour} до {order.ComfortTimeTo.Hour}");
+            }
+
+            if (!order.Paid)
+            {
+                body.Append($". К оплате {order.Price} р");
+            }
+
+            body.Append(".");
+            AdminController.SendEmail(order.Email,"Спасибо за покупку!",body.ToString());
             new ShoppingCartModel().ClearCart(User.Identity.GetUserId());
             return Json("Success", JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> ShowOrderInfo(int orderId)
+        {
+            var order = await new OrderModel().GetOrderById(orderId);
+            return View(order);
         }
     }
 }

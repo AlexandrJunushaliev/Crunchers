@@ -3,24 +3,52 @@
 {
     <form>
         <form>
-            <text>Id = @order.OrderId</text>
+            <text>Номер заказа = @order.OrderId</text>
         </form>
         <form>
-            <text>Active = @order.Active</text>
-            
+            @if (order.Active)
+            {
+                <text>Заказ активен</text>
+            }
+            else
+            {
+                <text>Заказ неактивен</text>
+            }
         </form>
         <form>
-            <text>IsPickUp = @order.IsForPickUp</text>
-           
+            @if (order.IsForPickUp)
+            {
+                <text>Самовывоз</text>
+            }
+            else
+            {
+                <text>Доставка</text>
+            }
         </form>
         <form>
-            <text>Delivered = @order.Delivered</text>
-            
+            @if (!order.Delivered)
+            {
+                <text>Заказ не доставлен</text>
+            }
+            else
+            {
+                <text>Заказ доставлен</text>
+            }
         </form>
         <form>
-            <text>Paid = @order.Paid</text>
-        </form>
-    </form>
+            @if (!order.Paid)
+            {
+                <text>Заказ не оплачен</text>
+            }
+            else
+            {
+                <text>Заказ оплачен</text>
+            }
 
+        </form>
+        <a href="/Order/ShowOrderInfo?orderId=@order.OrderId">Перейти к заказу</a>
+        
+    </form>
+    <br/>
     <br/>
 }

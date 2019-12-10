@@ -5,14 +5,26 @@ using System.Data.Common;
 using Unity;
 using System.Configuration;
 using System.Linq;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Configuration;
+using Crunchers.Controllers;
 
 namespace Crunchers.Models
 {
-    //вопрос: делать ли код fluentAPI? делать OrderWorker и Order? доступ к полям необходим, но он может запутать пользователя
+    public class ShortProductInfoForOrder
+    {
+        public readonly int ProductId;
+        public readonly string ProductName;
 
+        public ShortProductInfoForOrder(string productName, int productId)
+        {
+            ProductName = productName;
+            ProductId = productId;
+        }
+    }
     public class OrderModel
     {
         public readonly int OrderId;
@@ -54,18 +66,62 @@ namespace Crunchers.Models
             Email = email;
             ComfortTimeTo = comfortTimeTo;
         }
+        public override bool Equals(object obj)
+        {
+            return obj is OrderModel item && this.OrderId.Equals(item.OrderId);
+        }
 
-        public void UpdateOrder(bool value, string row, int orderId)
+        public override int GetHashCode()
+        {
+            return this.OrderId.GetHashCode();
+        }
+
+        public IEnumerable<ProductModel> GetProductsInOrdersWithCurrent(int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateOrder(bool value, string row, int orderId)
         {
             var sqlExpression =
-                string.Format("UPDATE \"Orders\" SET \"{1}\"='{2}' WHERE \"orderId\"='{0}'", orderId, row, value);
+                string.Format("UPDATE \"Orders\" SET \"{1}\"='{2}' WHERE \"OrderId\"='{0}'", orderId, row, value);
             using (_dbConnection)
             {
                 _dbConnection.Open();
                 _dbCommand.CommandText = sqlExpression;
                 _dbCommand.Connection = _dbConnection;
-                _dbCommand.ExecuteNonQueryAsync();
+                await _dbCommand.ExecuteNonQueryAsync();
             }
+            var order = (await new OrderModel().GetOrderById(orderId)).Item1.Distinct().First();
+            var body = new StringBuilder($"Заказ номер {order.OrderId}:\n");
+            if (order.Active)
+            {
+                body.Append("Активен\n");
+            }
+            else
+            {
+                body.Append("Неактивен\n");
+            }
+            if (order.Delivered && order.IsForPickUp)
+            {
+                body.Append("Доставлен\n");
+                body.Append($"Заберите ваш заказ по адресу {order.Address}\n");
+            }
+            if(!order.Delivered && !order.IsForPickUp)
+            {
+                body.Append($"Ваш заказ будет доставлен {order.ComfortTimeFrom.Date.ToShortDateString()} с {order.ComfortTimeFrom.Hour} ч. до {order.ComfortTimeTo.Hour} ч.\n");
+            }
+
+            if (order.Paid)
+            {
+                body.Append("Оплачен\n");
+            }
+            else
+            {
+                body.Append($"К оплате {order.Price}");
+            }
+            
+            AdminController.SendEmail(order.Email,"Смена статуса заказа",body.ToString());
         }
         public void UpdatePrice(int value, int orderId)
         {
@@ -129,12 +185,13 @@ namespace Crunchers.Models
             return orderId;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetOrderById(int orderId)
+        public async Task<Tuple<IEnumerable<OrderModel>,IEnumerable<ShortProductInfoForOrder>>> GetOrderById(int orderId)
         {
             var orders = new List<OrderModel>();
+            var products = new List<ShortProductInfoForOrder>();
             var sqlExpression =
                 string.Format(
-                    "select * from \"Orders\" join \"ProductsFromOrders\" on \"Orders\".\"OrderId\" = \"ProductsFromOrders\".\"OrderId\" where  \"Orders\".\"OrderId\"='{0}'",
+                    "select * from \"Orders\" join \"ProductsFromOrders\" on \"Orders\".\"OrderId\" = \"ProductsFromOrders\".\"OrderId\" and \"Orders\".\"OrderId\"='{0}' join \"Products\" p on \"ProductsFromOrders\".\"ProductId\" = p.\"ProductId\"",
                     orderId);
             using (_dbConnection)
             {
@@ -157,16 +214,18 @@ namespace Crunchers.Models
                         var phone = reader.GetString(9);
                         var email = reader.GetString(10);
                         var comfortTimeTo = reader.GetDateTime(11);
+                        var productId = reader.GetInt32(12);
+                        var productName = reader.GetString(16);
+                        var product = new ShortProductInfoForOrder(productName,productId);
                         var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
                             comfortTimeFrom, address, name, phone, email, comfortTimeTo);
                         orders.Add(order);
+                        products.Add(product);
                     }
                 }
-
                 reader.Close();
             }
-
-            return orders;
+            return Tuple.Create<IEnumerable<OrderModel>, IEnumerable<ShortProductInfoForOrder>>(orders,products);
         }
 
         public async Task<IEnumerable<OrderModel>> GetAllOrders()

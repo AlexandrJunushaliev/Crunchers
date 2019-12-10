@@ -24,7 +24,7 @@ namespace Crunchers.Controllers
         {
         }
 
-        public void SendEmail(string recipient, string subject, string body)
+        public static void SendEmail(string recipient, string subject, string body)
         {
             SmtpClient client = new SmtpClient
             {

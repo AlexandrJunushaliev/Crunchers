@@ -1,0 +1,58 @@
+﻿@model Tuple<IEnumerable<Crunchers.Models.OrderModel>,IEnumerable<Crunchers.Models.ShortProductInfoForOrder>>
+@{
+    foreach (var order in Model.Item1.Distinct())
+    {
+        <form>
+            <form>
+                <text>Номер заказа = @order.OrderId</text>
+            </form>
+            <form>
+                @if (order.Active)
+                {
+                    <text>Заказ активен</text>
+                }
+                else
+                {
+                    <text>Заказ неактивен</text>
+                }
+            </form>
+            <form>
+                @if (order.IsForPickUp)
+                {
+                    <text>Самовывоз</text>
+                }
+                else
+                {
+                    <text>Доставка</text>
+                }
+            </form>
+            <form>
+                @if (!order.Delivered)
+                {
+                    <text>Заказ не доставлен</text>
+                }
+                else
+                {
+                    <text>Заказ доставлен</text>
+                }
+            </form>
+            <form>
+                @if (!order.Paid)
+                {
+                    <text>Заказ не оплачен</text>
+                }
+                else
+                {
+                    <text>Заказ оплачен</text>
+                }
+
+            </form>
+            <hr/>
+            @foreach (var product in Model.Item2)
+            {
+                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
+                <br/>
+            }
+        </form>
+    }
+}

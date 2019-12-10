@@ -306,6 +306,7 @@
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\Order\ShowOrderInfo.cshtml" />
     <Content Include="Views\Order\SuccessOrder.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\ShoppingCart\Index.cshtml" />
