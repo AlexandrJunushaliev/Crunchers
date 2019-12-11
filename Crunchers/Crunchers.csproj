@@ -260,6 +260,7 @@
     <Compile Include="Models\PointsOfPickUpModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\ReviewModel.cs" />
+    <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\ShoppingCartModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

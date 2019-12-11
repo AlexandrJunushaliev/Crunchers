@@ -1,7 +1,45 @@
-﻿@model Crunchers.Controllers.A
+﻿@model Tuple<IEnumerable<Crunchers.Models.ProductModel>, IEnumerable<Crunchers.Models.CategoryModel>>
 
-
-    @{
-        <h2>@Model.text;</h2>
-        
+@{
+    <h2>Товары по запросу</h2>
+    if (!Model.Item1.Any())
+    {
+        <h3>Товаров по вашему запросу не найдено.</h3>
     }
+    else
+    {
+        foreach (var product in Model.Item1)
+        {
+            <form>
+                <a href="/Catalog/Product?productId=@product.ProductId">
+                    <img src="@product.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
+                </a>
+                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
+                <strong>@product.ProductPrice</strong>
+                @if (product.RatingsAmount == 0)
+                {
+                    <text>Рейтинг: 0 (нет оценок)</text>
+                }
+                else
+                {
+                    <text>Рейтинг: @(Math.Round((double) product.RatingSum / product.RatingsAmount)) (@product.RatingsAmount)</text>
+                }
+            </form>
+            <br/>
+        }
+    }
+    <hr/>
+    <h2>Категории по запросу</h2>
+    if (!Model.Item2.Any())
+    {
+        <h3>Категорий товаров по вашему запросу не найдено.</h3>
+    }
+    else
+    {
+        foreach (var category in Model.Item2)
+        {
+            <a href="@Url.RouteUrl(new {controller = "Catalog", action = "CategoryProducts"})?categoryId=@category.CategoryId">@category.CategoryName</a>
+            <br/>
+        }
+    }
+}

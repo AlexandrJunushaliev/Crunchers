@@ -107,6 +107,20 @@ function DeleteMark(markId) {
         <br/>
     }
     <hr/>
+    <h3>С этим товаром покупают:</h3>
+    <form>
+        @foreach (var product in Model.BuyWithThisProduct)
+        {
+            <form>
+                <a href="/Catalog/Product?productId=@product.ProductId">
+                    <img src="@product.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
+                </a>
+                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
+                <text>@product.ProductId</text>
+            </form>
+        }
+    </form>
+    <hr/>
     <h3>Рейтинг товара:</h3>
     if (productInfo.RatingsAmount == 0)
     {

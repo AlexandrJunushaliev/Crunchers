@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Crunchers.Models;
 
 namespace Crunchers.Controllers
 {
@@ -10,10 +12,10 @@ namespace Crunchers.Controllers
     public class SearchController : Controller
     {
         // GET
-        public ActionResult Index(string text)
+        public async Task<ActionResult> Index(string text)
         {
-            var a =new A(){text = text};
-            return View(a);
+            var resp = await new SearchModel().FullTextSearch(text);
+            return View(resp);
         }
     }
 }

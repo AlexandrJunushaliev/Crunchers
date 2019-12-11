@@ -25,6 +25,7 @@ namespace Crunchers.Models
             ProductId = productId;
         }
     }
+
     public class OrderModel
     {
         public readonly int OrderId;
@@ -66,6 +67,7 @@ namespace Crunchers.Models
             Email = email;
             ComfortTimeTo = comfortTimeTo;
         }
+
         public override bool Equals(object obj)
         {
             return obj is OrderModel item && this.OrderId.Equals(item.OrderId);
@@ -76,9 +78,29 @@ namespace Crunchers.Models
             return this.OrderId.GetHashCode();
         }
 
-        public IEnumerable<ProductModel> GetProductsInOrdersWithCurrent(int productId)
+        public async Task<IEnumerable<ProductModel>> GetProductsInOrdersWithCurrent(int currentProductId)
         {
-            throw new NotImplementedException();
+            var sqlExpression = string.Format(
+                "with po as(select * from \"ProductsFromOrders\" where \"ProductId\"='{0}') select p.\"ProductId\" from \"ProductsFromOrders\" p join po on po.\"OrderId\"=p.\"OrderId\" and p.\"ProductId\"!={0} group by p.\"ProductId\" order by  count(p.\"ProductId\") desc limit 3",
+                currentProductId);
+            var productIds = new List<int>();
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.Connection = _dbConnection;
+                _dbCommand.CommandText = sqlExpression;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        productIds.Add(reader.GetInt32(0));
+                    }
+                }
+                reader.Close();
+                _dbConnection.Close();
+            }
+            return await new ProductModel().GetPrimaryProductsInfo(productIds);
         }
 
         public async Task UpdateOrder(bool value, string row, int orderId)
@@ -92,6 +114,7 @@ namespace Crunchers.Models
                 _dbCommand.Connection = _dbConnection;
                 await _dbCommand.ExecuteNonQueryAsync();
             }
+
             var order = (await new OrderModel().GetOrderById(orderId)).Item1.Distinct().First();
             var body = new StringBuilder($"Заказ номер {order.OrderId}:\n");
             if (order.Active)
@@ -102,14 +125,17 @@ namespace Crunchers.Models
             {
                 body.Append("Неактивен\n");
             }
+
             if (order.Delivered && order.IsForPickUp)
             {
                 body.Append("Доставлен\n");
                 body.Append($"Заберите ваш заказ по адресу {order.Address}\n");
             }
-            if(!order.Delivered && !order.IsForPickUp)
+
+            if (!order.Delivered && !order.IsForPickUp)
             {
-                body.Append($"Ваш заказ будет доставлен {order.ComfortTimeFrom.Date.ToShortDateString()} с {order.ComfortTimeFrom.Hour} ч. до {order.ComfortTimeTo.Hour} ч.\n");
+                body.Append(
+                    $"Ваш заказ будет доставлен {order.ComfortTimeFrom.Date.ToShortDateString()} с {order.ComfortTimeFrom.Hour} ч. до {order.ComfortTimeTo.Hour} ч.\n");
             }
 
             if (order.Paid)
@@ -120,9 +146,10 @@ namespace Crunchers.Models
             {
                 body.Append($"К оплате {order.Price}");
             }
-            
-            AdminController.SendEmail(order.Email,"Смена статуса заказа",body.ToString());
+
+            AdminController.SendEmail(order.Email, "Смена статуса заказа", body.ToString());
         }
+
         public void UpdatePrice(int value, int orderId)
         {
             var sqlExpression =
@@ -185,7 +212,8 @@ namespace Crunchers.Models
             return orderId;
         }
 
-        public async Task<Tuple<IEnumerable<OrderModel>,IEnumerable<ShortProductInfoForOrder>>> GetOrderById(int orderId)
+        public async Task<Tuple<IEnumerable<OrderModel>, IEnumerable<ShortProductInfoForOrder>>> GetOrderById(
+            int orderId)
         {
             var orders = new List<OrderModel>();
             var products = new List<ShortProductInfoForOrder>();
@@ -216,16 +244,18 @@ namespace Crunchers.Models
                         var comfortTimeTo = reader.GetDateTime(11);
                         var productId = reader.GetInt32(12);
                         var productName = reader.GetString(16);
-                        var product = new ShortProductInfoForOrder(productName,productId);
+                        var product = new ShortProductInfoForOrder(productName, productId);
                         var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
                             comfortTimeFrom, address, name, phone, email, comfortTimeTo);
                         orders.Add(order);
                         products.Add(product);
                     }
                 }
+
                 reader.Close();
             }
-            return Tuple.Create<IEnumerable<OrderModel>, IEnumerable<ShortProductInfoForOrder>>(orders,products);
+
+            return Tuple.Create<IEnumerable<OrderModel>, IEnumerable<ShortProductInfoForOrder>>(orders, products);
         }
 
         public async Task<IEnumerable<OrderModel>> GetAllOrders()

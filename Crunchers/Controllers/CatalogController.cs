@@ -134,6 +134,7 @@ namespace Crunchers.Controllers
             public IEnumerable<ReviewModel> Reviews;
             public IEnumerable<MarkModel> Marks;
             public IEnumerable<CharacteristicModel> Characteristics;
+            public IEnumerable<ProductModel> BuyWithThisProduct;
         }
 
         public async Task<ActionResult> Product(int productId)
@@ -144,7 +145,8 @@ namespace Crunchers.Controllers
             var marks = await new MarkModel().GetMarksByProductId(productId);
             var characteristics =
                 await new CharacteristicModel().GetCharacteristics(productChars.FirstOrDefault().CategoryId);
-            var resp = new ProductCatalogResponse() {Product = productChars, Reviews = reviews, Marks = marks, Characteristics = characteristics};
+            var commonProducts = await new OrderModel().GetProductsInOrdersWithCurrent(productId);
+            var resp = new ProductCatalogResponse() {Product = productChars, Reviews = reviews, Marks = marks, Characteristics = characteristics,BuyWithThisProduct = commonProducts};
             return View(resp);
         }
 
