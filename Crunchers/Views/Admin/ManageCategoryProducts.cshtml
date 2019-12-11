@@ -5,6 +5,9 @@
 <script>
     let urlParams = new URLSearchParams(window.location.search);
     function AddProduct() {
+        let inpObj = document.getElementById("productNameInput");
+              if (!inpObj.checkValidity()) {
+              } else {
        var values = [];
        var characteristicNodes = document.getElementById('newCharacteristics').getElementsByTagName('input');
        var i;
@@ -34,7 +37,7 @@
                     location.reload(); 
                 }
             });
-    }
+    }}
     function DeleteProduct(productId) {
         $("#LoadingImage").show();
        $.ajax({
@@ -60,7 +63,7 @@
 <form>
     <form>
         <input id="productImageInput" placeholder="Вставьте ссылку на изображение"/>
-        <input id="productNameInput" placeholder="Введите название товара"/>
+        <input id="productNameInput" placeholder="Введите название товара" minlength="3" required/>
         <input id="productPriceInput" placeholder="Введите цену товара"/>
     </form>
     <br/>

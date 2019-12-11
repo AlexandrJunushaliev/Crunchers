@@ -5,6 +5,9 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function AddPoint() {
+    let inpObj = document.getElementById('newAddress');
+                          if (!inpObj.checkValidity()) {
+                          } else {
     let address = document.getElementById('newAddress').value;
     let cityId= urlParams.get('cityId');
     $("#LoadingImage").show();
@@ -25,8 +28,11 @@ function AddPoint() {
             location.reload();  
         }
     });
-}
+}}
 function ChangePoint(pointOfPickUpId) {
+    let inpObj = document.getElementById('Address='+pointOfPickUpId);
+                          if (!inpObj.checkValidity()) {
+                          } else {
     let address = document.getElementById('Address='+pointOfPickUpId).value;
     let cityId= urlParams.get('cityId');
     $("#LoadingImage").show();
@@ -47,7 +53,7 @@ function ChangePoint(pointOfPickUpId) {
             location.reload();  
         }
     });
-}
+}}
 function DeletePoint(pointOfPickUpId) {
     $("#LoadingImage").show();
     $.ajax({
@@ -72,14 +78,14 @@ function DeletePoint(pointOfPickUpId) {
 <h1>Точки вывоза:</h1>
 <hr/>
 <form>
-    <input id="newAddress" placeholder="Введите адрес"/>
+    <input id="newAddress" placeholder="Введите адрес" minlength="3" required/>
     <a onclick="AddPoint()">Добавить точку самовывоза</a>
 </form>
 <hr/>
 @foreach (var point in Model)
 {
     <form>
-        <input id="Address=@point.PointId" placeholder="Новый адрес" value="@point.Address"/>
+        <input id="Address=@point.PointId" placeholder="Новый адрес" value="@point.Address" minlength="3" required/>
         <a onclick="ChangePoint(@point.PointId)">Обновить адрес</a> /
         <a onclick="DeletePoint(@point.PointId)">Удалить адрес</a>
     </form>

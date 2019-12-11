@@ -144,15 +144,17 @@ input:checked + .slider:before {
         </div>
     </div>
 }
-@if (!Model.PointsOfPickUp.Any())
-{
-    <text>К сожалению, в вашем городе нет точек самовывоза.</text>
-}
-else
-{
-    using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "pickUp", hidden = ""}))
+
+
+    @using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "pickUp", hidden = ""}))
     {
-        @Html.AntiForgeryToken()
+        if (!Model.PointsOfPickUp.Any())
+        {
+            <text>К сожалению, в вашем городе нет точек самовывоза.</text>
+        }
+        else
+        {
+            @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.MakePickUpOrder.NameRu)
         <h4>Самовывоз</h4>
         <hr/>
@@ -201,5 +203,6 @@ else
                 <input type="submit" value="Подтвердить информацию о заказе" class="btn btn-default"/>
             </div>
         </div>
+        }
+        
     }
-}

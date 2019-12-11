@@ -5,6 +5,9 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function AddCharacteristic() {
+    let inpObj = document.getElementById("characteristicNameInput");
+          if (!inpObj.checkValidity()) {
+          } else {
     let characteristicName = document.getElementById('characteristicNameInput').value;
     let characteristicType = document.getElementById('characteristicTypeInput').value;
     let characteristicUnit = document.getElementById('characteristicUnitInput').value;
@@ -27,9 +30,11 @@ function AddCharacteristic() {
             location.reload();  
         }
     });
-}
+}}
 function UpdateCharacteristic(characteristicId) {
-    console.log(characteristicId);
+     let inpObj = document.getElementById('Name='+characteristicId);
+              if (!inpObj.checkValidity()) {
+              } else {
     let characteristicName=document.getElementById('Name='+characteristicId).value;
     let characteristicType=document.getElementById('Type='+characteristicId).value;
     let unit=document.getElementById('Unit='+characteristicId).value;
@@ -52,7 +57,7 @@ function UpdateCharacteristic(characteristicId) {
               
           }
       });
-}
+}}
 function DeleteCharacteristic(characteristicId) {
     $("#LoadingImage").show();
    $.ajax({
@@ -75,7 +80,7 @@ function DeleteCharacteristic(characteristicId) {
 }
 </script>
 <form>
-    <input id="characteristicNameInput" placeholder="Введите название характеристики"/>
+    <input id="characteristicNameInput" placeholder="Введите название характеристики" minlength="3" required/>
     <select id="characteristicTypeInput">
         <option>Строковое значение</option>
         <option>Числовое значение</option>
@@ -87,7 +92,7 @@ function DeleteCharacteristic(characteristicId) {
 @foreach (var characteristic in Model)
 {
     <form>
-        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName"/> 
+        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики"  value="@characteristic.CharacteristicName" minlength="3" required/> 
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
         <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
         <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /

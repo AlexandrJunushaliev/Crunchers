@@ -76,7 +76,9 @@ $("#LoadingImage").show();
             }
 
         </form>
-        <a href="Order/ShowOrderInfo?orderId=@order.OrderId"></a>
+        <strong>@order.Price руб.</strong>
+        <a href="/Order/ShowOrderInfo?orderId=@order.OrderId">Перейти к заказу</a>
+        <br/>
         <br/>
     </form>
 }

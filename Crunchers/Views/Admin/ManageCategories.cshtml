@@ -31,7 +31,7 @@ function AddCategory() {
     
 }
 function UpdateCategory(categoryId) {
-     let inpObj = document.getElementById("categoryNameInput");
+     let inpObj = document.getElementById(categoryId);
           if (!inpObj.checkValidity()) {
           } else {
      $("#LoadingImage").show();

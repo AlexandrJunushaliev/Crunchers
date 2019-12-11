@@ -4,6 +4,9 @@
 </div>
 <script>
 function AddCity() {
+    let inpObj = document.getElementById('newCityRu');
+                  if (!inpObj.checkValidity()) {
+                  } else {
   let nameRu = document.getElementById("newCityRu").value;
    $("#LoadingImage").show();
          $.ajax({
@@ -23,7 +26,7 @@ function AddCity() {
                       location.reload(); 
                   }
               });
-}
+}}
 function DeleteCity(cityId) {
    $("#LoadingImage").show();
          $.ajax({
@@ -45,6 +48,9 @@ function DeleteCity(cityId) {
               });
 }
 function ChangeCity(cityId) {
+     let inpObj = document.getElementById('Ru='+cityId);
+                      if (!inpObj.checkValidity()) {
+                      } else {
    $("#LoadingImage").show();
          $.ajax({
                   type: "POST",
@@ -63,11 +69,11 @@ function ChangeCity(cityId) {
                       location.reload(); 
                   }
               });
-}
+}}
 </script>
 <h1>Города</h1>
 <form>
-    <input id="newCityRu" placeholder="Введите название города на русском">
+    <input id="newCityRu" placeholder="Введите название города на русском" minlength="3" required>
     <a onclick="AddCity()">Добавить город</a>
 </form>
 
@@ -75,7 +81,7 @@ function ChangeCity(cityId) {
 @foreach (var city in Model)
 {
     <form>
-        <input id="Ru=@city.CityId" value="@city.NameRu"/>
+        <input id="Ru=@city.CityId" value="@city.NameRu" minlength="3" required/>
         <a onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
         <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
         <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>

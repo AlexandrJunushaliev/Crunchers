@@ -30,14 +30,14 @@ namespace Crunchers.Models
                 stringBuilder.Append($"{word} | ");
             }
 
-            stringBuilder.Remove(stringBuilder.Length - 2, 2);
+            stringBuilder.Remove(stringBuilder.Length - 3, 3);
             
             var separatedText = stringBuilder.ToString();
             var sqlExpressionForCategories = string.Format(
-                "SELECT \"CategoryName\",\"CategoryId\" FROM \"Categories\" WHERE to_tsvector(\"CategoryName\") @@ to_tsquery('{0}')",
+                "SELECT \"CategoryName\",\"CategoryId\" FROM \"Categories\" WHERE to_tsvector('russian',\"CategoryName\") @@ to_tsquery('{0}')",
                 separatedText);
             var sqlExpressionForProducts = string.Format(
-                "SELECT \"ProductId\" FROM \"Products\" WHERE to_tsvector(\"ProductName\") @@ to_tsquery('{0}')",
+                "SELECT \"ProductId\" FROM \"Products\" WHERE to_tsvector('english',\"ProductName\") @@ to_tsquery('english','{0}')",
                 separatedText);
             var categories = new List<CategoryModel>();
             var productIds = new List<int>();
