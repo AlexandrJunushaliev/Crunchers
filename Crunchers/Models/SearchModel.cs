@@ -34,7 +34,7 @@ namespace Crunchers.Models
             
             var separatedText = stringBuilder.ToString();
             var sqlExpressionForCategories = string.Format(
-                "SELECT \"CategoryName\",\"CategoryId\" FROM \"Categories\" WHERE to_tsvector('russian',\"CategoryName\") @@ to_tsquery('{0}')",
+                "SELECT \"CategoryName\",\"CategoryId\" FROM \"Categories\" WHERE to_tsvector('russian',\"CategoryName\") @@ to_tsquery('russian','{0}')",
                 separatedText);
             var sqlExpressionForProducts = string.Format(
                 "SELECT \"ProductId\" FROM \"Products\" WHERE to_tsvector('english',\"ProductName\") @@ to_tsquery('english','{0}')",
