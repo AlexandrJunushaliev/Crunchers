@@ -157,7 +157,7 @@ function DeleteMark(markId) {
             <label for="review@(userReview.ReviewId)">@userReview.UserName :</label>
             <input id="review@(userReview.ReviewId)" value="@userReview.ReviewText" style="border: 0" readonly="readonly"/>
             <br/>
-            <text>отзыв оставлен @userReview.ReviewDate</text>
+            <text>отзыв оставлен @userReview.ReviewDate.ToString("dd/MM/yyyy HH:mm:ss");</text>
             <br/>
             <text>Ваш отзыв виден только вам. Поставьте оценку товару, чтобы обзор стал виден остальным посетителям сайта</text>
             <a onclick="DeleteReview(@(userReview.ReviewId))">Удалить отзыв</a>
