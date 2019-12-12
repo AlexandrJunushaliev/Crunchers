@@ -48,4 +48,9 @@
       <_ContentIncludedByDefault Remove="Views\Manage\VerifyPhoneNumber.cshtml" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Folder Include="Pages" />
+    </ItemGroup>
+
 </Project>

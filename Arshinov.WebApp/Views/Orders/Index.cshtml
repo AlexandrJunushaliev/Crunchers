@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Order>
+@foreach (var order in Model)
+{
+    <form>
+        <form>
+            <text>Id = @order.Id</text>
+        </form>
+        <form>
+            <text>IsPickUp = @order.OrderProducts</text>
+        </form>
+        <form>@order.UserId</form>
+        <hr/>
+    </form>
+}

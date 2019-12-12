@@ -1,0 +1,24 @@
+﻿@model List<Characteristic>
+<h2>Список всех характеристик категории @ViewData["categoryName"]</h2>
+
+@foreach (var сharacteristic in Model)
+{
+    <form method="get" asp-controller="Characteristics" asp-action="Update">
+        <div>
+            <label>Name = @сharacteristic.Name</label>
+        </div>
+        <div>
+            <input type="hidden" name="categoryId" value=@ViewData["categoryId"] />
+            <input type="submit" value="Изменить"/>
+        </div>
+    </form>
+}
+<form method="get" asp-controller="Characteristics" asp-action="Add">
+    <div>
+        <label>Добавить новую характеристику</label>
+    </div>
+    <div>
+        <input type="hidden" name="categoryId" value=@ViewData["categoryId"] />
+        <input type="submit" value="Добавить"/>
+    </div>
+</form>

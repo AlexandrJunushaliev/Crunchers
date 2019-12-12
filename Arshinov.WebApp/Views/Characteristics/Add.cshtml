@@ -1,0 +1,25 @@
+﻿@model Arshinov.WebApp.ViewModels.CharacteristicViewModel
+
+<h2>Добавить характеристику в категорию @ViewData["categoryName"]</h2>
+<form method="post" asp-controller="Categories" asp-action="Add">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Name"></label><br/>
+        <input asp-for="Name"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Unit"></label><br/>
+        <input asp-for="Unit"/>
+        <span asp-validation-for="Unit"></span>
+    </div>
+    <div>
+        <label asp-for="CharacteristicType"></label><br/>
+        <input type="" asp-for="CharacteristicType"/>
+        <span asp-validation-for="CharacteristicType"></span>
+    </div>
+    <div>
+        <input type="hidden" name="categoryId" value=@ViewData["categoryId"] />
+        <input type="submit" value="Добавить"/>
+    </div>
+</form>

@@ -1,0 +1,17 @@
+﻿@model Category
+
+<h2>Изменить категорию @Model.Name</h2>
+<form method="post" asp-controller="Categories" asp-action="Update">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Name"></label><br/>
+        <input asp-for="Name"/>
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <input type="hidden" name="categoryId" value=@Model.Id />
+        <input type="submit" name="action" value="Update" />
+        <input type="submit" name="action" value="Delete" />
+        <input type="submit" name="action" value="Edit Characteristics" />
+    </div>
+</form>

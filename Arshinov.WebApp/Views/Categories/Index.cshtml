@@ -1,0 +1,23 @@
+﻿@model IQueryable<Category>
+<h2>Список всех категорий</h2>
+
+@foreach (var category in Model)
+{
+    <form method="get" asp-controller="Categories" asp-action="Update">
+        <div>
+            <label>Name = @category.Name</label>
+        </div>
+        <div>
+            <input type="hidden" name="categoryId" value=@category.Id />
+            <input type="submit" value="Изменить"/>
+        </div>
+    </form>
+}
+<form method="get" asp-controller="Categories" asp-action="Add">
+    <div>
+        <label>Добавить новую категорию</label>
+    </div>
+    <div>
+        <input type="submit" value="Добавить"/>
+    </div>
+</form>

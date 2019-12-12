@@ -30,12 +30,26 @@ namespace Arshinov.WebApp
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
- 
+            /*services.AddDbContext<DbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));*/
+            services.AddDbContext<DbContext, ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            
             services.AddIdentity<User, IdentityRole>(/*options => options.SignIn.RequireConfirmedAccount = true*/)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<DbConnection, NpgsqlConnection>();
             services.AddScoped<DbCommand, NpgsqlCommand>();
+
+            services.AddTransient<CitiesService>();
+            services.AddTransient<OrdersService>();
+            services.AddTransient<CategoriesService>();
+            services.AddTransient<CharacteristicsService>();
+            services.AddTransient<CharacteristicEnumsService>();
+            services.AddTransient<ConcreteCharacteristicsService>();
+            services.AddTransient<OrderProductsService>();
+            services.AddTransient<ProductsService>();
             
             services.AddControllersWithViews();
             services.AddRazorPages();
