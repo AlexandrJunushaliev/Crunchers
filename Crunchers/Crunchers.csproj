@@ -237,6 +237,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CatalogController.cs" />
     <Compile Include="Controllers\CityController.cs" />
+    <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\CharacteristicModel.cs" />
     <Compile Include="Models\CityModel.cs" />
+    <Compile Include="Models\FileUploadModel.cs" />
     <Compile Include="Models\FilterModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\AdminViewModels.cs" />
@@ -305,6 +308,7 @@
     <Content Include="Views\Catalog\Index.cshtml" />
     <Content Include="Views\Catalog\Product.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
+    <Content Include="Views\FileUpload\Index.cshtml" />
     <Content Include="Views\Manage\Orders.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\Order\ShowOrderInfo.cshtml" />
@@ -348,6 +352,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="UploadedFiles" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

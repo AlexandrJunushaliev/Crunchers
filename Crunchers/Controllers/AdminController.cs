@@ -126,8 +126,10 @@ namespace Crunchers.Controllers
             public IEnumerable<ProductModel> Products;
         }
 
-        public async Task<ActionResult> ManageCategoryProducts(int categoryId)
+        public async Task<ActionResult> ManageCategoryProducts(int categoryId, string imageLink)
         {
+            ViewBag.imageLink = imageLink;
+            ViewBag.categoryId = categoryId;
             var productResponse = new ProductAdminResponse
             {
                 Products = await new ProductModel().GetProductsByCategoryId(categoryId),

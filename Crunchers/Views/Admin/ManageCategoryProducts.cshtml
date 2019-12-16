@@ -59,10 +59,13 @@
           });
     }
 </script>
-
+<form method="get" action="/FileUpload/Index">
+    <input type="hidden" name="categoryId" value=@ViewBag.categoryId />
+    <input type="submit" value="Upload image"/>
+</form>
 <form>
     <form>
-        <input id="productImageInput" placeholder="Вставьте ссылку на изображение"/>
+        <input id="productImageInput" placeholder="Вставьте ссылку на изображение" value=@ViewBag.imageLink />
         <input id="productNameInput" placeholder="Введите название товара" minlength="3" required/>
         <input id="productPriceInput" placeholder="Введите цену товара"/>
     </form>
