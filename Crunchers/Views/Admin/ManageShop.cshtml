@@ -1,10 +1,119 @@
 ﻿@using Microsoft.AspNet.Identity
-
-<h1>Меню администратора</h1>
-<ul style="list-style-type:disc;">
-    <li>@Html.ActionLink("Управление заказами","ManageOrders")</li>
-    <li>@Html.ActionLink("Управление категориями","ManageCategories")</li>
-    <li>@Html.ActionLink("Управление товарами","ManageAllProducts")</li>
-    <li>@Html.ActionLink("Управление характеристиками","ManageAllCharacteristics")</li>
-    <li>@Html.ActionLink("Управление городами","ManageCities")</li>
-</ul> 
+﻿<style>
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Montserrat,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+      }
+      
+      .clean-block.dark {
+        background-color: #f6f6f6;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .text-info {
+        color: orange!important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }     
+  
+</style>
+<main class="page faq-page">
+    <section class="clean-block clean-faq dark">
+        <div class="container">
+            <div class="block-heading"> 
+                <h1 class="text-info">Меню администратора</h1>
+                <p></p>
+            </div>
+            <div class="block-content">
+              <div class="faq-item"><h4>@Html.ActionLink("Управление заказами","ManageOrders", null, new { @class = "my-class" })
+                    </h4><div class="answer"></div>
+                </div>
+                <div class="faq-item"><h4>@Html.ActionLink("Управление категориями","ManageCategories", null, new { @class = "my-class" })
+                    </h4><div class="answer"></div>
+                </div>
+                <div class="faq-item"><h4>@Html.ActionLink("Управление товарами","ManageAllProducts", null, new { @class = "my-class" })
+                    </h4><div class="answer"></div>
+                </div>
+                <div class="faq-item"><h4>@Html.ActionLink("Управление характеристиками","ManageAllCharacteristics", null, new { @class = "my-class" })
+                    </h4><div class="answer"></div>
+                </div>
+                <div class="faq-item"><h4>@Html.ActionLink("Управление городами","ManageCities", null, new { @class = "my-class" })
+                                    </h4><div class="answer"></div>
+                                </div>
+            </div>
+        </div>
+    </section>
+</main>
