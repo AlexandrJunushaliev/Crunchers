@@ -42,7 +42,7 @@
         <dt>Email:</dt><dd>@User.Identity.Name</dd>
         <dt>ФИО:</dt>
         <dd>
-            <input id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
+            <input maxlength="100" id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
             <a onclick="ChangeFullName()">Изменить ФИО</a>
         </dd>
         <dt>Пароль:</dt>

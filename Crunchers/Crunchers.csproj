@@ -290,12 +290,13 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Views\Admin\ManageActiveOrders.cshtml" />
     <Content Include="Views\Admin\ManageAllCharacteristics.cshtml" />
     <Content Include="Views\Admin\ManageAllProducts.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\ManageCharacteristics.cshtml" />
     <Content Include="Views\Admin\ManageCities.cshtml" />
-    <Content Include="Views\Admin\ManageOrders.cshtml" />
+    <Content Include="Views\Admin\ManageAllOrders.cshtml" />
     <Content Include="Views\Admin\ManageCategoryProducts.cshtml" />
     <Content Include="Views\Admin\ManagePointsOfPickUpByCityId.cshtml" />
     <Content Include="Views\Admin\ManageProduct.cshtml" />

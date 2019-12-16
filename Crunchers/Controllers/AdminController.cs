@@ -44,16 +44,22 @@ namespace Crunchers.Controllers
         }
 
         // GET
-        public async Task<ActionResult> ManageOrders()
+        public async Task<ActionResult> ManageAllOrders()
         {
             var orders = await new OrderModel().GetAllOrders();
             return View(orders);
         }
 
-        [System.Web.Http.HttpPost]
-        public void UpdateOrder(bool value, string row, int orderId)
+        public async Task<ActionResult> ManageActiveOrders()
         {
-            new OrderModel().UpdateOrder(!value, row, orderId);
+            var orders = await new OrderModel().GetActiveOrders();
+            return View(orders);
+        }
+        
+        [System.Web.Http.HttpPost]
+        public async Task UpdateOrder(bool value, string row, int orderId)
+        {
+            await new OrderModel().UpdateOrder(!value, row, orderId);
         }
 
         public async Task<ActionResult> ManageCategories()
