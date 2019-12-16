@@ -54,14 +54,40 @@ function DeleteCharacteristic(characteristicId) {
 </script>
 
 ﻿<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
+
+
+      input:focus {
+        outline: none;
+      }
+      
       input {
         font-size: 18px;
         padding: 10px 10px 10px 5px;
         display: block;
         width: 300px;
         border: none;
-        border-bottom: orange !important;
+        border-bottom: 1px solid orange !important;
       }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
       
 
       .clean-navbar.fixed-top + .page {
@@ -160,31 +186,37 @@ function DeleteCharacteristic(characteristicId) {
     <div class="block-heading">
       <h1 class="text-info">Управление характеристиками</h1>
     </div>
-    <div class="block-content">
-      <div class="clean-blog-post">
+    
        @foreach (var characteristic in Model)
        {
-         <div class="col">
-           <h4><p>
-             <label style="font-weight: inherit !important;" class="text-info" for="Name=@characteristic.CharacteristicId">Название характеристики</label>
-             <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" required/>
-           </p></h4>
-           
-           <h4><p><label style="font-weight: inherit !important;" class="text-info" for="Type=@characteristic.CharacteristicId">Тип значения</label>
-             <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
-           </p></h4>
+         <div class="block-content">
+           <div class="clean-blog clean-form dark">
+             <form>
+             <div class="col">
+               <h4>
+                 <p>
+                   <label style="font-weight: inherit !important;" class="text-info" for="Name=@characteristic.CharacteristicId">Название характеристики</label>
+                   <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" required/>
+                 </p></h4>
 
-           <h4><p><label style="font-weight: inherit !important;" class="text-info" for="Unit=@characteristic.CharacteristicId">Единица измерения</label>
-             <input id="Unit=@characteristic.CharacteristicId" value="@characteristic.Unit"/></p></h4>
-           <ul>
-             <li><a class="my-class" href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId"><h4>Управление фильтрами харакеристики</h4></a></li>
-             <li><a class="my-class" onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)"><h4>Изменить характеристику</h4></a></li>
-             <li><a class="my-class" onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)"><h4>Удалить характеристику</h4></a></li>
-           </ul>
-         </div>
-         <hr/>
+               <h4>
+                 <p><label style="font-weight: inherit !important;" class="text-info" for="Type=@characteristic.CharacteristicId">Тип значения</label>
+                   <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
+                 </p></h4>
+
+               <h4>
+                 <p><label style="font-weight: inherit !important;" class="text-info" for="Unit=@characteristic.CharacteristicId">Единица измерения</label>
+                   <input id="Unit=@characteristic.CharacteristicId" value="@characteristic.Unit"/></p></h4>
+
+               <a class="my-class" href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId"><h4>Управление фильтрами харакеристики</h4></a><br/>
+               <a class="my-class" onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)"><h4>Изменить характеристику</h4></a><br/>
+               <a class="my-class" onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)"><h4>Удалить характеристику</h4></a><br/>
+
+             </div>
+             </form>
+           </div>
+             </div>
        }
-      </div>
-    </div>
+      
   </div>
 </section>
