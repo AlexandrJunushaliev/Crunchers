@@ -4,7 +4,7 @@
 </div>
 <script>
 function AddCategory() {
-    let inpObj = document.getElementById("categoryNameInput");
+    let inpObj = document.getElementById("newCategory");
       if (!inpObj.checkValidity()) {
       } else {
         $("#LoadingImage").show();
@@ -31,7 +31,7 @@ function AddCategory() {
     
 }
 function UpdateCategory(categoryId) {
-     let inpObj = document.getElementById(categoryId);
+     let inpObj = document.getElementById('Form='+categoryId);
           if (!inpObj.checkValidity()) {
           } else {
      $("#LoadingImage").show();
@@ -173,13 +173,16 @@ function DeleteCategory(categoryId) {
 <div class="block-content">
 <div class="clean-blog-post">
 
-    <h4><input id="categoryNameInput" placeholder="Введите название категории" minlength="3" required/></h4>
-    <a class = "my-class" onclick="AddCategory()"><h4>Добавить категорию</h4></a>
+    <form id ="newCategory">
+        <h4><input id="categoryNameInput" placeholder="Введите название категории" minlength="3" required/></h4>
+            <a class = "my-class" onclick="AddCategory()"><h4>Добавить категорию</h4></a>
+    </form>
+    
 <hr/>
 @foreach (var category in Model)
 {
     
-        <div class="col">
+        <form id="Form=@category.CategoryId" class="col">
             <h4><input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" required value="@category.CategoryName"/></h4>
             <ul>
                 <li><a class = "my-class" onclick=" UpdateCategory(@category.CategoryId)"><h4>Изменить категорию</h4></a></li>
@@ -187,7 +190,7 @@ function DeleteCategory(categoryId) {
                 <li><a class = "my-class" href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId"><h4>Управление характеристиками</h4></a></li>
                 <li><a class = "my-class" href="/Admin/ManageCategoryProducts?categoryId=@category.CategoryId"><h4>Управление товарами</h4></a></li>
             </ul>
-        </div>
+        </form>
         
 }
 </div>

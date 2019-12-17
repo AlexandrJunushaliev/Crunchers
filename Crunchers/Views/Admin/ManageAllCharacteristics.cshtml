@@ -4,7 +4,7 @@
 </div>
 <script>
 function UpdateCharacteristic(characteristicId) {
-    let inpObj = document.getElementById("Name="+characteristicId);
+    let inpObj = document.getElementById("Form="+characteristicId);
           if (!inpObj.checkValidity()) {
           } else {
     console.log(characteristicId);
@@ -205,7 +205,7 @@ function DeleteCharacteristic(characteristicId) {
     
        @foreach (var characteristic in Model)
        {
-             <form>
+             <form id="Form=@characteristic.CharacteristicId">
                <div class="form-group">
                  <h4>
                    <p>
@@ -220,7 +220,7 @@ function DeleteCharacteristic(characteristicId) {
 
                  <h4>
                    <p><label style="font-weight: inherit !important;" class="text-info" for="Unit=@characteristic.CharacteristicId">Единица измерения</label>
-                     <input class="fox" id="Unit=@characteristic.CharacteristicId" value="@characteristic.Unit"/></p></h4>
+                     <input class="fox" id="Unit=@characteristic.CharacteristicId" maxlength="10" value="@characteristic.Unit" required/></p></h4>
 
                  <a class="my-class" href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId"><h4>Управление фильтрами харакеристики</h4></a><br/>
                  <a class="my-class" onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)"><h4>Изменить характеристику</h4></a><br/>

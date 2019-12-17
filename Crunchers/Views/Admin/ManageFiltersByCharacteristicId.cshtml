@@ -5,6 +5,9 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function AddFilter() {
+     let inpObj = document.getElementById("newFilterInfo");
+              if (!inpObj.checkValidity()) {
+              } else {
     let characteristicId= urlParams.get('characteristicId');
     if (document.getElementById("newFilterFrom")==null){
         $("#LoadingImage").show();
@@ -48,7 +51,7 @@ function AddFilter() {
                           }
                       });
     }
-  
+  }
 }
 function DeleteFilter(filterId) {
     $("#LoadingImage").show();
@@ -73,7 +76,7 @@ function DeleteFilter(filterId) {
   
 }
 </script>
-<form>
+<form id="newFilterInfo">
     @if (Model.Characteristic.CharacteristicType == "Строковое значение")
     {
         if (!Model.Filters.Any())
@@ -83,19 +86,22 @@ function DeleteFilter(filterId) {
         else
         {
             var filter = Model.Filters.FirstOrDefault();
-            <h1>Строковый фильтр для характеристики @filter.CharacteristicName уже добавлен</h1> <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
+            <h1>Строковый фильтр для характеристики @filter.CharacteristicName уже добавлен</h1>
+            <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
         }
     }
     else
     {
-        <input id="newFilterFrom" placeholder="От.."/> <input id="newFilterTo" placeholder="До.."/>  <a onclick="AddFilter()">Добавить фильтр</a> 
+        <input id="newFilterFrom" type="number" required placeholder="От.."/>
+        <input type="number" required id="newFilterTo" placeholder="До.."/>
+        <a onclick="AddFilter()">Добавить фильтр</a>
     }
 </form>
 @if (Model.Characteristic.CharacteristicType != "Строковое значение")
 {
     foreach (var filter in Model.Filters)
     {
-        <h1>Фильтр от: @filter.From до: @filter.To</h1> <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
+        <h1>Фильтр от: @filter.From до: @filter.To</h1>
+        <a onclick="DeleteFilter(@(filter.FilterId))">Удалить фильтр</a>
     }
 }
-

@@ -5,7 +5,7 @@
 <script>
 let urlParams = new URLSearchParams(window.location.search);
 function AddCharacteristic() {
-    let inpObj = document.getElementById("characteristicNameInput");
+    let inpObj = document.getElementById("newCharacteristic");
           if (!inpObj.checkValidity()) {
           } else {
     let characteristicName = document.getElementById('characteristicNameInput').value;
@@ -32,7 +32,7 @@ function AddCharacteristic() {
     });
 }}
 function UpdateCharacteristic(characteristicId) {
-     let inpObj = document.getElementById('Name='+characteristicId);
+     let inpObj = document.getElementById('Form='+characteristicId);
               if (!inpObj.checkValidity()) {
               } else {
     let characteristicName=document.getElementById('Name='+characteristicId).value;
@@ -79,7 +79,7 @@ function DeleteCharacteristic(characteristicId) {
       });
 }
 </script>
-<form>
+<form id="newCharacteristic">
     <input id="characteristicNameInput" placeholder="Введите название характеристики" minlength="3" required/>
     <select id="characteristicTypeInput">
         <option>Строковое значение</option>
@@ -91,7 +91,7 @@ function DeleteCharacteristic(characteristicId) {
 <hr/>
 @foreach (var characteristic in Model)
 {
-    <form>
+    <form id="Form=@characteristic.CharacteristicId">
         <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики"  value="@characteristic.CharacteristicName" minlength="3" required/> 
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
         <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>

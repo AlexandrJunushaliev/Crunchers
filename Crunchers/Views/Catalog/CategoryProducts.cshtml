@@ -272,15 +272,13 @@ function deleteFromCart(isLocal,productId) {
             </a>
             <a href="/Catalog/Product?productId=@product.Key">@first.ProductName</a>
             <text>@first.ProductPrice руб.</text>
+            if (first.RatingsAmount == 0)
             {
-                if (first.RatingsAmount == 0)
-                {
-                    <text>Рейтинг: 0 (нет оценок)</text>
-                }
-                else
-                {
-                    <text>Рейтинг: @(Math.Round((double) first.RatingSum / first.RatingsAmount)) (@first.RatingsAmount)</text>
-                }
+                <text>Рейтинг: 0 (нет оценок)</text>
+            }
+            else
+            {
+                <text>Рейтинг: @(Math.Round((double) first.RatingSum / first.RatingsAmount)) (@first.RatingsAmount)</text>
             }
             if (Model.Cart.ContainsKey(product.Key))
             {

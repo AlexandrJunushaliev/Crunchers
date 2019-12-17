@@ -4,37 +4,6 @@
 </div>
 <script>
     let urlParams = new URLSearchParams(window.location.search);
-    function AddProduct() {
-       var values = [];
-       var characteristicNodes = document.getElementById('newCharacteristics').getElementsByTagName('input');
-       var i;
-       for (i = 0; i < characteristicNodes.length; i++) {
-         values.push(characteristicNodes[i].value);
-       }
-        
-        let imageLink = document.getElementById("productImageInput").value;
-        let productName = document.getElementById("productNameInput").value;
-        let productPrice = document.getElementById("productPriceInput").value;
-        let categoryId=urlParams.get('categoryId');
-        $("#LoadingImage").show();
-       $.ajax({
-                type: "POST",
-                url: '@Url.RouteUrl(new {controller = "Admin", action = "AddProduct"})?imageLink='+imageLink+'&productName='+productName+'&productPrice='+productPrice+'&categoryId='+categoryId,
-                data: JSON.stringify(values),
-                dataType: 'json',
-                timeout: 15000,
-                success: function (data) {
-                    $("#LoadingImage").hide();
-                    alert('Товар успешно добавлен');
-                    location.reload();     
-                },
-                error: function(inc) {
-                    $("#LoadingImage").hide();
-                    alert('Произошла ошибка');
-                    location.reload(); 
-                }
-            });
-    }
     function DeleteProduct(productId) {
             $("#LoadingImage").show();
            $.ajax({
