@@ -73,7 +73,7 @@ function ChangeCity(cityId) {
 </script>
 <h1>Города</h1>
 <form>
-    <input id="newCityRu" placeholder="Введите название города на русском" minlength="3" required>
+    <input id="newCityRu" placeholder="Введите название города на русском" minlength="3" maxlength="100" required>
     <a onclick="AddCity()">Добавить город</a>
 </form>
 
@@ -81,7 +81,7 @@ function ChangeCity(cityId) {
 @foreach (var city in Model)
 {
     <form>
-        <input id="Ru=@city.CityId" value="@city.NameRu" minlength="3" required/>
+        <input id="Ru=@city.CityId" value="@city.NameRu" minlength="3" maxlength="100" required/>
         <a onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
         <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
         <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>

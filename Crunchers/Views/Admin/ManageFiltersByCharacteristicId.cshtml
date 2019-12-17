@@ -32,24 +32,30 @@ function AddFilter() {
     else {
         let from = document.getElementById("newFilterFrom").value;
           let to = document.getElementById("newFilterTo").value;
-           $("#LoadingImage").show();
-                 $.ajax({
-                          type: "POST",
-                          url: '@Url.RouteUrl(new {controller = "Admin", action = "AddFilterByCharacteristicId"})?characteristicId='+characteristicId +'&from='+from+'&to='+to,
-                          data: {},
-                          dataType: 'json',
-                          timeout: 15000,
-                          success: function (data) {
-                              $("#LoadingImage").hide();
-                              alert('Фильтр добавлен');
-                              location.reload();     
-                          },
-                          error: function(inc) {
-                              $("#LoadingImage").hide();
-                              alert('Произошла ошибка');
-                              location.reload(); 
-                          }
-                      });
+          if(parseFloat(from)>=parseFloat(to)){
+              alert('Значение "До" должно быть больше значения "От"')
+          }
+          else {
+              $("#LoadingImage").show();
+                               $.ajax({
+                                        type: "POST",
+                                        url: '@Url.RouteUrl(new {controller = "Admin", action = "AddFilterByCharacteristicId"})?characteristicId='+characteristicId +'&from='+from+'&to='+to,
+                                        data: {},
+                                        dataType: 'json',
+                                        timeout: 15000,
+                                        success: function (data) {
+                                            $("#LoadingImage").hide();
+                                            alert('Фильтр добавлен');
+                                            location.reload();     
+                                        },
+                                        error: function(inc) {
+                                            $("#LoadingImage").hide();
+                                            alert('Произошла ошибка');
+                                            location.reload(); 
+                                        }
+                                    });
+          }
+           
     }
   }
 }
@@ -92,8 +98,8 @@ function DeleteFilter(filterId) {
     }
     else
     {
-        <input id="newFilterFrom" type="number" required placeholder="От.."/>
-        <input type="number" required id="newFilterTo" placeholder="До.."/>
+        <input id="newFilterFrom" type="number" max="99999999" min="0" required placeholder="От.."/>
+        <input type="number" max="99999999" required id="newFilterTo" min="0" placeholder="До.."/>
         <a onclick="AddFilter()">Добавить фильтр</a>
     }
 </form>

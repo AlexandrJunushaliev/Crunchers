@@ -6,7 +6,8 @@
     let urlParams = new URLSearchParams(window.location.search);
     function AddProduct() {
         let inpObj = document.getElementById("Form=newProduct");
-              if (!inpObj.checkValidity()) {
+        let infoObj=document.getElementById("newCharacteristics");
+              if (!inpObj.checkValidity() || !infoObj.checkValidity()) {
               } else {
        var values = [];
        var characteristicNodes = document.getElementById('newCharacteristics').getElementsByTagName('input');
@@ -65,23 +66,24 @@
 </form>
 <form id="Form=newProduct">
     <form>
-        <input id="productImageInput" placeholder="Вставьте ссылку на изображение" value="@ViewBag.imageLink" />
-        <input id="productNameInput" placeholder="Введите название товара" minlength="3" required/>
-        <input id="productPriceInput" type="number" required placeholder="Введите цену товара"/>
+        <input id="productImageInput" placeholder="Вставьте ссылку на изображение" maxlength="255" value="@ViewBag.imageLink"/>
+            <input id="productNameInput" placeholder="Введите название товара" minlength="3" maxlength="100" required/>
+            <input id="productPriceInput" type="number" min="0" max="99999999" required placeholder="Введите цену товара"/>
     </form>
+    
     <br/>
-    <div id="newCharacteristics">
+    <form id="newCharacteristics">
         @foreach (var characteristic in Model.Characteristics)
         {
             <label>@characteristic.CharacteristicName:</label>
             if (characteristic.CharacteristicType == "Строковое значение")
             {
-                <input id="Name=@characteristic.CharacteristicId"  pattern="[^_]+"  placeholder="Введите строковое значение для характеристики"/> 
+                <input id="Name=@characteristic.CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики"/>
                 <text>(без символа "_")</text>
             }
             else
             {
-                <input id="Name=@characteristic.CharacteristicId" type="number" required placeholder="Введите числовое значение для характеристики"/>
+                <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
                 if (characteristic.Unit != null || characteristic.Unit != "")
                 {
                     <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
@@ -89,7 +91,7 @@
             }
             <br/>
         }
-    </div>
+    </form>
     <a onclick=" AddProduct()">Добавить продукт</a>
 </form>
 <hr/>

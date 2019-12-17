@@ -78,14 +78,14 @@ function DeletePoint(pointOfPickUpId) {
 <h1>Точки вывоза:</h1>
 <hr/>
 <form>
-    <input id="newAddress" placeholder="Введите адрес" minlength="3" required/>
+    <input id="newAddress" placeholder="Введите адрес" minlength="3" maxlength="200" required/>
     <a onclick="AddPoint()">Добавить точку самовывоза</a>
 </form>
 <hr/>
 @foreach (var point in Model)
 {
     <form>
-        <input id="Address=@point.PointId" placeholder="Новый адрес" value="@point.Address" minlength="3" required/>
+        <input id="Address=@point.PointId" placeholder="Новый адрес" value="@point.Address" minlength="3" maxlength="200"  required/>
         <a onclick="ChangePoint(@point.PointId)">Обновить адрес</a> /
         <a onclick="DeletePoint(@point.PointId)">Удалить адрес</a>
     </form>

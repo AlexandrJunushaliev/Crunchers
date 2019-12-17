@@ -80,21 +80,21 @@ function DeleteCharacteristic(characteristicId) {
 }
 </script>
 <form id="newCharacteristic">
-    <input id="characteristicNameInput" placeholder="Введите название характеристики" minlength="3" required/>
+    <input id="characteristicNameInput" placeholder="Введите название характеристики" minlength="3" maxlength="100" required/>
     <select id="characteristicTypeInput">
         <option>Строковое значение</option>
         <option>Числовое значение</option>
     </select>
-    <input id="characteristicUnitInput" placeholder="Введите единицу измерения"/>
+    <input id="characteristicUnitInput" maxlength="10" placeholder="Введите единицу измерения"/>
     <a onclick=" AddCharacteristic()">Добавить характеристику</a>
 </form>
 <hr/>
 @foreach (var characteristic in Model)
 {
     <form id="Form=@characteristic.CharacteristicId">
-        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики"  value="@characteristic.CharacteristicName" minlength="3" required/> 
+        <input id="Name=@characteristic.CharacteristicId" maxlength="100" placeholder="Введите новое название характеристики"  value="@characteristic.CharacteristicName" minlength="3" required/> 
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
-        <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
+        <input id="Unit=@characteristic.CharacteristicId" maxlength="10" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
         <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /
         <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Изменить характеристику</a> /
         <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Удалить характеристику</a>

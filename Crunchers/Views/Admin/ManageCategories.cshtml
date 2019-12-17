@@ -174,7 +174,7 @@ function DeleteCategory(categoryId) {
 <div class="clean-blog-post">
 
     <form id ="newCategory">
-        <h4><input id="categoryNameInput" placeholder="Введите название категории" minlength="3" required/></h4>
+        <h4><input id="categoryNameInput" placeholder="Введите название категории" minlength="3" maxlength="100" required/></h4>
             <a class = "my-class" onclick="AddCategory()"><h4>Добавить категорию</h4></a>
     </form>
     
@@ -183,7 +183,7 @@ function DeleteCategory(categoryId) {
 {
     
         <form id="Form=@category.CategoryId" class="col">
-            <h4><input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" required value="@category.CategoryName"/></h4>
+            <h4><input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" maxlength="100" required value="@category.CategoryName"/></h4>
             <ul>
                 <li><a class = "my-class" onclick=" UpdateCategory(@category.CategoryId)"><h4>Изменить категорию</h4></a></li>
             <li><a class = "my-class" onclick=" DeleteCategory(@category.CategoryId)"><h4>Удалить категорию</h4></a></li>

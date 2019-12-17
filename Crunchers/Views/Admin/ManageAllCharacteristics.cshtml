@@ -210,7 +210,7 @@ function DeleteCharacteristic(characteristicId) {
                  <h4>
                    <p>
                      <label style="font-weight: inherit !important;" class="text-info" for="Name=@characteristic.CharacteristicId">Название характеристики</label>
-                     <input class="fox" id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" required/>
+                     <input class="fox" id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" maxlength="100" required/>
                    </p></h4>
 
                  <h4>
