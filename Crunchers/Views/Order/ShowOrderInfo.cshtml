@@ -1,59 +1,241 @@
 ﻿@model Tuple<IEnumerable<Crunchers.Models.OrderModel>,IEnumerable<Crunchers.Models.ShortProductInfoForOrder>>
-@{
-    foreach (var order in Model.Item1.Distinct())
-    {
-        <form>
-            <form>
-                <text>Номер заказа = @order.OrderId</text>
-            </form>
-            <form>
-                @if (order.Active)
-                {
-                    <text>Заказ активен</text>
-                }
-                else
-                {
-                    <text>Заказ неактивен</text>
-                }
-            </form>
-            <form>
-                @if (order.IsForPickUp)
-                {
-                    <text>Самовывоз</text>
-                }
-                else
-                {
-                    <text>Доставка</text>
-                }
-            </form>
-            <form>
-                @if (!order.Delivered)
-                {
-                    <text>Заказ не доставлен</text>
-                }
-                else
-                {
-                    <text>Заказ доставлен</text>
-                }
-            </form>
-            <form>
-                @if (!order.Paid)
-                {
-                    <text>Заказ не оплачен</text>
-                }
-                else
-                {
-                    <text>Заказ оплачен</text>
-                }
+<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
 
-            </form>
-            <strong>@order.Price руб.</strong>
-            <hr/>
-            @foreach (var product in Model.Item2)
-            {
-                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
-                <br/>
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Montserrat,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+      }
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .text-i {
+              color: orange!important;
+              font-weight: normal !important;
             }
-        </form>
-    }
-}
+      
+      .text-info {
+        color: darkgray!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+            }  
+      li{
+      color: orange!important;
+      }
+  
+</style>
+<section class="clean-block clean-blog-list dark">
+    <div class="container">
+        <div class="block-heading">
+            <h1 class="text-i">Информация о заказе</h1>
+        </div>
+    
+        @foreach (var order in Model.Item1.Distinct())
+        {
+            <form>
+                <div class="form-group">
+                    <h4>
+                        <p>
+                            <label style="font-weight: inherit !important;" class="text-info">Номер заказа: @order.OrderId</label>
+                        </p></h4>
+                    <form>
+                    @if (order.Active)
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Статус заказа: заказ активен</label><br/>
+                                    </p></h4>
+                                }
+                    else
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Статус заказа: заказ неактивен</label>
+                                    </p></h4>
+                                }
+                    </form> 
+                    <form>
+                                @if (order.IsForPickUp)
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Самовывоз</label>
+                                    </p></h4>
+                                }
+                                else
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Доставка</label>
+                                    </p></h4>
+                                }
+                    </form>
+                    <form>
+                                @if (!order.Delivered)
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Доставка: заказ не доставлен</label><br/>
+                                    </p></h4>
+                                }
+                                else
+                                {
+                                    <h4><p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Доставка: заказ доставлен</label>
+                                    </p></h4>
+                                }
+                                </form>
+                    <form>
+                        @if (!order.Paid)
+                        {
+                            <h4><p>
+                                <label style="font-weight: inherit !important;" class="text-info">Оплата: заказ не оплачен</label><br/>
+                            </p></h4>
+                        }
+                        else
+                        {
+                            <h4><p>
+                                <label style="font-weight: inherit !important;" class="text-info">Оплата: заказ оплачен</label>
+                            </p></h4>
+                        }
+                            
+                    </form>
+                    <form>
+                        <strong class="text-info"><h4>@order.Price руб.</h4></strong><br/>  
+                    </form>
+                    <form>
+                        <h4><p>
+                            <label style="font-weight: inherit !important;" class="text-info">Товары:</label></p></h4>
+                            <ul>
+                            
+                        @foreach (var product in Model.Item2)
+                        {
+                            <li><h4><a class="my-class" href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a></h4></li>
+                        }
+                            </ul>
+                        
+                    </form>
+                    
+                </div>
+            </form>
+            <br/>
+        }
+      
+    </div>
+</section>
