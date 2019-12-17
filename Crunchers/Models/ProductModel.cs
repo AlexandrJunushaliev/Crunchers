@@ -83,6 +83,41 @@ namespace Crunchers.Models
             }
         }
 
+        public async Task<IEnumerable<ProductModel>> GetPrimaryProductsInfoByCategoryId(int categoryId)
+        {
+            var sqlExpression = string.Format(
+                "select * from \"Products\" p  join \"Images\" i on p.\"ProductId\" = i.\"ProductId\" and i.\"ImageRole\"='Preview' where p.\"CategoryId\"='{0}'",
+                categoryId);
+            var products = new List<ProductModel>();
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var productId = reader.GetInt32(0);
+                        var productName = reader.GetString(2);
+                        var productPrice = reader.GetInt32(3);
+                        var ratingSum = reader.GetInt32(4);
+                        var ratingAmount = reader.GetInt32(5);
+                        var imageId = reader.GetInt32(6);
+                        var imageLink = reader.GetString(7);
+                        var product = new ProductModel(productId, imageId, imageLink, categoryId, productName,
+                            productPrice, ratingSum, ratingAmount, -1, null);
+                        products.Add(product);
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return products;
+        }
+
         public async Task<IEnumerable<ProductModel>> GetPrimaryProductsInfo(IEnumerable<int> productIds)
         {
             var stringBuilder = new StringBuilder(string.Format(
@@ -127,7 +162,6 @@ namespace Crunchers.Models
             }
 
             return products;
-
         }
 
         public async Task<IEnumerable<ProductModel>> GetAllProducts()
