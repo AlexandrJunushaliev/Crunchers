@@ -52,15 +52,184 @@ function DeleteCharacteristic(characteristicId) {
       });
 }
 </script>
-@foreach (var characteristic in Model)
-{
-    <form>
-        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" maxlength="100" required/>
-        <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
 
-        <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit" maxlength="10"/>
-        <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /
-        <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Изменить характеристику</a> /
-        <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Удалить характеристику</a>
-    </form>
-}
+﻿<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
+
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Montserrat,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+      }
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .text-info {
+        color: orange!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            text-align: center;
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+                      
+        margin-left: auto;
+        margin-right: auto;
+            }  
+  
+</style>
+<section class="clean-block clean-blog-list dark">
+  <div class="container">
+    <div class="block-heading">
+      <h1 class="text-info">Управление характеристиками</h1>
+    </div>
+    
+       @foreach (var characteristic in Model)
+       {
+             <form>
+               <div class="form-group">
+                 <h4>
+                   <p>
+                     <label style="font-weight: inherit !important;" class="text-info" for="Name=@characteristic.CharacteristicId">Название характеристики</label>
+                     <input class="fox" id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" required/>
+                   </p></h4>
+
+                 <h4>
+                   <p><label style="font-weight: inherit !important;" class="text-info" for="Type=@characteristic.CharacteristicId">Тип значения</label>
+                     <input class="fox" id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
+                   </p></h4>
+
+                 <h4>
+                   <p><label style="font-weight: inherit !important;" class="text-info" for="Unit=@characteristic.CharacteristicId">Единица измерения</label>
+                     <input class="fox" id="Unit=@characteristic.CharacteristicId" value="@characteristic.Unit"/></p></h4>
+
+                 <a class="my-class" href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId"><h4>Управление фильтрами харакеристики</h4></a><br/>
+                 <a class="my-class" onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)"><h4>Изменить характеристику</h4></a><br/>
+                 <a class="my-class" onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)"><h4>Удалить характеристику</h4></a><br/>
+
+               </div>
+             </form>
+         <br/>
+       }
+      
+  </div>
+</section>

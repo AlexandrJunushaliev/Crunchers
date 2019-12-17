@@ -75,19 +75,122 @@ function DeleteCategory(categoryId) {
         });
 }
 </script>
-<form>
-    <input id="categoryNameInput" placeholder="Введите название категории" minlength="3" required/>
-    <a onclick="AddCategory()">Добавить категорию</a>
-    
-</form>
+﻿<style>
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Montserrat,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+      }
+      
+      .clean-block.dark {
+        background-color: #f6f6f6;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .text-info {
+        color: orange!important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }    
+</style>
+<section class="clean-block clean-blog-list dark">
+<div class="container">
+<div class="block-heading">
+    <h1 class="text-info">Управление категориями</h1>
+    </div>
+<div class="block-content">
+<div class="clean-blog-post">
+
+    <h4><input id="categoryNameInput" placeholder="Введите название категории" minlength="3" required/></h4>
+    <a class = "my-class" onclick="AddCategory()"><h4>Добавить категорию</h4></a>
 <hr/>
 @foreach (var category in Model)
 {
-    <form>
-        <input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" required value="@category.CategoryName"/>
-        <a onclick=" UpdateCategory(@category.CategoryId)">Изменить категорию</a> /
-        <a onclick=" DeleteCategory(@category.CategoryId)">Удалить категорию</a> /
-        <a href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId">Управление характеристиками</a> /
-        <a href="/Admin/ManageCategoryProducts?categoryId=@category.CategoryId">Управление товарами</a>
-    </form>
+    
+        <div class="col">
+            <h4><input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" required value="@category.CategoryName"/></h4>
+            <ul>
+                <li><a class = "my-class" onclick=" UpdateCategory(@category.CategoryId)"><h4>Изменить категорию</h4></a></li>
+            <li><a class = "my-class" onclick=" DeleteCategory(@category.CategoryId)"><h4>Удалить категорию</h4></a></li>
+                <li><a class = "my-class" href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId"><h4>Управление характеристиками</h4></a></li>
+                <li><a class = "my-class" href="/Admin/ManageCategoryProducts?categoryId=@category.CategoryId"><h4>Управление товарами</h4></a></li>
+            </ul>
+        </div>
+        
 }
+</div>
+</div>
+</div>
+</section>
