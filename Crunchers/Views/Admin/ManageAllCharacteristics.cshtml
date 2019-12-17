@@ -55,10 +55,10 @@ function DeleteCharacteristic(characteristicId) {
 @foreach (var characteristic in Model)
 {
     <form>
-        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" required/>
+        <input id="Name=@characteristic.CharacteristicId" placeholder="Введите новое название характеристики" value="@characteristic.CharacteristicName" minlength="3" maxlength="100" required/>
         <input id="Type=@characteristic.CharacteristicId" value="@characteristic.CharacteristicType" readonly/>
 
-        <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit"/>
+        <input id="Unit=@characteristic.CharacteristicId" placeholder="Введите единицу измерения" value="@characteristic.Unit" maxlength="10"/>
         <a href="/Admin/ManageFiltersByCharacteristicId?characteristicId=@characteristic.CharacteristicId">Управление фильтрами харакеристики</a> /
         <a onclick=" UpdateCharacteristic(@characteristic.CharacteristicId)">Изменить характеристику</a> /
         <a onclick=" DeleteCharacteristic(@characteristic.CharacteristicId)">Удалить характеристику</a>
