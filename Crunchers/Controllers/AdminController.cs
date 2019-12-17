@@ -138,7 +138,7 @@ namespace Crunchers.Controllers
             ViewBag.categoryId = categoryId;
             var productResponse = new ProductAdminResponse
             {
-                Products = await new ProductModel().GetProductsByCategoryId(categoryId),
+                Products = await new ProductModel().GetPrimaryProductsInfoByCategoryId(categoryId),
                 Characteristics = await new CharacteristicModel().GetCharacteristics(categoryId)
             };
             return View(productResponse);
@@ -180,6 +180,10 @@ namespace Crunchers.Controllers
             var characteristics =
                 await new CharacteristicModel().GetCharacteristics(categoryId);
             var productResponse = new ProductAdminResponse() {Characteristics = characteristics, Products = product};
+            if (!productResponse.Characteristics.Any())
+            {
+                productResponse.Products = await new ProductModel().GetPrimaryProductsInfo(new[] {productId});
+            }
             return View(productResponse);
         }
 

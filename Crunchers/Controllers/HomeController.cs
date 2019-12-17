@@ -13,8 +13,9 @@ namespace Crunchers.Controllers
     {
         public async Task<ActionResult> Index()
         {
+            var topProducts = await new ProductModel().GetTopProducts();
             
-            return View();
+            return View(topProducts);
         }
 
         public ActionResult About()

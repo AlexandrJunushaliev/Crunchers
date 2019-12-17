@@ -101,9 +101,12 @@
                 <p></p>
             </div>
             <div class="block-content">
-              <div class="faq-item"><h4>@Html.ActionLink("Управление заказами","ManageOrders", null, new { @class = "my-class" })
-                    </h4><div class="answer"></div>
-                </div>
+              <div class="faq-item"><h4>@Html.ActionLink("Управление активными заказами","ManageActiveOrders", null, new { @class = "my-class" })
+                </h4><div class="answer"></div>
+              </div>
+               <div class="faq-item"><h4>@Html.ActionLink("Управление всеми заказами","ManageAllOrders", null, new { @class = "my-class" })
+                                  </h4><div class="answer"></div>
+                              </div>
                 <div class="faq-item"><h4>@Html.ActionLink("Управление категориями","ManageCategories", null, new { @class = "my-class" })
                     </h4><div class="answer"></div>
                 </div>

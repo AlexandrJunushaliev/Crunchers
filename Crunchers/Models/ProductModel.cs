@@ -214,6 +214,32 @@ namespace Crunchers.Models
 
             return products;
         }
+        public async Task<IEnumerable<ProductModel>> GetTopProducts()
+        {
+            var productIds = new List<int>();
+            var sqlExpression =
+                string.Format(
+                    "SELECT p.* from \"Products\" p  join \"ProductsFromOrders\" PFO on p.\"ProductId\" = PFO.\"ProductId\" group by p.\"ProductId\" order by count(p.\"ProductId\") desc  limit 3");
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var productId = reader.GetInt32(0);
+                        productIds.Add(productId);
+                    }
+                }
+
+                reader.Close();
+            }
+            var products = await new ProductModel().GetPrimaryProductsInfo(productIds);
+            return products;
+        }
 
         public async Task<IEnumerable<ProductModel>> FilterProducts(IEnumerable<Tuple<int, string>> filterValuesPairs,
             IEnumerable<FilterModel> filterModels, int categoryId)
