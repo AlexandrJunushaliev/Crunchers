@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Common;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Reflection;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using Crunchers;
+using Crunchers.Controllers;
 using Crunchers.Models;
 using NUnit.Framework;
 using Unity;
@@ -91,14 +93,25 @@ CREATE UNIQUE INDEX """"""Categories""""_""""CategoryName""""_uindex""
         [Test]
         public void Test1()
         {
-            new CategoryModel().AddCategory("Category1");
-            var categories = new CategoryModel().GetCategories().Result;
-            Assert.IsNotEmpty(categories);
-            Assert.AreEqual(categories.First().CategoryName, "Category1");
-            new CategoryModel().DeleteCategory(categories.First().CategoryId);
-            Assert.IsEmpty(new CategoryModel().GetCategories().Result);
-
-
+            AdminController adminController = new AdminController();
+            var add = (JsonResult) adminController.AddCategory("Category1");
+            Assert.AreEqual("Success", (string)add.Data);
+            var cat1 = (ViewResult) adminController.ManageCategories().Result;
+            IEnumerable<CategoryModel> cats1 = (IEnumerable<CategoryModel>) cat1.ViewData.Model;
+            
+            Assert.IsNotEmpty(cats1);
+            Assert.AreEqual(cats1.First().CategoryName, "Category1");
+            
+            var del = (JsonResult) adminController.DeleteCategory(cats1.First().CategoryId);
+            Assert.AreEqual("Success", (string)del.Data);
+            var cat2 = (ViewResult) adminController.ManageCategories().Result;
+            IEnumerable<CategoryModel> cats2 = (IEnumerable<CategoryModel>) cat2.ViewData.Model;
+            
+            Assert.IsEmpty(cats2);
+            
+            
+            Assert.IsNotEmpty(cats1);
+            
             string create = @"DROP INDEX public.""""""Categories""""_""""CategoryName""""_uindex"";
 DROP TABLE public.""Categories"";
 DROP SEQUENCE public.""Categories_CategoryId_seq"";";
