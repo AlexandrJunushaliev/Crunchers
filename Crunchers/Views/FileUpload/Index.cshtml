@@ -14,7 +14,7 @@
                 @Html.ValidationMessageFor(model => model.File, "", new {@class = "text-danger"})
             </div>
         </div>
-        <input type="hidden" name="categoryId" value=@ViewBag.categoryId />
+        <input type="hidden" name="categoryId" value="@ViewBag.categoryId"/>
         <input type="submit" value="Upload" class="btn btn-primary"/>
         @ViewBag.fileStatus
     </div>
@@ -23,8 +23,8 @@
 @if (ViewBag.link != null && ViewBag.categoryId != null)
 {
     <form method="get" action="/Admin/ManageCategoryProducts">
-        <input type="hidden" name="categoryId" value=@ViewBag.categoryId />
-        <input type="hidden" name="imageLink" value=@ViewBag.link />
+        <input type="hidden" name="categoryId" value="@ViewBag.categoryId"/>
+        <input type="hidden" name="imageLink" value="@ViewBag.link" }/>
         <input type="submit" value="Return to fill product information"/>
     </form>
 }
