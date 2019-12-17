@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Crunchers.Models.OrderModel>
+<div id="LoadingImage" style="display:none;background-color: rgb(255, 255, 255); opacity: 0.7; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; z-index: 99999;">
+    <img style="display: block;margin-left: auto;margin-right: auto" src="https://igc-market.ru/images/loading.gif"/>
+</div>
+<script>
+function changeStatus(value,row,orderId) {
+$("#LoadingImage").show();
+            $.ajax({
+                type: "POST",
+                url: '@Url.RouteUrl(new {controller = "Manage", action = "UpdateOrder"})?value='+value+'&row='+row+'&orderId='+orderId,
+                data: { },
+                dataType: 'json',
+                timeout: 15000,
+                success: function (correct) {
+                    $("#LoadingImage").hide();
+                    alert('Статус заказа успешно изменен');
+                    location.reload();      
+                },
+                error: function(inc) {
+                    $("#LoadingImage").hide();
+                    alert('Произошла ошибка');
+                    location.reload(); 
+                    
+                    
+                }
+            });
+}
+</script>
+@foreach (var order in Model)
+{
+    <form>
+        <form>
+            <text>Номер заказа = @order.OrderId</text>
+        </form>
+        <form>
+            @if (order.Active)
+            {
+                <text>Заказ активен</text>
+                <a type="button" onclick="changeStatus(@(order.Active.ToString().ToLower()),'Active',@(order.OrderId))">Сделать заказ неактивным</a>
+            }
+            else
+            {
+                <text>Заказ неактивен</text>
+            }
+        </form>
+        <form>
+            @if (order.IsForPickUp)
+            {
+                <text>Самовывоз</text>
+            }
+            else
+            {
+                <text>Доставка</text>
+            }
+        </form>
+        <form>
+            @if (!order.Delivered)
+            {
+                <text>Заказ не доставлен</text>
+                <a type="button" onclick="changeStatus(@(order.Delivered.ToString().ToLower()),'Delivered',@(order.OrderId))">Сменить статус на "Доставлен"</a>
+            }
+            else
+            {
+                <text>Заказ доставлен</text>
+            }
+        </form>
+        <form>
+            @if (!order.Paid)
+            {
+                <text>Заказ не оплачен</text>
+                <a type="button" onclick="changeStatus(@(order.Paid.ToString().ToLower()),'Paid',@(order.OrderId))">Сменить статус на "Оплачен"</a>
+            }
+            else
+            {
+                <text>Заказ оплачен</text>
+            }
+
+        </form>
+        <strong>@order.Price руб.</strong>
+        <a href="/Order/ShowOrderInfo?orderId=@order.OrderId">Перейти к заказу</a>
+        <br/>
+        <br/>
+    </form>
+}

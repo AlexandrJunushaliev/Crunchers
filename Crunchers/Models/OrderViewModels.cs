@@ -86,8 +86,8 @@ namespace Crunchers.Models
             MinimumLength = 3, ErrorMessage = "Значение {0} должно содержать символов не менее: {2}.")]
         [DataType(DataType.Text)]
         [RegularExpression(
-            @"(?:[У]|[у])л[.]\s?(?:\w+|\s\w+)+[,]\s?(?:[Д]|[д])[.]\s?(?:\d+\w?|\s\d+\w?)+[,]\s?(?:[К]|[к])в[.]\s?(?:\d+\w?|\s\d+\w?)+",
-            ErrorMessage = "Требуемый формат - ул.(название улицы), д.(номер дома), кв.(номер кв)")]
+            @"(?:[Г]|[г])[.]\s?\w+[,]\s?(?:[У]|[у])л[.]\s?(?:\w+|\s\w+)+[,]\s?(?:[Д]|[д])[.]\s?(?:\d+\w?|\s\d+\w?)+[,]\s?(?:[К]|[к])в[.]\s?(?:\d+\w?|\s\d+\w?)+",
+            ErrorMessage = "Требуемый формат - г.(название города), ул.(название улицы), д.(номер дома), кв.(номер квартиры)")]
         [Display(Name = "Адрес")]
         public string Address { get; set; }
 
@@ -122,6 +122,7 @@ namespace Crunchers.Models
             ErrorMessage = "Некорректный номер карты")]
         [Display(Name = "Номер карты")]
         public string CardNumber { get; set; }
+
         public string NameRu { get; set; }
     }
 

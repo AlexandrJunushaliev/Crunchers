@@ -40,12 +40,19 @@ namespace Crunchers.Controllers
             {
                 model.MakePickUpOrder = new MakePickUpOrder();
                 model.MakePickUpOrder.NameRu = model.MakeDeliverOrder.NameRu;
+                model.MakePickUpOrder.Email = model.MakeDeliverOrder.Email;
+                model.MakePickUpOrder.Name = model.MakeDeliverOrder.Name;
+                model.MakePickUpOrder.CardNumber = model.MakeDeliverOrder.CardNumber;
+                model.MakePickUpOrder.PhoneNumber = model.MakeDeliverOrder.PhoneNumber;
             }
             else
             {
                 model.MakeDeliverOrder = new MakeDeliverOrder();
-
                 model.MakeDeliverOrder.NameRu = model.MakePickUpOrder.NameRu;
+                model.MakeDeliverOrder.Email = model.MakePickUpOrder.Email;
+                model.MakeDeliverOrder.Name = model.MakePickUpOrder.Name;
+                model.MakeDeliverOrder.CardNumber = model.MakePickUpOrder.CardNumber;
+                model.MakeDeliverOrder.PhoneNumber = model.MakePickUpOrder.PhoneNumber;
             }
 
             if (ModelState.IsValid)
@@ -56,7 +63,7 @@ namespace Crunchers.Controllers
                     var deliverModel = model.MakeDeliverOrder;
                     orderId = await new OrderModel().AddOrder(deliverModel.CardNumber != null, false,
                         deliverModel.ComfortDate.Add(new TimeSpan(0, model.MakeDeliverOrder.FromTime, 0, 0)),
-                        deliverModel.Address +$", г.{deliverModel.NameRu}", deliverModel.Name, deliverModel.PhoneNumber,
+                        deliverModel.Address, deliverModel.Name, deliverModel.PhoneNumber,
                         deliverModel.Email,
                         deliverModel.ComfortDate.Add(new TimeSpan(0, model.MakeDeliverOrder.ToTime, 0, 0)));
                 }
@@ -64,13 +71,14 @@ namespace Crunchers.Controllers
                 {
                     orderId = await new OrderModel().AddOrder(model.MakePickUpOrder.CardNumber != null, true,
                         DateTime.Now,
-                        model.MakePickUpOrder.PointOfPickUp +$", г.{model.MakePickUpOrder.NameRu}", model.MakePickUpOrder.Name,
+                        $", г.{model.MakePickUpOrder.NameRu}" + model.MakePickUpOrder.PointOfPickUp,
+                        model.MakePickUpOrder.Name,
                         model.MakePickUpOrder.PhoneNumber,
                         model.MakePickUpOrder.Email,
                         DateTime.Now);
                 }
-                
-                return RedirectToAction("SuccessOrder",new {orderId});
+
+                return RedirectToAction("SuccessOrder", new {orderId});
             }
 
             // Это сообщение означает наличие ошибки; повторное отображение формы
@@ -83,7 +91,7 @@ namespace Crunchers.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddProductsToOrder(int orderId,int price)
+        public async Task<ActionResult> AddProductsToOrder(int orderId, int price)
         {
             string documentContents;
             using (Stream receiveStream = Request.InputStream)
@@ -95,11 +103,11 @@ namespace Crunchers.Controllers
             }
 
             var values = JsonConvert.DeserializeObject<Dictionary<int, int>>(documentContents);
-            
-            await new OrderModel().AddProductsFromOrder(values.Keys,orderId);
-            new OrderModel().UpdatePrice(price,orderId);
+
+            await new OrderModel().AddProductsFromOrder(values.Keys, orderId);
+            new OrderModel().UpdatePrice(price, orderId);
             var order = (await new OrderModel().GetOrderById(orderId)).Item1.Distinct().First();
-            var body=new StringBuilder($"Ваш заказ номер {order.OrderId} будет доставлен по адресу {order.Address}");
+            var body = new StringBuilder($"Ваш заказ номер {order.OrderId} будет доставлен по адресу {order.Address}");
             if (!order.IsForPickUp)
             {
                 body.Append(
@@ -112,7 +120,7 @@ namespace Crunchers.Controllers
             }
 
             body.Append(".");
-            AdminController.SendEmail(order.Email,"Спасибо за покупку!",body.ToString());
+            AdminController.SendEmail(order.Email, "Спасибо за покупку!", body.ToString());
             new ShoppingCartModel().ClearCart(User.Identity.GetUserId());
             return Json("Success", JsonRequestBehavior.AllowGet);
         }

@@ -1,8 +1,15 @@
-﻿@model Crunchers.Models.MakeOrderViewModel
+﻿@using Crunchers.Models
+@using Microsoft.AspNet.Identity
+@model Crunchers.Models.MakeOrderViewModel
 <script>
 function showPickUp() {
   document.getElementById("deliver").hidden = document.getElementById("showPickUp").checked;
       document.getElementById("pickUp").hidden = !document.getElementById("showPickUp").checked;
+}
+window.onload=function() {
+  if (document.getElementById('deliver').getElementsByClassName('field-validation-error text-danger').length==0 && document.getElementById('pickUp').getElementsByClassName('field-validation-error text-danger').length!=0){
+      document.getElementById('showPickUp').click()
+  }
 }
 </script>
 <style>
@@ -76,18 +83,19 @@ input:checked + .slider:before {
     <hr/>
     @Html.AntiForgeryToken()
 
+    var user = new UserModel().GetUser(User?.Identity?.GetUserId());
     @Html.HiddenFor(x => x.MakeDeliverOrder.NameRu)
     <div class="form-group">
         @Html.LabelFor(m => m.MakeDeliverOrder.Name, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.MakeDeliverOrder.Name, new {@class = "form-control"})
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.Name, new {@class = "form-control", Value = Model.MakeDeliverOrder.Name ?? user?.FullName})
             @Html.ValidationMessageFor(m => m.MakeDeliverOrder.Name, "", new {@class = "text-danger"})
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.MakeDeliverOrder.Email, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.MakeDeliverOrder.Email, new {@class = "form-control", Value = $"{User.Identity.Name}"})
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.Email, new {@class = "form-control", Value = Model.MakeDeliverOrder.Email ?? User?.Identity?.Name})
             @Html.ValidationMessageFor(m => m.MakeDeliverOrder.Email, "", new {@class = "text-danger"})
         </div>
     </div>
@@ -101,10 +109,10 @@ input:checked + .slider:before {
     <div class="form-group">
         @Html.LabelFor(m => m.MakeDeliverOrder.Address, new {@class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.MakeDeliverOrder.Address, new {@class = "form-control"})
+            @Html.TextBoxFor(m => m.MakeDeliverOrder.Address, new {@class = "form-control", Value = Model.MakeDeliverOrder.Address ?? $"г.{Model.MakeDeliverOrder.NameRu}, "})
             @Html.ValidationMessageFor(m => m.MakeDeliverOrder.Address, "", new {@class = "text-danger"})
         </div>
-        <text style="color: #79818a; font-size: 10px">*ул. (название улицы), д. (номер дома), кв. (номер квартитры)</text>
+        <text style="color: #79818a; font-size: 10px">*г. (название города), ул. (название улицы), д. (номер дома), кв. (номер квартитры)</text>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.MakeDeliverOrder.ComfortDate, new {@class = "col-md-2 control-label"})
@@ -112,7 +120,7 @@ input:checked + .slider:before {
             @Html.EditorFor(m => m.MakeDeliverOrder.ComfortDate)
             @Html.ValidationMessageFor(m => m.MakeDeliverOrder.ComfortDate, "", new {@class = "text-danger"})
         </div>
-        <text style="color: #79818a; font-size: 10px">*не позднее чем @DateTime.Now.Add(new TimeSpan(31,0,0,0)).ToShortDateString()</text>
+        <text style="color: #79818a; font-size: 10px">*не позднее чем @DateTime.Now.Add(new TimeSpan(31, 0, 0, 0)).ToShortDateString()</text>
     </div>
     <div class="form-group">
         <div class="col-md-10">
@@ -126,7 +134,7 @@ input:checked + .slider:before {
             @Html.ValidationMessageFor(m => m.MakeDeliverOrder.ToTime, "", new {@class = "text-danger"})
             <text style="color: #79818a; font-size: 10px">*служба доставки работает от 7 до 18</text>
         </div>
-        
+
 
     </div>
 
@@ -146,29 +154,30 @@ input:checked + .slider:before {
 }
 
 
-    @using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "pickUp", hidden = ""}))
+@using (Html.BeginForm("Index", "Order", FormMethod.Post, new {@class = "form-horizontal", role = "form", id = "pickUp", hidden = ""}))
+{
+    if (!Model.PointsOfPickUp.Any())
     {
-        if (!Model.PointsOfPickUp.Any())
-        {
-            <text>К сожалению, в вашем городе нет точек самовывоза.</text>
-        }
-        else
-        {
-            @Html.AntiForgeryToken()
+        <text>К сожалению, в вашем городе нет точек самовывоза.</text>
+    }
+    else
+    {
+        var user = new UserModel().GetUser(User?.Identity?.GetUserId());
+        @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.MakePickUpOrder.NameRu)
         <h4>Самовывоз</h4>
         <hr/>
         <div class="form-group">
             @Html.LabelFor(m => m.MakePickUpOrder.Name, new {@class = "col-md-2 control-label"})
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.MakePickUpOrder.Name, new {@class = "form-control"})
+                @Html.TextBoxFor(m => m.MakePickUpOrder.Name, new {@class = "form-control", Value = Model.MakePickUpOrder.Name ?? user?.FullName})
                 @Html.ValidationMessageFor(m => m.MakePickUpOrder.Name, "", new {@class = "text-danger"})
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(m => m.MakePickUpOrder.Email, new {@class = "col-md-2 control-label"})
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.MakePickUpOrder.Email, new {@class = "form-control", Value = $"{User.Identity.Name}"})
+                @Html.TextBoxFor(m => m.MakePickUpOrder.Email, new {@class = "form-control", Value = Model.MakePickUpOrder.Email ?? User?.Identity?.Name})
                 @Html.ValidationMessageFor(m => m.MakePickUpOrder.Email, "", new {@class = "text-danger"})
             </div>
         </div>
@@ -203,6 +212,5 @@ input:checked + .slider:before {
                 <input type="submit" value="Подтвердить информацию о заказе" class="btn btn-default"/>
             </div>
         </div>
-        }
-        
     }
+}

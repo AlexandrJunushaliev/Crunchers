@@ -258,6 +258,44 @@ namespace Crunchers.Models
             return Tuple.Create<IEnumerable<OrderModel>, IEnumerable<ShortProductInfoForOrder>>(orders, products);
         }
 
+        public async Task<IEnumerable<OrderModel>> GetActiveOrders()
+        {
+            var orders = new List<OrderModel>();
+            var sqlExpression = string.Format("select * from \"Orders\" where \"Active\"=true");
+            using (_dbConnection)
+            {
+                _dbConnection.Open();
+                _dbCommand.CommandText = sqlExpression;
+                _dbCommand.Connection = _dbConnection;
+                var reader = await _dbCommand.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var orderId = reader.GetInt32(0);
+                        var active = reader.GetBoolean(1);
+                        var delivered = reader.GetBoolean(2);
+                        var paid = reader.GetBoolean(3);
+                        var isForPickUp = reader.GetBoolean(4);
+                        var price = reader.GetInt32(5);
+                        var comfortTimeFrom = reader.GetDateTime(6);
+                        var address = reader.GetString(7);
+                        var name = reader.GetString(8);
+                        var phone = reader.GetString(9);
+                        var email = reader.GetString(10);
+                        var comfortTimeTo = reader.GetDateTime(11);
+                        var order = new OrderModel(orderId, active, delivered, paid, isForPickUp, price,
+                            comfortTimeFrom, address, name, phone, email, comfortTimeTo);
+                        orders.Add(order);
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return orders;
+        }
+        
         public async Task<IEnumerable<OrderModel>> GetAllOrders()
         {
             var orders = new List<OrderModel>();
