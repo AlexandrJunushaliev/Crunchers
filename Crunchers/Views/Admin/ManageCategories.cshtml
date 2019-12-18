@@ -176,7 +176,7 @@ function DeleteCategory(categoryId) {
             <h4><input id="@category.CategoryId" placeholder="Введите новое название категории" minlength="3" maxlength="100" required value="@category.CategoryName"/></h4>
             <ul>
                 <li><a class = "my-class" onclick=" UpdateCategory(@category.CategoryId)"><h4>Изменить категорию</h4></a></li>
-            <li><a class = "my-class" onclick=" DeleteCategory(@category.CategoryId)"><h4>Удалить категорию</h4></a></li>
+                <li><a class = "my-class" onclick=" DeleteCategory(@category.CategoryId)"><h4>Удалить категорию</h4></a></li>
                 <li><a class = "my-class" href="/Admin/ManageCharacteristics?categoryId=@category.CategoryId"><h4>Управление характеристиками</h4></a></li>
                 <li><a class = "my-class" href="/Admin/ManageCategoryProducts?categoryId=@category.CategoryId"><h4>Управление товарами</h4></a></li>
             </ul>
