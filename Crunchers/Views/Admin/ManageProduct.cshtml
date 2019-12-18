@@ -229,7 +229,7 @@
                         }
                         else
                         {
-                            <input id="Name=@characteristics[i].CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
+                            <input id="Name=@characteristics[i].CharacteristicId" value="0" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
                             if (!string.IsNullOrEmpty(characteristics[i].Unit))
                             {
                                 <text>(в @(characteristics[i].Unit))</text>

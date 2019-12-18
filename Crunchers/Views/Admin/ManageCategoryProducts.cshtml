@@ -229,7 +229,7 @@
                     <h4>
                         <p>
                             <label style="font-weight: inherit !important;" class="text-info" for="productPriceInput">Цена:</label>
-                            <input id="productPriceInput" class="fox" type="number" min="0" max="99999999" required>
+                            <input id="productPriceInput" value="0" class="fox" type="number" min="0" max="99999999" required>
                         </p>
                     </h4>
                 </form>
@@ -246,7 +246,7 @@
                                 }
                                 else
                                 {
-                                    <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required/>
+                                    <input id="Name=@characteristic.CharacteristicId" value="0" type="number" max="99999999" min="0" required/>
                                     if (characteristic.Unit != null || characteristic.Unit != "")
                                     {
                                         <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
