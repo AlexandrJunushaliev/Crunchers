@@ -71,21 +71,169 @@ function ChangeCity(cityId) {
               });
 }}
 </script>
-<h1>Города</h1>
-<form>
-    <input id="newCityRu" placeholder="Введите название города на русском" minlength="3" maxlength="100" required>
-    <a onclick="AddCity()">Добавить город</a>
-</form>
 
-<hr/>
-@foreach (var city in Model)
-{
+<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
+
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .text-i {
+              color: orange!important;
+              font-weight: normal !important;
+            }
+      
+      .text-info {
+        color: darkgray!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+            }  
+            
+            .clean-block {
+                                    border-top: 2px solid orange!important;
+                                    background-color: #fff;
+                                    margin: auto;
+                                    padding: 40px;
+                                    box-shadow: 0 2px 10px rgba(0,0,0,.075);
+                                }
+  
+</style>
+<section class="clean-block clean-blog-list dark">
+<div>
+    <h3>
+        <label class="text-info">Добавить новый город:</label>
+    </h3>
+</div>
     <form>
-        <input id="Ru=@city.CityId" value="@city.NameRu" minlength="3" maxlength="100" required/>
-        <a onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
-        <a onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
-        <a href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>
+        <input id="newCityRu" placeholder="Введите название города на русском" minlength="3" maxlength="100" required>
+        <a class="my-class" onclick="AddCity()">Добавить город</a>
     </form>
-    <br/>
-    <br/>
-}
+</section>
+<section class="clean-block clean-blog-list dark">
+<div>
+    <h3>
+        <label class="text-info">Города:</label>
+    </h3>
+</div>
+    @foreach (var city in Model)
+    {
+        <form>
+            <input id="Ru=@city.CityId" value="@city.NameRu" minlength="3" maxlength="100" required/>
+            <a class="my-class" onclick="DeleteCity(@(city.CityId))">Удалить город</a> /
+            <a class="my-class" onclick="ChangeCity(@(city.CityId))">Изменить город</a> /
+            <a class="my-class" href="/Admin/ManagePointsOfPickUpByCityId?cityId=@(city.CityId)">Управление точками вывоза</a>
+        </form>
+    }
+</section>

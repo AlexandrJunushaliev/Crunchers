@@ -5,7 +5,7 @@ namespace Crunchers.Models
     public class FileUploadModel
     {
         [DataType(DataType.Upload)]
-        [Display(Name = "Upload File")]
+        [Display(Name = "Загрузить файл")]
         [Required(ErrorMessage = "Please choose file to upload.")]
         public string File { get; set; }
     }

@@ -131,34 +131,44 @@ function toOrder(cart,localCart,price) {
    
 }
 </script>
+<style>
+    .my-class {
+            color: orange !important;
+          } 
+</style>
 @{
-    var isLocal = User?.Identity?.GetUserId()==null;
+    var isLocal = User?.Identity?.GetUserId() == null;
     var price = 0;
+    <h3>Корзина:</h3>
     <form>
         @{
             foreach (var product in Model.CartProducts)
             {
-                <a href="/Catalog/Product?productId=@product.ProductId">
-                    <img src="@product.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
-                </a>
-                <a href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
+                <div style="border:3px solid orange; border-radius: 7px">
+                    @{
+                        <a href="/Catalog/Product?productId=@product.ProductId">
+                            <img src="@product.ImageLink" alt="Изображение отсутствует " width="100" height="100"/>
+                        </a>
+                        <a class="my-class" href="/Catalog/Product?productId=@product.ProductId">@product.ProductName</a>
 
-                if (Model.Cart.ContainsKey(product.ProductId))
-                {
-                    <a class="btn btn-default" onclick="minusFromCart(false,@product.ProductId,@Model.Cart[product.ProductId]-1)">-</a>
-                    <strong>@Model.Cart[product.ProductId]</strong>
-                    <a class="btn btn-default" onclick="plusToCart(false,@product.ProductId,@Model.Cart[product.ProductId]+1)">+</a>
-                    <text>x@(product.ProductPrice)руб. = @(Model.Cart[product.ProductId] * product.ProductPrice) руб.</text>
-                    price += Model.Cart[product.ProductId] * product.ProductPrice;
-                }
-                else
-                {
-                    <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]-1)">-</a>
-                    <strong>@Model.LocalCart[product.ProductId]</strong>
-                    <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]+1)">+</a>
-                    <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId] * product.ProductPrice) руб.</text>
-                    price += Model.LocalCart[product.ProductId] * product.ProductPrice;
-                }
+                        if (Model.Cart.ContainsKey(product.ProductId))
+                        {
+                            <a class="btn btn-default" onclick="minusFromCart(false,@product.ProductId,@Model.Cart[product.ProductId]-1)">-</a>
+                            <strong>@Model.Cart[product.ProductId]</strong>
+                            <a class="btn btn-default" onclick="plusToCart(false,@product.ProductId,@Model.Cart[product.ProductId]+1)">+</a>
+                            <text>x@(product.ProductPrice)руб. = @(Model.Cart[product.ProductId] * product.ProductPrice) руб.</text>
+                            price += Model.Cart[product.ProductId] * product.ProductPrice;
+                        }
+                        else
+                        {
+                            <a class="btn btn-default" onclick="minusFromCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]-1)">-</a>
+                            <strong>@Model.LocalCart[product.ProductId]</strong>
+                            <a class="btn btn-default" onclick="plusToCart(true,@product.ProductId,@Model.LocalCart[product.ProductId]+1)">+</a>
+                            <text>x@(product.ProductPrice)руб. = @(Model.LocalCart[product.ProductId] * product.ProductPrice) руб.</text>
+                            price += Model.LocalCart[product.ProductId] * product.ProductPrice;
+                        }
+                    }
+                </div>
                 <br/>
             }
         }
