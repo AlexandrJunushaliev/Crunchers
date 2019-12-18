@@ -209,67 +209,83 @@
                 <h1 class="text-i">Управление категориями товаров</h1>
             </div>
             <div class="form-group">
-            <form>
                 <h4>
-                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productImageInput">Ссылка на изображение:</label>
+                    <form method="get" action="/FileUpload/Index">
+                        <input type="hidden" name="categoryId" value="@ViewBag.categoryId"/>
+                        <input type="submit" value="Загрузить изображение"/>
+                    </form>
+                </h4>
+                <form id="Form=newProduct">
+                    <p>
+                        <label style="font-weight: inherit !important;" class="text-info" for="productImageInput">Ссылка на изображение:</label>
                         <input id="productImageInput" class="fox" maxlength="255" value="@ViewBag.imageLink"/>
+                    </p>
+                    <h4>
+                        <p>
+                            <label style="font-weight: inherit !important;" class="text-info" for="productNameInput">Название товара:</label>
+                            <input id="productNameInput" class="fox" minlength="3" maxlength="100" required/>
                         </p>
-                        <form method="get" action="/FileUpload/Index">
-                            <input type="hidden" name="categoryId" value="@ViewBag.categoryId" />
-                            <input type="submit" value="Загрузить изображение"/>
-                        </form>
                     </h4>
-                <h4>
-                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productNameInput">Название товара:</label>
-                        <input id="productNameInput" class="fox" maxlength="100" required/>
-                    </p></h4>
-                <h4>
-                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productPriceInput">Цена:</label>
-                        <input id="productPriceInput" class="fox" type="number" min="0" max="99999999" required>
-                    </p></h4>
-            </form>
-            <form id="newCharacteristics">
+                    <h4>
+                        <p>
+                            <label style="font-weight: inherit !important;" class="text-info" for="productPriceInput">Цена:</label>
+                            <input id="productPriceInput" class="fox" type="number" min="0" max="99999999" required>
+                        </p>
+                    </h4>
+                </form>
+                <form id="newCharacteristics">
                     @foreach (var characteristic in Model.Characteristics)
                     {
-                        <h4><label style="font-weight: inherit !important;" class="text-info">@characteristic.CharacteristicName:</label>
-                        @{if (characteristic.CharacteristicType == "Строковое значение")
-                        {
-                            <input class="fox" id="Name=@characteristic.CharacteristicId" pattern="[^_]+" maxlength="100"/>
-                            <h6>(без символа "_")</h6>
-                        }
-                          else
-                          {
-                              <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required/>
-                              if (characteristic.Unit != null || characteristic.Unit != "")
-                              {
-                                  <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
-                              }
-                          }
-                        }</h4>
+                        <h4>
+                            <label style="font-weight: inherit !important;" class="text-info">@characteristic.CharacteristicName:</label>
+                            @{
+                                if (characteristic.CharacteristicType == "Строковое значение")
+                                {
+                                    <input class="fox" id="Name=@characteristic.CharacteristicId" pattern="[^_]+" maxlength="100"/>
+                                    <h6>(без символа "_")</h6>
+                                }
+                                else
+                                {
+                                    <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required/>
+                                    if (characteristic.Unit != null || characteristic.Unit != "")
+                                    {
+                                        <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
+                                    }
+                                }
+                            }
+                        </h4>
                         <br/>
                     }
                 </form>
-                <h4><a class="my-class" onclick=" AddProduct()">Добавить продукт</a></h4>
-</div>
+                <h4>
+                    <a class="my-class" onclick=" AddProduct()">Добавить продукт</a>
+                </h4>
+            </div>
             @foreach (var product in productGroup)
             {
                 <form>
                     <div class="form-group">
                         <h4>
-                                      <p>
-                                        <label style="font-weight: inherit !important;" class="text-info">Id: @product.Key </label>
-                                      </p></h4>
-                        
-                                    <h4>
-                                      <p><label style="font-weight: inherit !important;" class="text-info">Наименование продукта:  @product.Select(x => x.ProductName).ToList().First()</label>
-                                      </p></h4>
-                        <a class="my-class" href="/Admin/ManageProduct?productId=@product.Key&categoryId=@product.Select(x=>x.CategoryId).FirstOrDefault()"><h4>Открыть информацию о продукте</h4></a><br/>
-                                    <a class="my-class" onclick="DeleteProduct(@(product.Key))"><h4>Удалить товар</h4></a><br/>
-                <br/>
-                    <br/>
+                            <p>
+                                <label style="font-weight: inherit !important;" class="text-info">Id: @product.Key </label>
+                            </p>
+                        </h4>
+
+                        <h4>
+                            <p>
+                                <label style="font-weight: inherit !important;" class="text-info">Наименование продукта: @product.Select(x => x.ProductName).ToList().First()</label>
+                            </p>
+                        </h4>
+                        <a class="my-class" href="/Admin/ManageProduct?productId=@product.Key&categoryId=@product.Select(x => x.CategoryId).FirstOrDefault()">
+                            <h4>Открыть информацию о продукте</h4>
+                        </a><br/>
+                        <a class="my-class" onclick="DeleteProduct(@(product.Key))">
+                            <h4>Удалить товар</h4>
+                        </a><br/>
+                        <br/>
+                        <br/>
                     </div>
                 </form>
-                        
             }
         </div>
     </section>
