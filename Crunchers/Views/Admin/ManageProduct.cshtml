@@ -123,7 +123,7 @@
       }
       
       .text-info {
-        color: orange!important;
+        color: gray!important;
         font-weight: normal !important;
       }
       
@@ -176,63 +176,77 @@
   
 </style>
 
-<h1>@Model.Products.FirstOrDefault().ProductName</h1>
+<br/>
+<h1 class="text-info">Изменить товар: @Model.Products.FirstOrDefault().ProductName</h1>
 <form id="productInfo">
     @{
-        <form>
-            <input id="productImageInput" placeholder="Вставьте ссылку на изображение" maxlength="255" value="@Model.Products.FirstOrDefault().ImageLink"/>
-            <input id="productNameInput" placeholder="Введите название товара" value="@Model.Products.FirstOrDefault().ProductName" minlength="3" maxlength="100" required/>
-            <input id="productPriceInput" placeholder="Введите цену товара" type="number" min="0" max="99999999" required value="@Model.Products.FirstOrDefault().ProductPrice"/>
-        </form>
+        <h4>
+            <form>
+                <h4 class="text-info">Ссылка на изображение: </h4>
+                <input id="productImageInput" placeholder="Вставьте ссылку на изображение" maxlength="255" value="@Model.Products.FirstOrDefault().ImageLink"/>
+                <br/>
+                <h4 class="text-info">Название товара: </h4>
+                <input id="productNameInput" placeholder="Введите название товара" value="@Model.Products.FirstOrDefault().ProductName" minlength="3" maxlength="100" required/>
+                <br/>
+                <h4 class="text-info">Цена товара: </h4>
+                <input id="productPriceInput" placeholder="Введите цену товара" type="number" min="0" max="99999999" required value="@Model.Products.FirstOrDefault().ProductPrice"/>
+                <br/>
+            </form>
+        </h4>
         <hr/>
         var i = 0;
         var characteristics = Model.Characteristics.ToList();
         <form id='newCharacteristics'>
-            @if (characteristics.Count != 0)
-            {
-                foreach (var productChar in Model.Products)
+            <h4>
+                @if (characteristics.Count != 0)
                 {
-                    <text>@characteristics[i].CharacteristicName</text>
-                    if (characteristics[i].CharacteristicType == "Строковое значение")
+                    <h3 class="text-info">Характеристики товара:</h3>
+                    foreach (var productChar in Model.Products)
                     {
-                        <input id="Name=@characteristics[i].CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
-                    }
-                    else
-                    {
-                        <input id="Name=@characteristics[i].CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
-                        if (!string.IsNullOrEmpty(characteristics[i].Unit))
+                        <text>@characteristics[i].CharacteristicName</text>
+                        if (characteristics[i].CharacteristicType == "Строковое значение")
                         {
-                            <text>(в @(characteristics[i].Unit))</text>
+                            <input id="Name=@characteristics[i].CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
                         }
-                        <text>(0 в случае отсутствия)</text>
+                        else
+                        {
+                            <input id="Name=@characteristics[i].CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики" value="@productChar.ValueToCharName.Item2"/>
+                            if (!string.IsNullOrEmpty(characteristics[i].Unit))
+                            {
+                                <text>(в @(characteristics[i].Unit))</text>
+                            }
+                            <text>(0 в случае отсутствия)</text>
+                        }
+                        i++;
+                        <br/>
                     }
-                    i++;
-                    <br/>
+                    for (var j = i + 1; j < characteristics.Count; j++)
+                    {
+                        <text>@characteristics[i].CharacteristicName</text>
+                        if (characteristics[i].CharacteristicType == "Строковое значение")
+                        {
+                            <input id="Name=@characteristics[i].CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики"/>
+                        }
+                        else
+                        {
+                            <input id="Name=@characteristics[i].CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
+                            if (!string.IsNullOrEmpty(characteristics[i].Unit))
+                            {
+                                <text>(в @(characteristics[i].Unit))</text>
+                            }
+                            <text>(0 в случае отсутствия)</text>
+                        }
+                    }
                 }
-                for (var j = i + 1; j < characteristics.Count; j++)
+                else
                 {
-                    <text>@characteristics[i].CharacteristicName</text>
-                    if (characteristics[i].CharacteristicType == "Строковое значение")
-                    {
-                        <input id="Name=@characteristics[i].CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики"/>
-                    }
-                    else
-                    {
-                        <input id="Name=@characteristics[i].CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
-                        if (!string.IsNullOrEmpty(characteristics[i].Unit))
-                        {
-                            <text>(в @(characteristics[i].Unit))</text>
-                        }
-                        <text>(0 в случае отсутствия)</text>
-                    }
+                    <h3>Категория товара не имеет характеристик</h3>
                 }
-            }
-            else
-            {
-                <text>Добавьте какие-либо характериситики.</text>
-            }
-
+            </h4>
         </form>
-        <a onclick="ChangeProduct()">Изменить товар</a>
+        <br/>
+        <h3>
+            <a class="my-class" onclick="ChangeProduct()">Изменить товар</a>
+        </h3>
     }
 </form>
