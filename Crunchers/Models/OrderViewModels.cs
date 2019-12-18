@@ -77,7 +77,9 @@ namespace Crunchers.Models
         [Required]
         [StringLength(128,
             MinimumLength = 6, ErrorMessage = "Значение {0} должно содержать символов не менее: {2}.")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Неверный формат")]
+        [RegularExpression(
+            @"\w+[@](?:[.]|\w+[.])+\w+",
+            ErrorMessage = "Неверный формат")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
@@ -144,7 +146,9 @@ namespace Crunchers.Models
         [Required]
         [StringLength(128,
             MinimumLength = 6, ErrorMessage = "Значение {0} должно содержать символов не менее: {2}.")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "Неверный формат")]
+        [RegularExpression(
+            @"\w+[@](?:[.]|\w+[.])+\w+",
+            ErrorMessage = "Неверный формат")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
