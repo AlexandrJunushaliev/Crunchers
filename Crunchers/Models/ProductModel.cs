@@ -379,7 +379,7 @@ namespace Crunchers.Models
             sqlCommands.Add(sqlExpressionForProduct);
             var sqlExpressionForImage =
                 string.Format(
-                    "UPDATE \"Images\" SET \"ImageLink\"='{0}' WHERE \"ImageRole\"='preview' AND \"ProductId\"='{1}'",
+                    "UPDATE \"Images\" SET \"ImageLink\"='{0}' WHERE \"ImageRole\"='Preview' AND \"ProductId\"='{1}'",
                     imageLink, productId);
             sqlCommands.Add(sqlExpressionForImage);
 
