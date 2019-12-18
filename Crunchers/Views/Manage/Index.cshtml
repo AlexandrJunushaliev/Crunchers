@@ -27,106 +27,187 @@
             });
     }
 </script>
-@model Crunchers.Models.IndexViewModel
-@{
-    ViewBag.Title = "Управление";
-}
-<h2>@ViewBag.Title.</h2>
+<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
 
-<p class="text-success">@ViewBag.StatusMessage</p>
-<div>
-    @Html.ActionLink("Заказы", "Orders")
-    <h4>Личный кабинет:</h4>
-    <hr/>
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .text-i {
+              color: orange!important;
+              font-weight: normal !important;
+            }
+      
+      .text-info {
+        color: darkgray!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+            }  
+            
+            .clean-block {
+                                    border-top: 2px solid orange!important;
+                                    background-color: #fff;
+                                    margin: auto;
+                                    padding: 40px;
+                                    box-shadow: 0 2px 10px rgba(0,0,0,.075);
+                                }
+  
+</style>
+<section class="clean-block clean-blog-list dark">
+    @model Crunchers.Models.IndexViewModel
+    @{
+        ViewBag.Title = "Управление";
+    }
+    <h3 class="text-info">Личный кабинет:</h3>
+    <br/>
     <dl class="dl-horizontal">
-        <dt>Email:</dt><dd>@User.Identity.Name</dd>
-        <dt>ФИО:</dt>
+        <dt class="text-info">Email:</dt><dd>@User.Identity.Name</dd>
+        <dt class="text-info">ФИО:</dt>
         <dd>
             <input maxlength="100" id="FullNameInput" style="width: fit-content;" type="text" value="@Model.UserModel.FullName"/>
-            <a onclick="ChangeFullName()">Изменить ФИО</a>
+            <a class="my-class" onclick="ChangeFullName()">Изменить ФИО</a>
         </dd>
-        <dt>Пароль:</dt>
+        <dt class="text-info">Пароль:</dt>
         <dd>
             [
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Смена пароля", "ChangePassword")
+                @Html.ActionLink("Смена пароля", "ChangePassword", new {}, new {@class = "my-class"})
             }
             else
             {
-                @Html.ActionLink("Создать", "SetPassword")
+                @Html.ActionLink("Создать", "SetPassword", new {}, new {@class = "my-class"})
             }
             ]
         </dd>
 
-        <dt>Телефон:</dt>
+        <dt class="text-info">Телефон:</dt>
         <dd>
             @if (Model.PhoneNumber != null)
             {
                 @Model.PhoneNumber
-                @Html.ActionLink(" Удалить телефон", "RemovePhoneNumber")
+                @Html.ActionLink(" Удалить телефон", "RemovePhoneNumber", new {}, new {@class = "my-class"})
             }
             else
             {
-                @Html.ActionLink("Добавить телефон", "AddPhoneNumber")
+                @Html.ActionLink("Добавить телефон", "AddPhoneNumber", new {}, new {@class = "my-class"})
             }
 
         </dd>
-
-        @*
-            Номера телефонов можно использовать в качестве второго проверочного фактора для системы двухфакторной проверки подлинности.
-             
-             В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
-                можно узнать, как для этого приложения ASP.NET настроить двухфакторную проверку подлинности с использованием SMS.
-             
-             Настроив двухфакторную проверку подлинности, раскомментируйте следующий блок
-        *@
-        @*  
-            <dt>Номер телефона:</dt>
-            <dd>
-                @(Model.PhoneNumber ?? "None")
-                @if (Model.PhoneNumber != null)
-                {
-                    <br />
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>[<input type="submit" value="Удалить" class="btn-link" />]</text>
-                    }
-                }
-                else
-                {
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                }
-            </dd>
-        *@
-        @*<dt>Двухфакторная проверка подлинности:</dt>
-        <dd>
-            <p>
-                Поставщики двухфакторной проверки подлинности не настроены. В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
-                можно узнать, как настроить двухфакторную проверку подлинности для этого приложения ASP.NET.
-            </p>
-            @#1#if (Model.TwoFactor)
-                {
-                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Включено
-                        <input type="submit" value="Отключить" class="btn btn-link" />
-                        </text>
-                    }
-                }
-                else
-                {
-                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Отключено
-                        <input type="submit" value="Включить" class="btn btn-link" />
-                        </text>
-                    }
-                }#1#
-        </dd>*@
     </dl>
-</div>
+    <h3>
+        @Html.ActionLink("Заказы", "Orders", new {}, new {@class = "my-class"})
+    </h3>
+</section>
