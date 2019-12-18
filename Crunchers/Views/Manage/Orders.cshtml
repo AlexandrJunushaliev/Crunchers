@@ -1,54 +1,200 @@
 ﻿@model IEnumerable<Crunchers.Models.OrderModel>
-@foreach (var order in Model)
-{
-    <form>
-        <form>
-            <text>Номер заказа = @order.OrderId</text>
-        </form>
-        <form>
-            @if (order.Active)
-            {
-                <text>Заказ активен</text>
-            }
-            else
-            {
-                <text>Заказ неактивен</text>
-            }
-        </form>
-        <form>
-            @if (order.IsForPickUp)
-            {
-                <text>Самовывоз</text>
-            }
-            else
-            {
-                <text>Доставка</text>
-            }
-        </form>
-        <form>
-            @if (!order.Delivered)
-            {
-                <text>Заказ не доставлен</text>
-            }
-            else
-            {
-                <text>Заказ доставлен</text>
-            }
-        </form>
-        <form>
-            @if (!order.Paid)
-            {
-                <text>Заказ не оплачен</text>
-            }
-            else
-            {
-                <text>Заказ оплачен</text>
-            }
+<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
 
-        </form>
-        <a href="/Order/ShowOrderInfo?orderId=@order.OrderId">Перейти к заказу</a>
-        
-    </form>
-    <br/>
-    <br/>
-}
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
+    
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .text-i {
+              color: orange!important;
+              font-weight: normal !important;
+            }
+      
+      .text-info {
+        color: darkgray!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+            }  
+            
+            .clean-block {
+                                    border-top: 2px solid orange!important;
+                                    background-color: #fff;
+                                    margin: auto;
+                                    padding: 40px;
+                                    box-shadow: 0 2px 10px rgba(0,0,0,.075);
+                                }
+  
+</style>
+
+<section class="clean-block clean-blog-list dark">
+    <h3 class="text-info">Заказы:</h3>
+    <hr/>
+    <div class="text-info">
+        @foreach (var order in Model)
+        {
+            <form>
+                <form>
+                    <h4>Номер заказа = @order.OrderId</h4>
+                </form>
+                <form>
+                    @if (order.Active)
+                    {
+                        <h4>Заказ активен</h4>
+                    }
+                    else
+                    {
+                        <h4>Заказ неактивен</h4>
+                    }
+                </form>
+                <form>
+                    @if (order.IsForPickUp)
+                    {
+                        <h4>Самовывоз</h4>
+                    }
+                    else
+                    {
+                        <h4>Доставка</h4>
+                    }
+                </form>
+                <form>
+                    @if (!order.Delivered)
+                    {
+                        <h4>Заказ не доставлен</h4>
+                    }
+                    else
+                    {
+                        <h4>Заказ доставлен</h4>
+                    }
+                </form>
+                <form>
+                    @if (!order.Paid)
+                    {
+                        <h4>Заказ не оплачен</h4>
+                    }
+                    else
+                    {
+                        <h4>Заказ оплачен</h4>
+                    }
+
+                </form>
+                <h4>
+
+                    <a class="my-class" href="/Order/ShowOrderInfo?orderId=@order.OrderId">Перейти к заказу</a>
+                </h4>
+                <hr/>
+            </form>
+        }
+    </div>
+</section>
