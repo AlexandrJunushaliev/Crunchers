@@ -65,12 +65,23 @@ namespace Crunchers.Models
             var sqlExpression = string.Format(
                 "insert into \"Marks\" (\"UserName\",\"ProductId\",\"Mark\") values ('{0}','{1}','{2}')",
                 userName, productId, mark);
+            var sqlExpressionCheckForAvailable =
+                string.Format("select * from \"Marks\" where \"UserName\"='{0}' and \"ProductId\"='{1}'", userName,
+                    productId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
                 _dbCommand.Connection = _dbConnection;
-                _dbCommand.CommandText = sqlExpression;
-                _dbCommand.ExecuteNonQuery();
+                _dbCommand.CommandText = sqlExpressionCheckForAvailable;
+
+                var reader = _dbCommand.ExecuteReader();
+                var available = !reader.HasRows;
+                reader.Close();
+                if (available)
+                {
+                    _dbCommand.CommandText = sqlExpression;
+                    _dbCommand.ExecuteNonQuery();
+                }
                 _dbConnection.Close();
             }
         }

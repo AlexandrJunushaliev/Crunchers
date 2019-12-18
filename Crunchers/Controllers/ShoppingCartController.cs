@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Crunchers.Controllers
 {
-    class ProductComparer:IEqualityComparer<ProductModel>
+    class ProductComparer : IEqualityComparer<ProductModel>
     {
         public bool Equals(ProductModel x, ProductModel y)
         {
@@ -26,6 +26,7 @@ namespace Crunchers.Controllers
             return obj.ProductId.GetHashCode();
         }
     }
+
     public class ShoppingCartController : Controller
     {
         public class ShoppingCartResponse
@@ -35,7 +36,6 @@ namespace Crunchers.Controllers
             public IEnumerable<ProductModel> CartProducts;
         }
 
-        
 
         public async Task<ActionResult> Index(string localCartJson)
         {
@@ -43,17 +43,21 @@ namespace Crunchers.Controllers
             {
                 localCartJson = "{}";
             }
+
             var shoppingCart = await new ShoppingCartModel().GetCartJson(User?.Identity?.GetUserId());
             var cart = JsonConvert.DeserializeObject<Dictionary<int, int>>(shoppingCart.CartJson);
             var localCart = JsonConvert.DeserializeObject<Dictionary<int, int>>(localCartJson);
-            if (localCart.Values.Any(x=>x<=0))
+            if (localCart.Values.Any(x => x <= 0))
             {
-                return View(new ShoppingCartResponse(){LocalCart = localCart,Cart = cart,CartProducts = new ProductModel[0]});
+                return View(new ShoppingCartResponse()
+                    {LocalCart = localCart, Cart = cart, CartProducts = new ProductModel[0]});
             }
+
             var cartProducts = await new ProductModel().GetPrimaryProductsInfo(cart.Keys);
             var localCartProducts = await new ProductModel().GetPrimaryProductsInfo(localCart.Keys);
             var unionProducts = cartProducts.Union(localCartProducts, new ProductComparer());
-            var response = new ShoppingCartResponse(){LocalCart = localCart,Cart = cart,CartProducts = unionProducts};
+            var response = new ShoppingCartResponse()
+                {LocalCart = localCart, Cart = cart, CartProducts = unionProducts};
             return View(response);
         }
 

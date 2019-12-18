@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
-﻿<style>
+<style>
       .clean-navbar.fixed-top + .page {
         padding-top: 5rem;
       }
@@ -96,29 +96,53 @@
 <main class="page faq-page">
     <section class="clean-block clean-faq dark">
         <div class="container">
-            <div class="block-heading"> 
+            <div class="block-heading">
                 <h1 class="text-info">Меню администратора</h1>
                 <p></p>
             </div>
             <div class="block-content">
-              <div class="faq-item"><h4>@Html.ActionLink("Управление активными заказами","ManageActiveOrders", null, new { @class = "my-class" })
-                </h4><div class="answer"></div>
-              </div>
-               <div class="faq-item"><h4>@Html.ActionLink("Управление всеми заказами","ManageAllOrders", null, new { @class = "my-class" })
-                                  </h4><div class="answer"></div>
-                              </div>
-                <div class="faq-item"><h4>@Html.ActionLink("Управление категориями","ManageCategories", null, new { @class = "my-class" })
-                    </h4><div class="answer"></div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление активными заказами", "ManageActiveOrders", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
                 </div>
-                <div class="faq-item"><h4>@Html.ActionLink("Управление товарами","ManageAllProducts", null, new { @class = "my-class" })
-                    </h4><div class="answer"></div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление всеми заказами", "ManageAllOrders", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
                 </div>
-                <div class="faq-item"><h4>@Html.ActionLink("Управление характеристиками","ManageAllCharacteristics", null, new { @class = "my-class" })
-                    </h4><div class="answer"></div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление категориями", "ManageCategories", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
                 </div>
-                <div class="faq-item"><h4>@Html.ActionLink("Управление городами","ManageCities", null, new { @class = "my-class" })
-                                    </h4><div class="answer"></div>
-                                </div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление товарами", "ManageAllProducts", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
+                </div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление характеристиками", "ManageAllCharacteristics", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
+                </div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Управление городами", "ManageCities", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
+                </div>
+                <div class="faq-item">
+                    <h4>
+                        @Html.ActionLink("Загрузить изображение", "Index", "FileUpload", null, new {@class = "my-class"})
+                    </h4>
+                    <div class="answer"></div>
+                </div>
             </div>
         </div>
     </section>

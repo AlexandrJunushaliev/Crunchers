@@ -9,14 +9,14 @@ namespace UploadingFilesUsingMVC.Controllers
     public class FileUploadController : Controller
     {
         // GET: FileUpload    
-        public ActionResult Index(int categoryId)
+        public ActionResult Index(int? categoryId)
         {
             ViewBag.categoryId = categoryId;
             return View();
         }
 
         [HttpPost]
-        public ActionResult UploadFiles(HttpPostedFileBase file, int categoryId)
+        public ActionResult UploadFiles(HttpPostedFileBase file, int? categoryId)
         {
             ViewBag.categoryId = categoryId;
             if (ModelState.IsValid)

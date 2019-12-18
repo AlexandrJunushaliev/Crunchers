@@ -191,6 +191,7 @@ namespace Crunchers.Models
                 string.Format(
                     "insert into \"Orders\" (\"Active\", \"Delivered\", \"Paid\", \"IsForPickUp\", \"Price\", \"ComfortTimeFrom\", \"Address\", \"Name\",\"Phone\", \"Email\", \"ComfortTimeTo\") values(true, false,'{0}', '{1}',0,'{2}','{3}','{4}','{5}','{6}','{7}') returning \"OrderId\"",
                     paid, isForPickUp, comfortTimeFrom, address, name, phone, email, comfortTimeTo);
+            
             using (_dbConnection)
             {
                 _dbConnection.Open();

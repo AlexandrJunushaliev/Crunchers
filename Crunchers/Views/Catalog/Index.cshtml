@@ -1,7 +1,15 @@
 ﻿@using Microsoft.AspNet.Identity
 @model IEnumerable<Crunchers.Models.CategoryModel>
-
+<h2>
+    <label style="font-weight: inherit !important;" class="text-info">
+        Категории:
+    </label>
+</h2>
 @foreach (var category in Model)
 {
-    <a href="@Url.RouteUrl(new {controller = "Catalog", action = "CategoryProducts"})?categoryId=@category.CategoryId" class="btn btn-primary btn-lg">@category.CategoryName</a>
+    <div>
+        <a href="@Url.RouteUrl(new {controller = "Catalog", action = "CategoryProducts"})?categoryId=@category.CategoryId" class="btn btn-primary btn-lg">
+            @category.CategoryName
+        </a>
+    </div>
 }
