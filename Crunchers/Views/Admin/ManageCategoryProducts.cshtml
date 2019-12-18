@@ -60,50 +60,217 @@
           });
     }
 </script>
-<form method="get" action="/FileUpload/Index">
-    <input type="hidden" name="categoryId" value="@ViewBag.categoryId" />
-    <input type="submit" value="Upload image"/>
-</form>
-<form id="Form=newProduct">
-    <form>
-        <input id="productImageInput" placeholder="Вставьте ссылку на изображение" maxlength="255" value="@ViewBag.imageLink"/>
-            <input id="productNameInput" placeholder="Введите название товара" minlength="3" maxlength="100" required/>
-            <input id="productPriceInput" type="number" min="0" max="99999999" required placeholder="Введите цену товара"/>
-    </form>
+<style>
+      .clean-block.clean-form form {
+          border-top: 2px solid orange!important;
+          background-color: #fff;
+          max-width: 500px;
+          margin: auto;
+          padding: 40px;
+          box-shadow: 0 2px 10px rgba(0,0,0,.075);
+      }
+
+
+      input:focus {
+        outline: none;
+      }
+      
+      .fox {
+        font-size: 18px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 300px;
+        border: none;
+        border-bottom: 1px solid orange !important;
+      }
+      
+      button, input {
+        overflow: visible;
+      }
+      
+      button, input, optgroup, select, textarea {
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+      }
     
-    <br/>
-    <form id="newCharacteristics">
-        @foreach (var characteristic in Model.Characteristics)
-        {
-            <label>@characteristic.CharacteristicName:</label>
-            if (characteristic.CharacteristicType == "Строковое значение")
-            {
-                <input id="Name=@characteristic.CharacteristicId" pattern="[^_]+" maxlength="100" placeholder="Введите строковое значение для характеристики"/>
-                <text>(без символа "_")</text>
+      
+
+      .clean-navbar.fixed-top + .page {
+        padding-top: 5rem;
+      }
+      
+      .clean-navbar.fixed-top + .page {
+        padding-top: 62px;
+      }
+      
+      body {
+        margin: 0;
+        font-family: Montserrat,sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+      }
+      
+      .clean-block.dark {
+              background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 1140px;
+      } 
+      
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 80px;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .text-i {
+              color: orange!important;
+              font-weight: normal !important;
             }
-            else
-            {
-                <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required placeholder="Введите числовое значение для характеристики"/>
-                if (characteristic.Unit != null || characteristic.Unit != "")
-                {
-                    <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
-                }
-            }
-            <br/>
-        }
-    </form>
-    <a onclick=" AddProduct()">Добавить продукт</a>
-</form>
-<hr/>
+      
+      .text-info {
+        color: darkgray!important;
+        font-weight: normal !important;
+      }
+      
+      .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+      }
+      
+      .clean-block .block-heading {
+        padding-top: 50px;
+        margin-bottom: 40px;
+      }
+      
+      .clean-block .block-content {
+        padding: 40px;
+      }
+      
+      .clean-block .block-content, .clean-block .content {
+        box-shadow: 0 2px 10px rgba(0,0,0,.075);
+        background-color: #fff;
+      }
+      
+      .clean-block.clean-faq .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .my-class {
+        color: orange !important;
+      }  
+      
+      .form-group {
+            border-top: 2px solid orange!important;
+                      background-color: #ffffff;
+                      max-width: 500px;
+                      margin: auto;
+                      padding: 40px;
+                      box-shadow: 0 2px 10px rgba(0,0,0,.075);
+            }  
+  
+</style>
+
 @{
     var productGroup = Model.Products.GroupBy(x => x.ProductId);
-    foreach (var product in productGroup)
-    {
-        <text>Product Id = @product.Key, Product Name = @product.Select(x => x.ProductName).ToList().First()</text> <text> / </text>
-        <a href="/Admin/ManageProduct?productId=@product.Key&categoryId=@product.Select(x=>x.CategoryId).FirstOrDefault()">Открыть информацию о продукте</a>
-        <text> / </text>
-        <a onclick="DeleteProduct(@(product.Key))">Удалить товар</a>
-        <br/>
-        <br/>
-    }
+    <section class="clean-block clean-blog-list dark">
+        <div class="container">
+            <div class="block-heading">
+                <h1 class="text-i">Управление категориями товаров</h1>
+            </div>
+            <div class="form-group">
+            <form>
+                <h4>
+                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productImageInput">Ссылка на изображение:</label>
+                        <input id="productImageInput" class="fox" maxlength="255" value="@ViewBag.imageLink"/>
+                        </p>
+                        <form method="get" action="/FileUpload/Index">
+                            <input type="hidden" name="categoryId" value="@ViewBag.categoryId" />
+                            <input type="submit" value="Загрузить изображение"/>
+                        </form>
+                    </h4>
+                <h4>
+                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productNameInput">Название товара:</label>
+                        <input id="productNameInput" class="fox" maxlength="100" required/>
+                    </p></h4>
+                <h4>
+                    <p><label style="font-weight: inherit !important;" class="text-info" for id="productPriceInput">Цена:</label>
+                        <input id="productPriceInput" class="fox" type="number" min="0" max="99999999" required>
+                    </p></h4>
+            </form>
+            <form id="newCharacteristics">
+                    @foreach (var characteristic in Model.Characteristics)
+                    {
+                        <h4><label style="font-weight: inherit !important;" class="text-info">@characteristic.CharacteristicName:</label>
+                        @{if (characteristic.CharacteristicType == "Строковое значение")
+                        {
+                            <input class="fox" id="Name=@characteristic.CharacteristicId" pattern="[^_]+" maxlength="100"/>
+                            <h6>(без символа "_")</h6>
+                        }
+                          else
+                          {
+                              <input id="Name=@characteristic.CharacteristicId" type="number" max="99999999" min="0" required/>
+                              if (characteristic.Unit != null || characteristic.Unit != "")
+                              {
+                                  <text>(в @(characteristic.Unit))(0 в случае отсутствия)</text>
+                              }
+                          }
+                        }</h4>
+                        <br/>
+                    }
+                </form>
+                <h4><a class="my-class" onclick=" AddProduct()">Добавить продукт</a></h4>
+</div>
+            @foreach (var product in productGroup)
+            {
+                <form>
+                    <div class="form-group">
+                        <h4>
+                                      <p>
+                                        <label style="font-weight: inherit !important;" class="text-info">Id: @product.Key </label>
+                                      </p></h4>
+                        
+                                    <h4>
+                                      <p><label style="font-weight: inherit !important;" class="text-info">Наименование продукта:  @product.Select(x => x.ProductName).ToList().First()</label>
+                                      </p></h4>
+                        <a class="my-class" href="/Admin/ManageProduct?productId=@product.Key&categoryId=@product.Select(x=>x.CategoryId).FirstOrDefault()"><h4>Открыть информацию о продукте</h4></a><br/>
+                                    <a class="my-class" onclick="DeleteProduct(@(product.Key))"><h4>Удалить товар</h4></a><br/>
+                <br/>
+                    <br/>
+                    </div>
+                </form>
+                        
+            }
+        </div>
+    </section>
 }
