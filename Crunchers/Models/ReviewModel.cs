@@ -51,24 +51,35 @@ namespace Crunchers.Models
         {
             var sqlExpression =
                 string.Format(
-                    "insert into \"Reviews\" (\"ReviewText\",\"UserName\",\"ReviewDate\",\"ProductId\") values ('{0}','{1}','{2}','{3}')" ,
+                    "insert into \"Reviews\" (\"ReviewText\",\"UserName\",\"ReviewDate\",\"ProductId\") values ('{0}','{1}','{2}','{3}')",
                     reviewText, userName, reviewDate, productId);
+            var sqlExpressionCheckForAvailable =
+                string.Format("select * from \"Reviews\" where \"UserName\"='{0}' and \"ProductId\"='{1}'", userName,
+                    productId);
             using (_dbConnection)
             {
                 _dbConnection.Open();
                 _dbCommand.Connection = _dbConnection;
-                _dbCommand.CommandText = sqlExpression;
-                _dbCommand.ExecuteNonQuery();
+                _dbCommand.CommandText = sqlExpressionCheckForAvailable;
+
+                var reader = _dbCommand.ExecuteReader();
+                var available = !reader.HasRows;
+                reader.Close();
+                if (available)
+                {
+                    _dbCommand.CommandText = sqlExpression;
+                    _dbCommand.ExecuteNonQuery();
+                }
                 _dbConnection.Close();
             }
         }
 
-        public void ChangeReview(string reviewText,DateTime reviewDate, int reviewId)
+        public void ChangeReview(string reviewText, DateTime reviewDate, int reviewId)
         {
             var sqlExpression =
                 string.Format(
-                    "update \"Reviews\" set \"ReviewText\"='{0}',\"ReviewDate\"='{1}' where \"ReviewId\"='{2}'" ,
-                    reviewText,  reviewDate, reviewId);
+                    "update \"Reviews\" set \"ReviewText\"='{0}',\"ReviewDate\"='{1}' where \"ReviewId\"='{2}'",
+                    reviewText, reviewDate, reviewId);
             using (_dbConnection)
             {
                 _dbConnection.Open();

@@ -31,7 +31,7 @@ function getCity(city){
         <ul class="nav navbar-nav navbar-right">
 
             <li><a id ="cityItem" href="javascript:location.href='/City?currentCity='+document.getElementById('cityItem').innerText"><script>getCity('@(new CityModel().GetCityById(new UserModel().GetUser(User?.Identity?.GetUserId())?.CityId)?.NameRu)')</script></a></li>
-            <li><a href="javascript:location.href='/ShoppingCart?localCartJson='+localStorage.getItem('localCart')">Корзина</a></li>
+            
             @if (User.IsInRole("admin"))
             {
                 <li>
@@ -40,6 +40,7 @@ function getCity(city){
             }
             else
             {
+                <li><a href="javascript:location.href='/ShoppingCart?localCartJson='+localStorage.getItem('localCart')">Корзина</a></li>
                 <li>
                     @Html.ActionLink("Личный кабинет", "Index", "Manage", routeValues: null, htmlAttributes: new {title = "Manage"})
                 </li>
